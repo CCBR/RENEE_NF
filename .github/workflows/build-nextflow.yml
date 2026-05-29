@@ -1,5 +1,5 @@
 name: build
-# TODO replace tool_name with the name of your tool
+# TODO replace renee_nf_alec with the name of your tool
 
 on:
   push:
@@ -60,8 +60,8 @@ jobs:
       - name: Stub run
         run: |
           mkdir -p tmp && pushd tmp
-          tool_name init
-          tool_name run -c conf/ci_stub.config -stub --mode local
+          renee_nf_alec init
+          renee_nf_alec run -c conf/ci_stub.config -stub --mode local
           popd
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4

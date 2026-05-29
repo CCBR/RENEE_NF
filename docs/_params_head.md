@@ -4,7 +4,7 @@ Any parameter can be set via the CLI using two hyphens (`--`) followed by the
 parameter name and value. For example:
 
 ```sh
-tool_name run --output /data/$USER/tool_name_project \
+renee_nf_alec run --output /data/$USER/renee_nf_alec_project \
     --input assets/samplesheet_hg38.csv \
     --contrasts assets/contrasts_hg38.csv \
     --genome hg38
@@ -25,7 +25,7 @@ genome: hg38
 You can then use these parameters with the `-params-file` option:
 
 ```sh
-tool_name run --output /data/$USER/tool_name_project \
+renee_nf_alec run --output /data/$USER/renee_nf_alec_project \
     -params-file assets/params.yml
 ```
 

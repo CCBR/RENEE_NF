@@ -3,21 +3,21 @@ import subprocess
 
 def test_help():
     output = subprocess.run(
-        "bin/tool_name --help", capture_output=True, shell=True, text=True
+        "bin/renee_nf_alec --help", capture_output=True, shell=True, text=True
     ).stdout
-    assert "TOOL_NAME" in output
+    assert "RENEE_NF_ALEC" in output
 
 
 def test_version():
     output = subprocess.run(
-        "bin/tool_name --version", capture_output=True, shell=True, text=True
+        "bin/renee_nf_alec --version", capture_output=True, shell=True, text=True
     ).stdout
-    assert "tool_name, version " in output
+    assert "renee_nf_alec, version " in output
 
 
 def test_citation():
     output = subprocess.run(
-        "bin/tool_name --citation", capture_output=True, shell=True, text=True
+        "bin/renee_nf_alec --citation", capture_output=True, shell=True, text=True
     ).stdout
     assert "@misc{" in output
 
@@ -25,9 +25,9 @@ def test_citation():
 def test_subcommands_help():
     assert all(
         [
-            f"tool_name {cmd} [OPTIONS]"
+            f"renee_nf_alec {cmd} [OPTIONS]"
             in subprocess.run(
-                f"bin/tool_name {cmd} --help",
+                f"bin/renee_nf_alec {cmd} --help",
                 capture_output=True,
                 shell=True,
                 text=True,

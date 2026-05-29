@@ -14,12 +14,12 @@ workflow.onComplete {
 }
 
 workflow version {
-    println "TOOL_NAME ${workflow.manifest.version}"
+    println "RENEE_NF_ALEC ${workflow.manifest.version}"
 }
 
 workflow LOG {
     log.info """\
-            TOOL_NAME $workflow.manifest.version
+            RENEE_NF_ALEC $workflow.manifest.version
             =============
             cmd line     : $workflow.commandLine
             start time   : $workflow.start
