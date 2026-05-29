@@ -2,16 +2,15 @@
 
 ### API-breaking changes
 
-- change 1
-- example 2
+- None.
 
 ### New features
 
-- new feat 1
+- Updated template placeholders and project metadata for RENEE.
 
 ### Bug fixes
 
-- description of bug fixed
+- None.
 
 ## RENEE_NF_ALEC v0.1.0
 

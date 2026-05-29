@@ -8,11 +8,12 @@ build-backend = 'setuptools.build_meta'
 [project]
 name = 'RENEE_NF_ALEC'
 dynamic = ['version','readme']
-description = "TODO insert description of RENEE_NF_ALEC here"
+description = "Nextflow implementation of RENEE, an open-source, reproducible, and scalable solution for analyzing RNA-seq data. For original implementation see : https://ccbr.github.io/RENEE/latest/"
 keywords = ["bioinformatics", "nextflow"]
 authors = [
     {name = "Kelly Sovacool", email = "kelly.sovacool@nih.gov"},
     {name = "Vishal Koparde", email = "vishal.koparde@nih.gov"},
+    {name = "Alec Silver",    email = "alec.silver@nih.gov"}
 ]
 maintainers = [
     {name = "CCR Collaborative Bioinformatics Resource", email = "ccbr@mail.nih.gov"},
