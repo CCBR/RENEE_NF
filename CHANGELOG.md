@@ -7,6 +7,7 @@
 ### New features
 
 - Updated template placeholders and project metadata for RENEE.
+- Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
 
 ### Bug fixes
 

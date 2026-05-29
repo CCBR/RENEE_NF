@@ -1,0 +1,5 @@
+replicate,sample,fastq_1,fastq_2
+S1,WT,assets/.tests/WT_S1.R1.fastq.gz,assets/.tests/WT_S1.R2.fastq.gz
+S2,WT,assets/.tests/WT_S2.R1.fastq.gz,assets/.tests/WT_S2.R2.fastq.gz
+S3,KO,assets/.tests/KO_S3.R1.fastq.gz,assets/.tests/KO_S3.R2.fastq.gz
+S4,KO,assets/.tests/KO_S4.R1.fastq.gz,assets/.tests/KO_S4.R2.fastq.gz
