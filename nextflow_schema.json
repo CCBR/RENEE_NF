@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF_ALEC//nextflow_schema.json",
-    "title": "CCBR/RENEE_NF_ALEC pipeline parameters",
-    "description": "TODO one-line description of RENEE_NF_ALEC goes here",
+    "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF//nextflow_schema.json",
+    "title": "CCBR/RENEE_NF pipeline parameters",
+    "description": "TODO one-line description of RENEE_NF goes here",
     "type": "object",
     "$defs": {
         "input_output_options": {

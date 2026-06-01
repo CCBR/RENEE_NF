@@ -6,7 +6,7 @@ requires = [
 build-backend = 'setuptools.build_meta'
 
 [project]
-name = 'RENEE_NF_ALEC'
+name = 'RENEE_NF'
 dynamic = ['version','readme']
 description = "Nextflow implementation of RENEE, an open-source, reproducible, and scalable solution for analyzing RNA-seq data. For original implementation see : https://ccbr.github.io/RENEE/latest/"
 keywords = ["bioinformatics", "nextflow"]
@@ -51,16 +51,16 @@ test = [
 ]
 
 [project.scripts]
-renee_nf_alec = "renee_nf_alec.src.__main__:main"
+renee_nf = "renee_nf.src.__main__:main"
 
 [project.urls]
-Homepage = "https://ccbr.github.io/RENEE_NF_ALEC"
-Documentation = "https://ccbr.github.io/RENEE_NF_ALEC"
-Repository = "https://github.com/CCBR/RENEE_NF_ALEC"
-Changelog = "https://github.com/CCBR/RENEE_NF_ALEC/blob/main/CHANGELOG.md"
+Homepage = "https://ccbr.github.io/RENEE_NF"
+Documentation = "https://ccbr.github.io/RENEE_NF"
+Repository = "https://github.com/CCBR/RENEE_NF"
+Changelog = "https://github.com/CCBR/RENEE_NF/blob/main/CHANGELOG.md"
 
 [tool.setuptools.package-dir]
-renee_nf_alec = "."
+renee_nf = "."
 
 [tool.setuptools.package-data]
 "*" = ["CITATION.cff", "LICENSE", "VERSION", "main.nf", "nextflow.config", "nextflow_schema.json", "assets/**", "bin/**", "conf/**", "lib/**", "modules/**", "subworkflows/**", "workflows/**", "tests/**"]

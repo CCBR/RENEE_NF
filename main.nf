@@ -6,12 +6,12 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
 
 workflow version {
-    println "RENEE_NF_ALEC ${workflow.manifest.version}"
+    println "RENEE_NF ${workflow.manifest.version}"
 }
 
 workflow LOG {
     log.info """\
-            RENEE_NF_ALEC $workflow.manifest.version
+            RENEE_NF $workflow.manifest.version
             =============
             cmd line     : $workflow.commandLine
             start time   : $workflow.start

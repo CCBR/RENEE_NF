@@ -1,6 +1,6 @@
 {
-    "name": "CCBR/RENEE_NF_ALEC",
-    "homePage": "https://github.com/CCBR/RENEE_NF_ALEC",
+    "name": "CCBR/RENEE_NF",
+    "homePage": "https://github.com/CCBR/RENEE_NF",
     "repos": {
         "https://github.com/CCBR/nf-modules": {
             "modules": {

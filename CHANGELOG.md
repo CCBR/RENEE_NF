@@ -1,4 +1,4 @@
-## RENEE_NF_ALEC development version
+## RENEE_NF development version
 
 ### API-breaking changes
 
@@ -14,6 +14,6 @@
 
 - None.
 
-## RENEE_NF_ALEC v0.1.0
+## RENEE_NF v0.1.0
 
-This is the first release of RENEE_NF_ALEC 🎉
+This is the first release of RENEE_NF 🎉

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# this script gets called by bin/renee_nf_alec
+# this script gets called by bin/renee_nf
 import os
 import re
 import sys

@@ -7,7 +7,7 @@ body:
       value: |
         Before you post this issue, please check the documentation:
 
-        - [pipeline documentation: troubleshooting](https://ccbr.github.io/CCBR_NextflowTemplate/user-guide/troubleshooting/) <!--TODO replace CCBR_NextflowTemplate in this link with RENEE_NF_ALEC-->
+        - [pipeline documentation: troubleshooting](https://ccbr.github.io/CCBR_NextflowTemplate/user-guide/troubleshooting/) <!--TODO replace CCBR_NextflowTemplate in this link with RENEE_NF-->
 
   - type: textarea
     id: description
@@ -47,4 +47,4 @@ body:
         * Executor _(eg. slurm, local, awsbatch)_
         * Container engine: _(e.g. Docker, Singularity)_
         * OS _(eg. Ubuntu Linux, macOS)_
-        * Version of CCBR/RENEE_NF_ALEC _(eg. 1.0, 1.8.2)_
+        * Version of CCBR/RENEE_NF _(eg. 1.0, 1.8.2)_

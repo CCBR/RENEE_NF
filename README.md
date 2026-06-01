@@ -1,14 +1,14 @@
-# Nextflow Template <!-- TODO: replace this header with RENEE_NF_ALEC -->
+# Nextflow Template <!-- TODO: replace this header with RENEE_NF -->
 
-CCBR template for creating Nextflow pipelines <!-- TODO: replace this line with the description of RENEE_NF_ALEC -->
+CCBR template for creating Nextflow pipelines <!-- TODO: replace this line with the description of RENEE_NF -->
 
-<!-- TODO: replace CCBR/CCBR_NextflowTemplate in these badge links with your OWNER/RENEE_NF_ALEC -->
+<!-- TODO: replace CCBR/CCBR_NextflowTemplate in these badge links with your OWNER/RENEE_NF -->
 
 [![build](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml)
 [![docs](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml)
 
 See the website for detailed information, documentation, and examples:
-<https://ccbr.github.io/RENEE_NF_ALEC/>
+<https://ccbr.github.io/RENEE_NF/>
 
 ## Using this template
 
@@ -16,9 +16,9 @@ See the website for detailed information, documentation, and examples:
    - [**The GitHub web interface**](https://github.com/CCBR/CCBR_NextflowTemplate):
      Click "Use this template" and "Create a new repository", then choose an owner (e.g. CCBR or another organization) and the repository name as the new tool's name.
    - [**The GitHub command line interface**](https://cli.github.com/):
-     Replace `OWNER/RENEE_NF_ALEC` with your organization (e.g. CCBR) and the actual tool name.
+     Replace `OWNER/RENEE_NF` with your organization (e.g. CCBR) and the actual tool name.
      ```sh
-     gh repo create OWNER/RENEE_NF_ALEC \
+     gh repo create OWNER/RENEE_NF \
         --description "One-line description of your tool" \
         --public \
         --template CCBR/CCBR_NextflowTemplate \
@@ -26,12 +26,12 @@ See the website for detailed information, documentation, and examples:
      ```
 1. Read and follow the contributing guidelines in `.github/CONTRIBUTING.md`.
    Be sure to [install `pre-commit` and its hooks](.github/CONTRIBUTING.md#use-pre-commit-hooks) before making any commits.
-1. Change all instances of `RENEE_NF_ALEC` and `renee_nf_alec` throughout the repo with the actual tool name.
-   Replace `RENEE_NF_ALEC` with the all-caps version (refers to the GitHub repo name)
-   and `renee_nf_alec` with the lowercase version (refers to the command-line interface). Places include:
+1. Change all instances of `RENEE_NF` and `renee_nf` throughout the repo with the actual tool name.
+   Replace `RENEE_NF` with the all-caps version (refers to the GitHub repo name)
+   and `renee_nf` with the lowercase version (refers to the command-line interface). Places include:
 
    <!--
-   grep -irl renee_nf_alec . | sort | sed "s|\./||"
+   grep -irl renee_nf . | sort | sed "s|\./||"
    -->
 
    ```
@@ -39,7 +39,7 @@ See the website for detailed information, documentation, and examples:
    .github/ISSUE_TEMPLATE/bug_report.yml
    .github/ISSUE_TEMPLATE/config.yml
    .github/workflows/build.yml
-   bin/renee_nf_alec
+   bin/renee_nf
    CHANGELOG.md
    CITATION.cff
    README.md
@@ -59,14 +59,14 @@ See the website for detailed information, documentation, and examples:
      Also consider contributing new modules & subworkflows to that repository!
 1. Write your documentation in `docs/` and enable GitHub Pages.
    - In settings, go to General > Pages and select the `gh-pages` branch.
-     mkdocs will build your site under the `gh-pages` branch, and GitHub Pages will make it available at `https://OWNER.github.io/RENEE_NF_ALEC`.
+     mkdocs will build your site under the `gh-pages` branch, and GitHub Pages will make it available at `https://OWNER.github.io/RENEE_NF`.
 1. Edit the README:
    1. Change the title and description.
    1. Delete the section [Using this template](README.md##using-this-template).
-1. You can look for instances of `RENEE_NF_ALEC` in case you missed any with grep:
+1. You can look for instances of `RENEE_NF` in case you missed any with grep:
 
    ```sh
-   grep -ir "RENEE_NF_ALEC" .
+   grep -ir "RENEE_NF" .
    ```
 
    If your repo is not part of CCBR, you will also want to look for instances of "CCBR" and "CCR Collaborative Bioinformatics Resource" and replace them with your organization.
@@ -90,28 +90,28 @@ pip3 install -e .
 View CLI options:
 
 ```sh
-renee_nf_alec --help
+renee_nf --help
 ```
 
 Navigate to your project directory and initialize required config files:
 
 ```sh
-renee_nf_alec init
+renee_nf init
 ```
 
 Run the example
 
 ```sh
-renee_nf_alec run --input "Hello world"
+renee_nf run --input "Hello world"
 ```
 
 ![dag](assets/dag.png)
 
 ## Help & Contributing
 
-Come across a **bug**? Open an [issue](https://github.com/CCBR/RENEE_NF_ALEC/issues) and include a minimal reproducible example.
+Come across a **bug**? Open an [issue](https://github.com/CCBR/RENEE_NF/issues) and include a minimal reproducible example.
 
-Have a **question**? Ask it in [discussions](https://github.com/CCBR/RENEE_NF_ALEC/discussions).
+Have a **question**? Ask it in [discussions](https://github.com/CCBR/RENEE_NF/discussions).
 
 Want to **contribute** to this project? Check out the [contributing guidelines](docs/contributing.md).
 
