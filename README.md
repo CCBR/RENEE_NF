@@ -1,83 +1,10 @@
 # Nextflow Template <!-- TODO: replace this header with RENEE_NF -->
 
-CCBR template for creating Nextflow pipelines <!-- TODO: replace this line with the description of RENEE_NF -->
-
-<!-- TODO: replace CCBR/CCBR_NextflowTemplate in these badge links with your OWNER/RENEE_NF -->
-
 [![build](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml)
 [![docs](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml)
 
 See the website for detailed information, documentation, and examples:
 <https://ccbr.github.io/RENEE_NF/>
-
-## Using this template
-
-1. Create a new repository from this template using either of these options:
-   - [**The GitHub web interface**](https://github.com/CCBR/CCBR_NextflowTemplate):
-     Click "Use this template" and "Create a new repository", then choose an owner (e.g. CCBR or another organization) and the repository name as the new tool's name.
-   - [**The GitHub command line interface**](https://cli.github.com/):
-     Replace `OWNER/RENEE_NF` with your organization (e.g. CCBR) and the actual tool name.
-     ```sh
-     gh repo create OWNER/RENEE_NF \
-        --description "One-line description of your tool" \
-        --public \
-        --template CCBR/CCBR_NextflowTemplate \
-        --confirm
-     ```
-1. Read and follow the contributing guidelines in `.github/CONTRIBUTING.md`.
-   Be sure to [install `pre-commit` and its hooks](.github/CONTRIBUTING.md#use-pre-commit-hooks) before making any commits.
-1. Change all instances of `RENEE_NF` and `renee_nf` throughout the repo with the actual tool name.
-   Replace `RENEE_NF` with the all-caps version (refers to the GitHub repo name)
-   and `renee_nf` with the lowercase version (refers to the command-line interface). Places include:
-
-   <!--
-   grep -irl renee_nf . | sort | sed "s|\./||"
-   -->
-
-   ```
-   .github/CONTRIBUTING.md
-   .github/ISSUE_TEMPLATE/bug_report.yml
-   .github/ISSUE_TEMPLATE/config.yml
-   .github/workflows/build.yml
-   bin/renee_nf
-   CHANGELOG.md
-   CITATION.cff
-   README.md
-   main.nf
-   mkdocs.yml
-   nextflow.config
-   pyproject.toml
-   src/__main__.py
-   ```
-
-1. Edit `pyproject.toml` and `nextflow.config` with correct metadata for your tool. You will likely need to change:
-   - author names and emails
-   - dependencies
-   - project URLs
-1. Write your nextflow workflow.
-   - Where possible, reuse existing modules and subworklows from [CCBR/nf-modules](https://github.com/CCBR/nf-modules)[^3].
-     Also consider contributing new modules & subworkflows to that repository!
-1. Write your documentation in `docs/` and enable GitHub Pages.
-   - In settings, go to General > Pages and select the `gh-pages` branch.
-     mkdocs will build your site under the `gh-pages` branch, and GitHub Pages will make it available at `https://OWNER.github.io/RENEE_NF`.
-1. Edit the README:
-   1. Change the title and description.
-   1. Delete the section [Using this template](README.md##using-this-template).
-1. You can look for instances of `RENEE_NF` in case you missed any with grep:
-
-   ```sh
-   grep -ir "RENEE_NF" .
-   ```
-
-   If your repo is not part of CCBR, you will also want to look for instances of "CCBR" and "CCR Collaborative Bioinformatics Resource" and replace them with your organization.
-
-   ```sh
-   grep -ir "CCBR\|CCR" .
-   ```
-
-For an example of this template in action, see the [CHAMPAGNE](https://github.com/CCBR/CHAMPAGNE) repo.
-For a list of all repositories that were created from this template, see
-[this GitHub search](https://github.com/search?q=in%3Areadme+sort%3Aupdated+%22CCBR+Nextflow+Template%22&type=repositories).
 
 ## Usage
 
