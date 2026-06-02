@@ -2,6 +2,7 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+include {FASTQC} from './modules/local/fastqc'
 
 
 
@@ -66,5 +67,6 @@ workflow {
     ch_reads | view
 
 
-    yeet | view
+    FASTQC(ch_reads)
+    FASTQC.out.html
 }
