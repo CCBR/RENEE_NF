@@ -4,4 +4,4 @@
 # load these modules if needed
 # module load nextflow
 # module load singularity
-nextflow run -profile test,biowulf,slurm main.nf
+nextflow run -profile test,biowulf,slurm main.nf -resume

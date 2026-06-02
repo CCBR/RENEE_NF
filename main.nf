@@ -3,6 +3,7 @@ nextflow.enable.dsl = 2
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC} from './modules/local/fastqc'
+include { CUTADAPT } from './modules/nf-core/cutadapt/main'
 
 
 
@@ -69,4 +70,9 @@ workflow {
 
     FASTQC(ch_reads)
     FASTQC.out.html
+
+    // Perform cutadapt on the reads
+    CUTADAPT(ch_reads)
+
+
 }
