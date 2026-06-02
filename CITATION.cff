@@ -11,7 +11,7 @@ authors: # TODO: author names should match those in pyproject.toml
     given-names: Vishal
     orcid: https://orcid.org/0000-0001-8978-8495
     affiliation: Advanced Biomedical Computational Science, Frederick National Laboratory for Cancer Research, Frederick, MD 21702, USA
-title: "RENEE_NF: insert one-line description here" # TODO: citation title should match pyproject.toml
+title: "RENEE_NF: bulk RNA-seq pipeline in Nextflow"
 url: https://ccbr.github.io/RENEE_NF/ # TODO fix the documentation URL
 repository-code: https://github.com/CCBR/RENEE_NF # TODO fix the github URL
 license: MIT
