@@ -4,22 +4,14 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
 
-workflow.onComplete {
-    if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-        def message = Utils.spooker(workflow)
-        if (message) {
-            println message
-        }
-    }
-}
 
 workflow version {
-    println "TOOL_NAME ${workflow.manifest.version}"
+    println "RENEE_NF ${workflow.manifest.version}"
 }
 
 workflow LOG {
     log.info """\
-            TOOL_NAME $workflow.manifest.version
+            RENEE_NF $workflow.manifest.version
             =============
             cmd line     : $workflow.commandLine
             start time   : $workflow.start
@@ -47,5 +39,32 @@ process yeet {
 workflow {
     LOG()
     validateParameters()
+
+    workflow.onComplete = {
+        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+            def message = Utils.spooker(workflow)
+            if (message) {
+                println message
+            }
+        }
+    }
+
+
+    ch_reads = Channel
+        .fromPath(params.input, checkIfExists: true)
+        .splitCsv(header: true)
+        .map { row ->
+            def meta = [
+                id       : "${row.sample}_${row.replicate}",
+                sample   : row.sample,
+                replicate: row.replicate
+            ]
+
+            tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
+        }
+
+    ch_reads | view
+
+
     yeet | view
 }

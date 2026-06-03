@@ -6,13 +6,14 @@ requires = [
 build-backend = 'setuptools.build_meta'
 
 [project]
-name = 'TOOL_NAME'
+name = 'RENEE_NF'
 dynamic = ['version','readme']
-description = "TODO insert description of TOOL_NAME here"
+description = "Nextflow implementation of RENEE, an open-source, reproducible, and scalable solution for analyzing RNA-seq data. For original implementation see : https://ccbr.github.io/RENEE/latest/"
 keywords = ["bioinformatics", "nextflow"]
 authors = [
     {name = "Kelly Sovacool", email = "kelly.sovacool@nih.gov"},
     {name = "Vishal Koparde", email = "vishal.koparde@nih.gov"},
+    {name = "Alec Silver",    email = "alec.silver@nih.gov"}
 ]
 maintainers = [
     {name = "CCR Collaborative Bioinformatics Resource", email = "ccbr@mail.nih.gov"},
@@ -50,16 +51,16 @@ test = [
 ]
 
 [project.scripts]
-tool_name = "tool_name.src.__main__:main"
+renee_nf = "renee_nf.src.__main__:main"
 
 [project.urls]
-Homepage = "https://ccbr.github.io/TOOL_NAME"
-Documentation = "https://ccbr.github.io/TOOL_NAME"
-Repository = "https://github.com/CCBR/TOOL_NAME"
-Changelog = "https://github.com/CCBR/TOOL_NAME/blob/main/CHANGELOG.md"
+Homepage = "https://ccbr.github.io/RENEE_NF"
+Documentation = "https://ccbr.github.io/RENEE_NF"
+Repository = "https://github.com/CCBR/RENEE_NF"
+Changelog = "https://github.com/CCBR/RENEE_NF/blob/main/CHANGELOG.md"
 
 [tool.setuptools.package-dir]
-tool_name = "."
+renee_nf = "."
 
 [tool.setuptools.package-data]
 "*" = ["CITATION.cff", "LICENSE", "VERSION", "main.nf", "nextflow.config", "nextflow_schema.json", "assets/**", "bin/**", "conf/**", "lib/**", "modules/**", "subworkflows/**", "workflows/**", "tests/**"]

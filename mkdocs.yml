@@ -1,12 +1,12 @@
 # Project Information
-site_name: TOOL_NAME
+site_name: RENEE_NF
 site_author: CCR Collaborative Bioinformatics Resource
 site_description: >-
-  insert a one-line description of TOOL_NAME here
+  bulk RNA-seq pipeline in Nextflow
 # Repository
-repo_name: CCBR/TOOL_NAME
-repo_url: https://github.com/CCBR/TOOL_NAME
-edit_uri: https://github.com/CCBR/TOOL_NAME/edit/main/docs/
+repo_name: CCBR/RENEE_NF
+repo_url: https://github.com/CCBR/RENEE_NF
+edit_uri: https://github.com/CCBR/RENEE_NF/edit/main/docs/
 
 # Copyright
 copyright: Copyright &copy; 2023 CCR Collaborative Bioinformatics Resource

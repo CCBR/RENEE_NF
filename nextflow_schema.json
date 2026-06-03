@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/CCBR/TOOL_NAME//nextflow_schema.json",
-    "title": "CCBR/TOOL_NAME pipeline parameters",
-    "description": "TODO one-line description of TOOL_NAME goes here",
+    "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF//nextflow_schema.json",
+    "title": "CCBR/RENEE_NF pipeline parameters",
+    "description": "bulk RNA-seq pipeline in Nextflow",
     "type": "object",
     "$defs": {
         "input_output_options": {
