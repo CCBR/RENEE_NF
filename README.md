@@ -1,4 +1,6 @@
-# Nextflow Template <!-- TODO: replace this header with RENEE_NF -->
+# RENEE_NF
+
+bulk RNA-seq pipeline in Nextflow
 
 [![build](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/build-nextflow.yml)
 [![docs](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml/badge.svg)](https://github.com/CCBR/CCBR_NextflowTemplate/actions/workflows/docs-mkdocs.yml)

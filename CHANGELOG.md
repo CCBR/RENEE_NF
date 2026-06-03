@@ -1,7 +1,10 @@
 ## RENEE_NF development version
 
+## RENEE_NF development version
+
 ### API-breaking changes
 
+- None.
 - None.
 
 ### New features
@@ -17,4 +20,7 @@
 
 ## RENEE_NF v0.1.0
 
+## RENEE_NF v0.1.0
+
+This is the first release of RENEE_NF 🎉
 This is the first release of RENEE_NF 🎉

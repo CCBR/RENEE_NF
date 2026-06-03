@@ -35,7 +35,7 @@ View the full list of pipeline parameters below.
 
 # CCBR/RENEE_NF pipeline parameters
 
-TODO one-line description of RENEE_NF goes here
+bulk RNA-seq pipeline in Nextflow
 
 ## Input/output options
 

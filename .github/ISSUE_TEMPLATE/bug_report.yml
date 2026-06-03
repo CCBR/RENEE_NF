@@ -7,7 +7,7 @@ body:
       value: |
         Before you post this issue, please check the documentation:
 
-        - [pipeline documentation: troubleshooting](https://ccbr.github.io/CCBR_NextflowTemplate/user-guide/troubleshooting/) <!--TODO replace CCBR_NextflowTemplate in this link with RENEE_NF-->
+        - [pipeline documentation: troubleshooting](https://ccbr.github.io/RENEE_NF/user-guide/troubleshooting/)
 
   - type: textarea
     id: description

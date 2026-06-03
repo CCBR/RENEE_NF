@@ -1,5 +1,4 @@
 name: build
-# TODO replace renee_nf with the name of your tool
 
 on:
   push:
