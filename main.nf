@@ -2,7 +2,9 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-include {FASTQC} from './modules/local/fastqc'
+include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
+include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
+include {CUTADAPT} from './modules/CCBR/cutadapt'
 
 
 
@@ -42,14 +44,7 @@ workflow {
     LOG()
     validateParameters()
 
-    workflow.onComplete = {
-        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-            def message = Utils.spooker(workflow)
-            if (message) {
-                println message
-            }
-        }
-    }
+
 
 
     ch_reads = Channel
@@ -59,18 +54,32 @@ workflow {
             def meta = [
                 id       : "${row.sample}_${row.replicate}",
                 sample   : row.sample,
-                replicate: row.replicate
+                replicate: row.replicate,
+                qc_stage : 'raw' // can be used to track the stage of QC (e.g. raw, trimmed, etc.)
             ]
 
             tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
         }
 
-    ch_reads | view
+    // QC and trimming steps
+    FASTQC_RAW(ch_reads)
+    CUTADAPT(ch_reads)
+
+    // update metadata for trimmed reads to reflect the new QC stage
+    trimmed_reads = CUTADAPT.out.reads.map { meta, reads ->
+        def qc_meta = meta + [qc_stage: 'trimmed']
+        tuple(qc_meta, reads)
+    }
+
+    FASTQC_TRIMMED(trimmed_reads)
 
 
-    FASTQC(ch_reads)
-    FASTQC.out.html
-
-
-
+    workflow.onComplete = {
+        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+            def message = Utils.spooker(workflow)
+            if (message) {
+                println message
+            }
+        }
+    }
 }
