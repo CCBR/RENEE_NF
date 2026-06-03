@@ -1,11 +1,9 @@
 
 process FASTQC {
-    tag "${meta.id}:${meta.qc_stage}"
+    tag "${meta.id}:${meta.qc_stage ?: 'raw'}"
 
     container "nciccbr/ccrgb_qctools:v4.0"
-    publishDir {
-        "${params.outputDir}/fastqc/${meta.qc_stage}"
-    }
+    publishDir { [ path: "${params.outputDir}/fastqc/${meta.qc_stage ?: 'raw'}", mode: params.publish_dir_mode ] }
     input:
         tuple val(meta), path(fastq)
     output:

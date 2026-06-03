@@ -44,12 +44,12 @@ process CUTADAPT {
     }
     args = args.join(' ').trim()
     """
-    cutadapt \\
-        --cores ${task.cpus} \\
-        ${args} \\
-        ${trimmed} \\
-        ${reads} \\
-        > ${prefix}.cutadapt.log
+    cutadapt \
+        --cores ${task.cpus} \
+        ${args} \
+        ${trimmed} \
+        ${reads} \
+        > ${prefix}.cutadapt.log 2>&1
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         cutadapt: \$(cutadapt --version)
