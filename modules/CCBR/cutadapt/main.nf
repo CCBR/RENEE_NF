@@ -18,6 +18,14 @@ process CUTADAPT {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
+
+    // Snakemake parameters:
+    //"FASTAWITHADAPTERSETD": "resources/TruSeq_and_nextera_adapters.consolidated.fa", I think okay to be different
+    //"LEADINGQUALITY": 10, for -q
+    //"TRAILINGQUALITY": 10, for -q
+    //"MINLEN": 35,
+    //"CUTADAPT_MIN_READS": 100 not implemented yet
+
     def args = [
             '--nextseq-trim=2',
             '--trim-n -n 5 -O 5',
@@ -26,12 +34,12 @@ process CUTADAPT {
         ]
     if (meta.single_end) {
         args += [
-            '-m 20'
+            '-m 35' // changed from 20 to 35 to match Snakemake parameters
         ]
     } else {
         args += [
             '-B file:/opt2/TruSeq_and_nextera_adapters.consolidated.fa',
-            '-m 20:20',
+            '-m 35:35', // changed from 20:20 to 35:35 to match Snakemake parameters
         ]
     }
     args = args.join(' ').trim()
