@@ -1,8 +1,8 @@
 cff-version: 1.2.0 # TODO: view an example cff file from a published tool here: https://github.com/CCBR/nf-modules/blob/main/CITATION.cff
 message: "Please cite RENEE_NF as below."
 authors: # TODO: author names should match those in pyproject.toml
-  - family-names: LASTNAME1 # TODO add your name, orcid, and affiliation
-    given-names: FIRSTNAME1
+  - family-names: Silver
+    given-names: Alec
   - family-names: Sovacool
     given-names: Kelly
     orcid: https://orcid.org/0000-0003-3283-829X
