@@ -2,8 +2,11 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+<<<<<<< HEAD
 include {FASTQC} from './modules/local/fastqc'
 include { CUTADAPT } from './modules/nf-core/cutadapt/main'
+=======
+>>>>>>> parent of c2f6680 (feat: Added first pass of fastQC to pipeline)
 
 
 
@@ -68,6 +71,7 @@ workflow {
     ch_reads | view
 
 
+<<<<<<< HEAD
     FASTQC(ch_reads)
     FASTQC.out.html
 
@@ -75,4 +79,7 @@ workflow {
     CUTADAPT(ch_reads)
 
 
+=======
+    yeet | view
+>>>>>>> parent of c2f6680 (feat: Added first pass of fastQC to pipeline)
 }
