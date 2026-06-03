@@ -1,6 +1,5 @@
 ## RENEE_NF development version
 
-
 ### API-breaking changes
 
 - None.
@@ -17,6 +16,5 @@
 - Normalized volatile Cutadapt CPU-count log lines in module snapshots so harmless `--cores` differences do not fail nf-test comparisons.
 
 ## RENEE_NF v0.1.0
-
 
 This is the first release of RENEE_NF 🎉
