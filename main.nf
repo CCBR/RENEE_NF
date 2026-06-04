@@ -4,6 +4,7 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
+include {FASTQVALIDATOR} from './modules/local/fastqvalidator'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
 
 
@@ -60,6 +61,7 @@ workflow {
 
         // QC and trimming steps
         FASTQC_RAW(ch_reads)
+        FASTQVALIDATOR(ch_reads)
         CUTADAPT(ch_reads)
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
@@ -75,6 +77,7 @@ workflow {
 
     publish:
         fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
+        fastqvalidator = FASTQVALIDATOR.out.report.mix(FASTQVALIDATOR.out.log_r1).mix(FASTQVALIDATOR.out.log_r2)
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
@@ -83,6 +86,10 @@ workflow {
 output {
     fastqc_raw {
         path { meta, file -> "fastqc/raw/" }
+    }
+
+    fastqvalidator {
+        path { meta, file -> "rawQC/${meta.id}/" }
     }
 
     cutadapt_reads {
