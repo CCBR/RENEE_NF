@@ -41,45 +41,59 @@ process yeet {
 }
 
 workflow {
-    LOG()
-    validateParameters()
+    main:
+        LOG()
+        validateParameters()
 
+        ch_reads = Channel
+            .fromPath(params.input, checkIfExists: true)
+            .splitCsv(header: true)
+            .map { row ->
+                def meta = [
+                    id       : "${row.sample}_${row.replicate}",
+                    sample   : row.sample,
+                    replicate: row.replicate
+                ]
 
+                tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
+            }
 
+        // QC and trimming steps
+        FASTQC_RAW(ch_reads)
+        CUTADAPT(ch_reads)
 
-    ch_reads = Channel
-        .fromPath(params.input, checkIfExists: true)
-        .splitCsv(header: true)
-        .map { row ->
-            def meta = [
-                id       : "${row.sample}_${row.replicate}",
-                sample   : row.sample,
-                replicate: row.replicate,
-                qc_stage : 'raw' // can be used to track the stage of QC (e.g. raw, trimmed, etc.)
-            ]
+        FASTQC_TRIMMED(CUTADAPT.out.reads)
 
-            tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
-        }
-
-    // QC and trimming steps
-    FASTQC_RAW(ch_reads)
-    CUTADAPT(ch_reads)
-
-    // update metadata for trimmed reads to reflect the new QC stage
-    trimmed_reads = CUTADAPT.out.reads.map { meta, reads ->
-        def qc_meta = meta + [qc_stage: 'trimmed']
-        tuple(qc_meta, reads)
-    }
-
-    FASTQC_TRIMMED(trimmed_reads)
-
-
-    workflow.onComplete = {
-        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-            def message = Utils.spooker(workflow)
-            if (message) {
-                println message
+        workflow.onComplete = {
+            if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+                def message = Utils.spooker(workflow)
+                if (message) {
+                    println message
+                }
             }
         }
+
+    publish:
+        fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
+        cutadapt_reads = CUTADAPT.out.reads
+        cutadapt_log = CUTADAPT.out.log
+        fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
+}
+
+output {
+    fastqc_raw {
+        path { meta, file -> "fastqc/raw/" }
+    }
+
+    cutadapt_reads {
+        path { meta, reads -> "cutadapt/${meta.id}/" }
+    }
+
+    cutadapt_log {
+        path { meta, log -> "cutadapt/${meta.id}/" }
+    }
+
+    fastqc_trimmed {
+        path { meta, file -> "fastqc/trimmed/" }
     }
 }
