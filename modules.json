@@ -13,7 +13,8 @@
                     "cutadapt": {
                         "branch": "main",
                         "git_sha": "3ebf7a9865b13d62a08110ade3df946c69d82b76",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/CCBR/cutadapt/cutadapt.diff"
                     }
                 }
             }

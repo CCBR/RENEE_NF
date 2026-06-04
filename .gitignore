@@ -46,3 +46,6 @@ results/
 
 # running nextflow scripts
 run_test_config.sh
+
+# AI summary files
+snakemake_summaries/
