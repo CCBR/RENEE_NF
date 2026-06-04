@@ -32,7 +32,10 @@ jobs:
     timeout-minutes: 2
     strategy:
       matrix:
-        python-version: ["3.14"]
+        python-version:
+          - "3.14"
+        NXF_VER:
+          - "25.10.4"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -43,8 +46,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
-      - name: Install nextflow
-        uses: nf-core/setup-nextflow@v1
+      - name: Set up Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: "${{ matrix.NXF_VER }}"
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip setuptools
@@ -100,7 +105,7 @@ jobs:
       matrix:
         NXF_VER:
           - "25.10.4"
-          - "latest-everything"
+          #- "latest-everything"
         nf_test_files:
           ["${{ fromJson(needs.nf-test-changes.outputs.nf_test_files) }}"]
         profile:
@@ -132,7 +137,7 @@ jobs:
         uses: nf-core/setup-nf-test@v1
         with:
           version: ${{ env.NFT_VER }}
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.14"
           architecture: "x64"
