@@ -10,7 +10,7 @@ process CUTADAPT {
     output:
         tuple val(meta), path('*.trim.fastq.gz'), emit: reads
         tuple val(meta), path('*.log')          , emit: log
-        path "versions.yml"                     , emit: versions
+        tuple val("${task.process}"), val("cutadapt"), eval('cutadapt --version'), topic: versions, emit: versions_cutadapt
 
     when:
         task.ext.when == null || task.ext.when
@@ -43,6 +43,8 @@ process CUTADAPT {
         ]
     }
     args = args.join(' ').trim()
+    // if user overrides args, use those instead
+    args = task.ext.args ?: args
     """
     cutadapt \
         --cores ${task.cpus} \
@@ -50,10 +52,6 @@ process CUTADAPT {
         ${trimmed} \
         ${reads} \
         > ${prefix}.cutadapt.log 2>&1
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        cutadapt: \$(cutadapt --version)
-    END_VERSIONS
     """
 
     stub:
@@ -62,10 +60,5 @@ process CUTADAPT {
     """
     touch ${prefix}.cutadapt.log
     touch ${trimmed}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        cutadapt: \$(cutadapt --version)
-    END_VERSIONS
     """
 }
