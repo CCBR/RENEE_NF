@@ -46,6 +46,7 @@ results/
 
 # running nextflow scripts
 run_test_config.sh
+conf/test_invalidchars.config
 
 # AI summary files
 snakemake_summaries/

@@ -2,7 +2,7 @@ process FASTQVALIDATOR {
     tag { meta.id }
     label 'process_low'
 
-    container "${params.containers.fastqvalidator}"
+    container "nciccbr/ccbr_fastqvalidator:v0.1.0"
 
     input:
         tuple val(meta), path(reads)
