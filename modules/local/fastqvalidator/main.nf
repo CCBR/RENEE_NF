@@ -11,6 +11,7 @@ process FASTQVALIDATOR {
         tuple val(meta), path('*.fastQValidator.txt'), emit: report
         tuple val(meta), path('*.fastQValidator.R1.fastq.log'), emit: log_r1
         tuple val(meta), path('*.fastQValidator.R2.fastq.log'), optional: true, emit: log_r2
+        tuple val(meta), path('*.fastQValidator.status.txt'), emit: status
 
     when:
         task.ext.when == null || task.ext.when
@@ -24,17 +25,27 @@ process FASTQVALIDATOR {
     def reportFile = "${prefix}.fastQValidator.txt"
     def r1Log = "${prefix}.fastQValidator.R1.fastq.log"
     def r2Log = "${prefix}.fastQValidator.R2.fastq.log"
+    def statusFile = "${prefix}.fastQValidator.status.txt"
 
-    // If paired reads, validate r2 as well and combine logs into report, otherwise just copy r1 log to report
+    // Run both validations and capture their statuses so workflow logic can decide whether to stop.
     def pairedCommands = r2 ? """
-    fastQValidator --noeof --minReadLen ${minReadLen} --file ${r2} > ${r2Log}
+    r2_status=0
+    fastQValidator --noeof --minReadLen ${minReadLen} --file ${r2} > ${r2Log} 2>&1 || r2_status=\$?
     cat ${r1Log} ${r2Log} > ${reportFile}
     """ : """
+    r2_status=0
     cp ${r1Log} ${reportFile}
     """
     """
-    fastQValidator --noeof --minReadLen ${minReadLen} --file ${r1} > ${r1Log}
+    r1_status=0
+    fastQValidator --noeof --minReadLen ${minReadLen} --file ${r1} > ${r1Log} 2>&1 || r1_status=\$?
     ${pairedCommands}
+
+    if [[ "\${r1_status}" -eq 0 && "\${r2_status}" -eq 0 ]]; then
+        echo "PASS" > ${statusFile}
+    else
+        echo "FAIL\tr1=\${r1_status}\tr2=\${r2_status}" > ${statusFile}
+    fi
     """
 
     stub:
@@ -43,5 +54,6 @@ process FASTQVALIDATOR {
     touch ${prefix}.fastQValidator.R1.fastq.log
     touch ${prefix}.fastQValidator.R2.fastq.log
     touch ${prefix}.fastQValidator.txt
+    echo "PASS" > ${prefix}.fastQValidator.status.txt
     """
 }

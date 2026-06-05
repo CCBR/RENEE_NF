@@ -4,8 +4,8 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
-include {FASTQVALIDATOR} from './modules/local/fastqvalidator'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
+include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
 
 
 
@@ -53,16 +53,22 @@ workflow {
                 def meta = [
                     id       : "${row.sample}_${row.replicate}",
                     sample   : row.sample,
-                    replicate: row.replicate
+                    replicate: row.replicate,
+                    fastq_1  : new File(row.fastq_1.toString()).name,
+                    fastq_2  : new File(row.fastq_2.toString()).name
                 ]
 
                 tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
             }
+        // Sample validation gate
+        VALIDATE_FASTQS(ch_reads)
+        ch_validated_reads = VALIDATE_FASTQS.out.reads
+
 
         // QC and trimming steps
-        FASTQC_RAW(ch_reads)
-        FASTQVALIDATOR(ch_reads)
-        CUTADAPT(ch_reads)
+        FASTQC_RAW(ch_validated_reads)
+
+        CUTADAPT(ch_validated_reads)
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
 
@@ -77,7 +83,7 @@ workflow {
 
     publish:
         fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
-        fastqvalidator = FASTQVALIDATOR.out.report.mix(FASTQVALIDATOR.out.log_r1).mix(FASTQVALIDATOR.out.log_r2)
+        fastqvalidator = VALIDATE_FASTQS.out.report.mix(VALIDATE_FASTQS.out.log_r1).mix(VALIDATE_FASTQS.out.log_r2)
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
