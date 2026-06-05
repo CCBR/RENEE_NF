@@ -31,4 +31,29 @@ nextflow_process {
         }
     }
 
+    test("sarscov2 single-end [fastq.gz]") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.report[0][1] ==~ ".*/test.fastQValidator.txt" },
+                { assert process.out.log_r1[0][1] ==~ ".*/test.fastQValidator.R1.fastq.log" },
+                { assert path(process.out.report[0][1]).text.size() > 0 }
+            )
+        }
+    }
+
 }

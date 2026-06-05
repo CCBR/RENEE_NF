@@ -24,6 +24,8 @@ process FASTQVALIDATOR {
     def reportFile = "${prefix}.fastQValidator.txt"
     def r1Log = "${prefix}.fastQValidator.R1.fastq.log"
     def r2Log = "${prefix}.fastQValidator.R2.fastq.log"
+
+    // If paired reads, validate r2 as well and combine logs into report, otherwise just copy r1 log to report
     def pairedCommands = r2 ? """
     fastQValidator --noeof --minReadLen ${minReadLen} --file ${r2} > ${r2Log}
     cat ${r1Log} ${r2Log} > ${reportFile}

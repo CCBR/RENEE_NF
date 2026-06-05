@@ -89,7 +89,7 @@ output {
     }
 
     fastqvalidator {
-        path { meta, file -> "rawQC/${meta.id}/" }
+        path { meta, file -> "fastqvalidator/${meta.id}/" }
     }
 
     cutadapt_reads {
