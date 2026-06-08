@@ -9,6 +9,12 @@
                         "branch": "main",
                         "git_sha": "490e4454c81e3fb852f7f964356f9981b6f1c439",
                         "installed_by": ["modules"]
+                    },
+                    "cutadapt": {
+                        "branch": "main",
+                        "git_sha": "3ebf7a9865b13d62a08110ade3df946c69d82b76",
+                        "installed_by": ["modules"],
+                        "patch": "modules/CCBR/cutadapt/cutadapt.diff"
                     }
                 }
             }

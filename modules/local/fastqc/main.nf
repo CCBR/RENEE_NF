@@ -1,9 +1,8 @@
 
 process FASTQC {
-    tag { meta.id }
+    tag { "${meta.id}:${task.process == 'FASTQC_TRIMMED' ? 'trimmed' : 'raw'}" }
 
     container "nciccbr/ccrgb_qctools:v4.0"
-
     input:
         tuple val(meta), path(fastq)
     output:

@@ -2,6 +2,10 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
+include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
+include {CUTADAPT} from './modules/CCBR/cutadapt'
+
 
 
 
@@ -37,34 +41,59 @@ process yeet {
 }
 
 workflow {
-    LOG()
-    validateParameters()
+    main:
+        LOG()
+        validateParameters()
 
-    workflow.onComplete = {
-        if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
-            def message = Utils.spooker(workflow)
-            if (message) {
-                println message
+        ch_reads = Channel
+            .fromPath(params.input, checkIfExists: true)
+            .splitCsv(header: true)
+            .map { row ->
+                def meta = [
+                    id       : "${row.sample}_${row.replicate}",
+                    sample   : row.sample,
+                    replicate: row.replicate
+                ]
+
+                tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
+            }
+
+        // QC and trimming steps
+        FASTQC_RAW(ch_reads)
+        CUTADAPT(ch_reads)
+
+        FASTQC_TRIMMED(CUTADAPT.out.reads)
+
+        workflow.onComplete = {
+            if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
+                def message = Utils.spooker(workflow)
+                if (message) {
+                    println message
+                }
             }
         }
+
+    publish:
+        fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
+        cutadapt_reads = CUTADAPT.out.reads
+        cutadapt_log = CUTADAPT.out.log
+        fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
+}
+
+output {
+    fastqc_raw {
+        path { meta, file -> "fastqc/raw/" }
     }
 
+    cutadapt_reads {
+        path { meta, reads -> "cutadapt/${meta.id}/" }
+    }
 
-    ch_reads = Channel
-        .fromPath(params.input, checkIfExists: true)
-        .splitCsv(header: true)
-        .map { row ->
-            def meta = [
-                id       : "${row.sample}_${row.replicate}",
-                sample   : row.sample,
-                replicate: row.replicate
-            ]
+    cutadapt_log {
+        path { meta, log -> "cutadapt/${meta.id}/" }
+    }
 
-            tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
-        }
-
-    ch_reads | view
-
-
-    yeet | view
+    fastqc_trimmed {
+        path { meta, file -> "fastqc/trimmed/" }
+    }
 }
