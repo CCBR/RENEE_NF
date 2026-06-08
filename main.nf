@@ -5,6 +5,7 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
+include {STAR_SJDB_FILTER} from './modules/local/star_sjdb_filter'
 include {STAR_ALIGN as STAR_ALIGN_PASS1} from './modules/nf-core/star/align'
 include {STAR_ALIGN as STAR_ALIGN_PASS2} from './modules/nf-core/star/align'
 include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
@@ -43,29 +44,6 @@ process yeet {
     """
 }
 
-process STAR_SJDB_FILTER {
-    label 'process_low'
-
-    input:
-    path sj_tabs
-
-    output:
-    path 'uniq.filtered.SJ.out.tab', emit: sjdb
-
-    script:
-    """
-    cat ${sj_tabs.join(' ')} | \
-        sort | \
-        uniq | \
-        awk -F "\t" '{if ($5>0 && $6==1) {print}}' | \
-        cut -f1-4 | \
-        sort | \
-        uniq | \
-        grep "^chr" | \
-        grep -v "^chrM" > uniq.filtered.SJ.out.tab
-    """
-}
-
 workflow {
     main:
         LOG()
@@ -84,7 +62,7 @@ workflow {
 
         ch_star_index = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_index_path, checkIfExists: true)))
         ch_star_gtf = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_gtf_path, checkIfExists: true)))
-        ch_sjdb_placeholder = ch_star_gtf.map { meta, gtf -> gtf }
+        ch_sjdb_placeholder = Channel.value(file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true))
 
         ch_reads = Channel
             .fromPath(params.input, checkIfExists: true)
@@ -122,9 +100,15 @@ workflow {
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
 
+
+        // STAR alignment steps ----------------------------------------------------------
+
+        // TODO: switch from using layout: [paired/single] to meta.single_end: true/false for better readability and to avoid confusion with paired/single in other contexts. This would require updating the STAR_ALIGN module to use meta.single_end instead of meta.layout.
         ch_star_reads = CUTADAPT.out.reads
             .map { meta, reads -> tuple(meta + [single_end: meta.layout == 'single'], reads) }
 
+
+        // takes [ reads, index, gtf, star_ignore_sjdbgtf, star_use_sjdb, sjdb_path ]
         STAR_ALIGN_PASS1(ch_star_reads, ch_star_index, ch_star_gtf, false, false, ch_sjdb_placeholder)
 
         STAR_SJDB_FILTER(
