@@ -50,20 +50,30 @@ workflow {
             .fromPath(params.input, checkIfExists: true)
             .splitCsv(header: true)
             .map { row ->
+                def has_fastq_2 = row.fastq_2 && row.fastq_2.toString().trim()
                 def meta = [
                     id       : "${row.sample}_${row.replicate}",
                     sample   : row.sample,
                     replicate: row.replicate,
-                    fastq_1  : new File(row.fastq_1.toString()).name,
-                    fastq_2  : new File(row.fastq_2.toString()).name
+                    layout   : has_fastq_2 ? 'paired' : 'single',
                 ]
 
-                tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
+                def reads = [file(row.fastq_1)]
+                if (has_fastq_2) {
+                    reads << file(row.fastq_2)
+                }
+
+                tuple(meta, reads)
             }
+        // Split each sample read list into one fastq per emitted tuple for validation.
+        individual_fastq_ch = ch_reads.transpose()
+
+
         // Sample validation gate
-        VALIDATE_FASTQS(ch_reads)
+        VALIDATE_FASTQS(individual_fastq_ch, ch_reads)
         ch_validated_reads = VALIDATE_FASTQS.out.reads
 
+        ch_validated_reads.view()
 
         // QC and trimming steps
         FASTQC_RAW(ch_validated_reads)
@@ -83,7 +93,7 @@ workflow {
 
     publish:
         fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
-        fastqvalidator = VALIDATE_FASTQS.out.report.mix(VALIDATE_FASTQS.out.log_r1).mix(VALIDATE_FASTQS.out.log_r2)
+        fastqvalidator = VALIDATE_FASTQS.out.logs
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
