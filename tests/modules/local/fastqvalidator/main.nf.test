@@ -4,17 +4,14 @@ nextflow_process {
     script "modules/local/fastqvalidator/main.nf"
     process "FASTQVALIDATOR"
 
-    test("sarscov2 paired-end [fastq.gz]") {
+    test("sarscov2 [fastq.gz]") {
 
         when {
             process {
                 """
                 input[0] = Channel.of([
                     [ id: 'test' ],
-                    [
-                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
-                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)
                 ])
                 """
             }
@@ -23,35 +20,10 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert process.out.report[0][1] ==~ ".*/test.fastQValidator.txt" },
-                { assert process.out.log_r1[0][1] ==~ ".*/test.fastQValidator.R1.fastq.log" },
-                { assert process.out.log_r2[0][1] ==~ ".*/test.fastQValidator.R2.fastq.log" },
-                { assert path(process.out.report[0][1]).text.size() > 0 }
-            )
-        }
-    }
-
-    test("sarscov2 single-end [fastq.gz]") {
-
-        when {
-            process {
-                """
-                input[0] = Channel.of([
-                    [ id: 'test' ],
-                    [
-                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)
-                    ]
-                ])
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert process.out.report[0][1] ==~ ".*/test.fastQValidator.txt" },
-                { assert process.out.log_r1[0][1] ==~ ".*/test.fastQValidator.R1.fastq.log" },
-                { assert path(process.out.report[0][1]).text.size() > 0 }
+                { assert process.out.result[0][2] ==~ /.*\/test\.fastQValidator\.fastq\.log/ },
+                { assert path(process.out.result[0][2]).exists() },
+                { assert process.out.result[0][3] ==~ /.*\/test\.fastQValidator\.exitcode\.txt/ },
+                { assert path(process.out.result[0][3]).text.trim() == "0" }
             )
         }
     }

@@ -8,7 +8,7 @@ process FASTQVALIDATOR {
         tuple val(meta), path(fastq)
 
     output:
-        tuple val(meta), val(fastq), path('*.fastQValidator.fastq.log'), path('*.fastQValidator.exitcode.txt'), emit: result
+        tuple val(meta), path(fastq), path('*.fastQValidator.fastq.log'), path('*.fastQValidator.exitcode.txt'), emit: result
 
     when:
         task.ext.when == null || task.ext.when
