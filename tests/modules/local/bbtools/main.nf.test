@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process BBTOOLS_BBMERGE"
+    script "modules/local/bbtools/main.nf"
+    process "BBTOOLS_BBMERGE"
+
+    test("sarscov2 paired-end [fastq.gz] snakemake-compatible ihist") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', layout: 'paired' ],
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.ihist[0][0].id == 'test' },
+                { assert process.out.ihist[0][1] ==~ '.*/test_insert_sizes.txt' },
+                { assert path(process.out.ihist[0][1]).text.size() > 0 },
+                { assert process.out.versions_bbtools[0][1] == 'bbtools' },
+                { assert process.out.versions_bbtools[0][2].toString().trim().size() > 0 }
+            )
+        }
+    }
+
+}
