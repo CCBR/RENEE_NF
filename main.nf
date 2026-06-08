@@ -62,7 +62,7 @@ workflow {
 
         ch_star_index = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_index_path, checkIfExists: true)))
         ch_star_gtf = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_gtf_path, checkIfExists: true)))
-        ch_sjdb_placeholder = Channel.value(file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true))
+        ch_sjdb_placeholder = Channel.value(null)
 
         ch_reads = Channel
             .fromPath(params.input, checkIfExists: true)
@@ -109,6 +109,7 @@ workflow {
 
 
         // takes [ reads, index, gtf, star_ignore_sjdbgtf, star_use_sjdb, sjdb_path ]
+        // TODO: Is there a way to avoid having to pass the sjdb_placeholder in the first pass? Maybe make
         STAR_ALIGN_PASS1(ch_star_reads, ch_star_index, ch_star_gtf, false, false, ch_sjdb_placeholder)
 
         STAR_SJDB_FILTER(
@@ -117,7 +118,7 @@ workflow {
                 .collect()
         )
 
-        ch_sjdb = STAR_SJDB_FILTER.out.sjdb.first()
+        ch_sjdb = STAR_SJDB_FILTER.out.sjdb
 
         STAR_ALIGN_PASS2(ch_star_reads, ch_star_index, ch_star_gtf, false, true, ch_sjdb)
 
