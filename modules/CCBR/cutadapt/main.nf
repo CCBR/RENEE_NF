@@ -17,7 +17,8 @@ process CUTADAPT {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
+    def isSingle = meta.layout == 'single'
+    def trimmed  = isSingle ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
 
     // Snakemake parameters:
     //"FASTAWITHADAPTERSETD": "resources/TruSeq_and_nextera_adapters.consolidated.fa", I think okay to be different
@@ -32,7 +33,7 @@ process CUTADAPT {
             '-q 10,10',
             '-b file:/opt2/TruSeq_and_nextera_adapters.consolidated.fa'
         ]
-    if (meta.single_end) {
+    if (isSingle) {
         args += [
             '-m 35' // changed from 20 to 35 to match Snakemake parameters
         ]
@@ -56,7 +57,8 @@ process CUTADAPT {
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
+    def isSingle = meta.layout == 'single'
+    def trimmed = isSingle ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
     """
     touch ${prefix}.cutadapt.log
     touch ${trimmed}
