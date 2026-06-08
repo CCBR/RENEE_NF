@@ -73,7 +73,7 @@ workflow {
         VALIDATE_FASTQS(individual_fastq_ch, ch_reads)
         ch_validated_reads = VALIDATE_FASTQS.out.reads
 
-        ch_validated_reads.view()
+        // ch_validated_reads.view()
 
         // QC and trimming steps
         FASTQC_RAW(ch_validated_reads)

@@ -14,7 +14,7 @@ process FASTQVALIDATOR {
         task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}.${fastq.baseName}"
     def minReadLen = task.ext.min_read_len ?: 2
     def logFile = "${prefix}.fastQValidator.fastq.log"
     def exitFile = "${prefix}.fastQValidator.exitcode.txt"
