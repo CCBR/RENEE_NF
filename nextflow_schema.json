@@ -28,6 +28,24 @@
                     "type": "string",
                     "description": "Reference genome (e.g. hg38, mm10). This can be a genome in conf/genomes.config, or see 'Custom genome options' to build a custom reference from a fasta & gtf file."
                 },
+                "star_index": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to STAR genome index directory. If unset, the pipeline attempts params.genomes[genome].star_index."
+                },
+                "star_gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to GTF annotation for STAR. If unset, the pipeline attempts params.genomes[genome].genes_gtf."
+                },
+                "star_pass1_args": {
+                    "type": "string",
+                    "description": "Additional command-line arguments passed to nf-core STAR_ALIGN in pass 1."
+                },
+                "star_pass2_args": {
+                    "type": "string",
+                    "description": "Additional command-line arguments appended to STAR in pass 2."
+                },
                 "outputDir": {
                     "type": "string",
                     "default": "results",
