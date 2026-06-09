@@ -5,6 +5,7 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
+include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
 
 
 
@@ -49,18 +50,35 @@ workflow {
             .fromPath(params.input, checkIfExists: true)
             .splitCsv(header: true)
             .map { row ->
+                def has_fastq_2 = row.fastq_2 && row.fastq_2.toString().trim()
                 def meta = [
                     id       : "${row.sample}_${row.replicate}",
                     sample   : row.sample,
-                    replicate: row.replicate
+                    replicate: row.replicate,
+                    single_end   : !has_fastq_2
                 ]
 
-                tuple(meta, [file(row.fastq_1), file(row.fastq_2)])
+                def reads = [file(row.fastq_1)]
+                if (has_fastq_2) {
+                    reads << file(row.fastq_2)
+                }
+
+                tuple(meta, reads)
             }
+        // Split each sample read list into one fastq per emitted tuple for validation.
+        individual_fastq_ch = ch_reads.transpose()
+
+
+        // Sample validation gate
+        VALIDATE_FASTQS(individual_fastq_ch, ch_reads)
+        ch_validated_reads = VALIDATE_FASTQS.out.reads
+
+        // ch_validated_reads.view()
 
         // QC and trimming steps
-        FASTQC_RAW(ch_reads)
-        CUTADAPT(ch_reads)
+        FASTQC_RAW(ch_validated_reads)
+
+        CUTADAPT(ch_validated_reads)
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
 
@@ -75,6 +93,7 @@ workflow {
 
     publish:
         fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
+        fastqvalidator = VALIDATE_FASTQS.out.logs
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
@@ -83,6 +102,10 @@ workflow {
 output {
     fastqc_raw {
         path { meta, file -> "fastqc/raw/" }
+    }
+
+    fastqvalidator {
+        path { meta, file -> "fastqvalidator/${meta.id}/" }
     }
 
     cutadapt_reads {
