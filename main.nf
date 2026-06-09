@@ -64,7 +64,7 @@ workflow {
                 }
 
                 tuple(meta, reads)
-            }.view()
+            }
         // Split each sample read list into one fastq per emitted tuple for validation.
         individual_fastq_ch = ch_reads.transpose()
 
