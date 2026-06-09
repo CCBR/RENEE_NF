@@ -55,7 +55,7 @@ workflow {
                     id       : "${row.sample}_${row.replicate}",
                     sample   : row.sample,
                     replicate: row.replicate,
-                    layout   : has_fastq_2 ? 'paired' : 'single',
+                    single_end   : !has_fastq_2
                 ]
 
                 def reads = [file(row.fastq_1)]
@@ -64,7 +64,7 @@ workflow {
                 }
 
                 tuple(meta, reads)
-            }
+            }.view()
         // Split each sample read list into one fastq per emitted tuple for validation.
         individual_fastq_ch = ch_reads.transpose()
 
