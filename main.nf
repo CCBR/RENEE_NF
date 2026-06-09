@@ -147,55 +147,17 @@ workflow {
 }
 
 output {
-    fastqc_raw {
-        path { meta, file -> "fastqc/raw/" }
-    }
-
-    fastqvalidator {
-        path { meta, file -> "fastqvalidator/${meta.id}/" }
-    }
-
-    cutadapt_reads {
-        path { meta, reads -> "cutadapt/${meta.id}/" }
-    }
-
-    cutadapt_log {
-        path { meta, log -> "cutadapt/${meta.id}/" }
-    }
-
-    fastqc_trimmed {
-        path { meta, file -> "fastqc/trimmed/" }
-    }
-
-    star_pass1_sj {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_pass1_log {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_sjdb {
-        path { file -> 'STAR_files/' }
-    }
-
-    star_pass2_log {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_pass2_sj {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_pass2_reads_per_gene {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_pass2_bam {
-        path { meta, file -> 'STAR_files/' }
-    }
-
-    star_pass2_transcript_bam {
-        path { meta, file -> 'bams/' }
-    }
+    fastqc_raw { path { meta, file -> "fastqc/raw/" } }
+    fastqvalidator { path { meta, file -> "fastqvalidator/${meta.id}/" } }
+    cutadapt_reads { path { meta, reads -> "cutadapt/${meta.id}/" } }
+    cutadapt_log { path { meta, log -> "cutadapt/${meta.id}/" } }
+    fastqc_trimmed { path { meta, file -> "fastqc/trimmed/" } }
+    star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
+    star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }
+    star_sjdb { path { file -> 'STAR_files/pass1/' } }
+    star_pass2_log { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_sj { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
 }
