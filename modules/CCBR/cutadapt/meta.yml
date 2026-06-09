@@ -28,7 +28,7 @@ output:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. [ id:'test', layout:'paired' ]
+        e.g. [ id:'test', single_end:false ]
   - reads:
       type: file
       description: The trimmed/modified fastq reads
