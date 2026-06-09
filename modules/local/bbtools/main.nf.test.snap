@@ -1,0 +1,45 @@
+{
+    "sarscov2 paired-end [fastq.gz] snakemake-compatible ihist": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "layout": "paired"
+                        },
+                        "test_insert_sizes.txt:md5,197950a13877c118b52fdb3775061f25"
+                    ]
+                ],
+                "1": [
+                    [
+                        "BBTOOLS_BBMERGE",
+                        "bbtools",
+                        "java -ea -Xmx1000m -Xms1000m -Djava.library.path=/opt2/bbmap/jni/ -cp /opt2/bbmap/current/ jgi.BBMerge --version"
+                    ]
+                ],
+                "ihist": [
+                    [
+                        {
+                            "id": "test",
+                            "layout": "paired"
+                        },
+                        "test_insert_sizes.txt:md5,197950a13877c118b52fdb3775061f25"
+                    ]
+                ],
+                "versions_bbtools": [
+                    [
+                        "BBTOOLS_BBMERGE",
+                        "bbtools",
+                        "java -ea -Xmx1000m -Xms1000m -Djava.library.path=/opt2/bbmap/jni/ -cp /opt2/bbmap/current/ jgi.BBMerge --version"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-09T16:57:31.576814529",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

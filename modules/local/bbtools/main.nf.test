@@ -27,7 +27,8 @@ nextflow_process {
                 { assert process.out.ihist[0][1] ==~ '.*/test_insert_sizes.txt' },
                 { assert path(process.out.ihist[0][1]).text.size() > 0 },
                 { assert process.out.versions_bbtools[0][1] == 'bbtools' },
-                { assert process.out.versions_bbtools[0][2].toString().trim().size() > 0 }
+                { assert process.out.versions_bbtools[0][2].toString().trim().size() > 0 },
+                { assert snapshot(process.out).match()}
             )
         }
     }
