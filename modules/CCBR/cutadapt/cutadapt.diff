@@ -2,7 +2,7 @@ Changes in component 'CCBR/cutadapt'
 Changes in 'cutadapt/main.nf':
 --- modules/CCBR/cutadapt/main.nf
 +++ modules/CCBR/cutadapt/main.nf
-@@ -10,7 +10,7 @@
+@@ -10,54 +10,57 @@
      output:
          tuple val(meta), path('*.trim.fastq.gz'), emit: reads
          tuple val(meta), path('*.log')          , emit: log
@@ -11,10 +11,12 @@ Changes in 'cutadapt/main.nf':
 
      when:
          task.ext.when == null || task.ext.when
-@@ -18,6 +18,14 @@
+
      script:
      def prefix = task.ext.prefix ?: "${meta.id}"
-     def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
+-    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
++    def isSingle = meta.single_end
++    def trimmed  = isSingle ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
 +
 +    // Snakemake parameters:
 +    //"FASTAWITHADAPTERSETD": "resources/TruSeq_and_nextera_adapters.consolidated.fa", I think okay to be different
@@ -26,9 +28,11 @@ Changes in 'cutadapt/main.nf':
      def args = [
              '--nextseq-trim=2',
              '--trim-n -n 5 -O 5',
-@@ -26,26 +34,24 @@
+             '-q 10,10',
+             '-b file:/opt2/TruSeq_and_nextera_adapters.consolidated.fa'
          ]
-     if (meta.single_end) {
+-    if (meta.single_end) {
++    if (isSingle) {
          args += [
 -            '-m 20'
 +            '-m 35' // changed from 20 to 35 to match Snakemake parameters
@@ -63,7 +67,10 @@ Changes in 'cutadapt/main.nf':
      """
 
      stub:
-@@ -54,10 +60,5 @@
+     def prefix  = task.ext.prefix ?: "${meta.id}"
+-    def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
++    def isSingle = meta.single_end
++    def trimmed = isSingle ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
      """
      touch ${prefix}.cutadapt.log
      touch ${trimmed}
@@ -87,7 +94,24 @@ Changes in 'cutadapt/meta.yml':
        description: |
          Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.
        documentation: https://cutadapt.readthedocs.io/en/stable/index.html
-@@ -35,7 +35,7 @@
+@@ -17,7 +17,7 @@
+       type: map
+       description: |
+         Groovy Map containing sample information
+-        e.g. [ id:'test', single_end:false ]
++        e.g. [ id:'test', layout:'paired' ]
+   - reads:
+       type: file
+       description: |
+@@ -28,14 +28,14 @@
+       type: map
+       description: |
+         Groovy Map containing sample information
+-        e.g. [ id:'test', single_end:false ]
++        e.g. [ id:'test', layout:'paired' ]
+   - reads:
+       type: file
+       description: The trimmed/modified fastq reads
        pattern: "*fastq.gz"
    - log:
        type: file

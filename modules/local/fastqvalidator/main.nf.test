@@ -1,0 +1,32 @@
+nextflow_process {
+
+    name "Test Process FASTQVALIDATOR"
+    script "modules/local/fastqvalidator/main.nf"
+    process "FASTQVALIDATOR"
+
+    test("sarscov2 [fastq.gz]") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.result[0][2] ==~ /.*\.fastQValidator\.fastq\.log/ },
+                { assert path(process.out.result[0][2]).exists() },
+                { assert process.out.result[0][3] ==~ /.*\.fastQValidator\.exitcode\.txt/ },
+                { assert path(process.out.result[0][3]).text.trim() == "0" },
+                { assert snapshot(process.out).match()}
+            )
+        }
+    }
+
+}

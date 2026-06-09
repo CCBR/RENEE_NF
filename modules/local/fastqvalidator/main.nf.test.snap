@@ -1,0 +1,33 @@
+{
+    "sarscov2 [fastq.gz]": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.fastq.gz:md5,4161df271f9bfcd25d5845a1e220dbec",
+                        "test.test_1.fastq.fastQValidator.fastq.log:md5,c939b17d4f3baa96ebb20564f9f9a519",
+                        "test.test_1.fastq.fastQValidator.exitcode.txt:md5,897316929176464ebc9ad085f31e7284"
+                    ]
+                ],
+                "result": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_1.fastq.gz:md5,4161df271f9bfcd25d5845a1e220dbec",
+                        "test.test_1.fastq.fastQValidator.fastq.log:md5,c939b17d4f3baa96ebb20564f9f9a519",
+                        "test.test_1.fastq.fastQValidator.exitcode.txt:md5,897316929176464ebc9ad085f31e7284"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-09T16:46:14.282512305",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
