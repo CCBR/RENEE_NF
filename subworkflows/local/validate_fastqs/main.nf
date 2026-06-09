@@ -23,9 +23,9 @@ workflow validate_fastqs {
 
                 if (failed) {
                     def failed_summary = failed.collect { entry ->
-                        "${entry.id}\t${entry.fastq}\t${entry.exitcode}\t${entry.log}"
-                    }.join(',\n')
-                    error "FASTQVALIDATOR failed for FASTQ file(s): ${failed_summary}"
+                        "${entry.id}\t${entry.fastq.baseName}"
+                    }.join('\n')
+                    error "FASTQVALIDATOR failed for FASTQ file(s):\n${failed_summary}"
                 }
 
                 true
