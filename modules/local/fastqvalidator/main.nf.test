@@ -23,7 +23,8 @@ nextflow_process {
                 { assert process.out.result[0][2] ==~ /.*\.fastQValidator\.fastq\.log/ },
                 { assert path(process.out.result[0][2]).exists() },
                 { assert process.out.result[0][3] ==~ /.*\.fastQValidator\.exitcode\.txt/ },
-                { assert path(process.out.result[0][3]).text.trim() == "0" }
+                { assert path(process.out.result[0][3]).text.trim() == "0" },
+                { assert snapshot(process.out).match()}
             )
         }
     }
