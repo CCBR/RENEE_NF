@@ -12,7 +12,7 @@ process BBTOOLS_BBMERGE {
         tuple val("${task.process}"), val('bbtools'), eval('bbmerge.sh --version 2>&1 | head -n 1'), emit: versions_bbtools, topic: versions
 
     when:
-        (task.ext.when == null || task.ext.when) && meta.layout == 'paired'
+        (task.ext.when == null || task.ext.when) && !meta.single_end
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
