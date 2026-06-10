@@ -80,7 +80,46 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert path(process.out.spl_junc_tab.get(0)[1]).md5         == "8fda060d3adf45613e55ef7c5bf5b142"}
+                { assert path(process.out.spl_junc_tab.get(0)[1]).md5 == "8fda060d3adf45613e55ef7c5bf5b142"}, // md5sum /data/silverald/test_RNA_hg38/STAR_files/WT_S1.SJ.out.tab
+                { assert snapshot(process.out).match()}
+            )
+        }
+    }
+
+    test("homo_sapiens - paired_end - with sjdb") {
+        config "./nextflow_pass2.config"
+
+        // Non-stub test to compare _STARgenome output against snakemake reference results
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
+                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = Channel.of([
+                    [ id:'hg38_36' ],
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
+                ])
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = true
+                input[5] = Channel.of([file("/data/silverald/test_RNA_hg38/STAR_files/uniq.filtered.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.read_per_gene_tab.get(0)[1]).md5 == "64ca2d5bc1765354c7c2b81562a5aab9"}, // md5sum /data/silverald/test_RNA_hg38/STAR_files/WT_S1.p2.ReadsPerGene.out.tab
+                { assert snapshot(process.out).match()}
             )
         }
     }

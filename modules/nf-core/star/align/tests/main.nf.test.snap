@@ -1792,6 +1792,261 @@
             "nextflow": "25.10.3"
         }
     },
+    "homo_sapiens - paired_end - no sjdb": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,9804dd0ecb0bc71f42f0e895d9985914"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d0f0b145a7b14e136aa5e8ead8786a21"
+                    ]
+                ],
+                "10": [
+
+                ],
+                "11": [
+
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "14": [
+
+                ],
+                "15": [
+
+                ],
+                "16": [
+
+                ],
+                "17": [
+
+                ],
+                "18": [
+
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,93491b3c28b4397a2daf8b1904f1c7d1",
+                            "exonInfo.tab:md5,ab83d55c73ef3a86d14175575fbf1d6c",
+                            "geneInfo.tab:md5,c8d45d8388f5f1eb8c6e9ce730ac71cc",
+                            "sjdbInfo.txt:md5,985717bb0987124347a262801b5db347",
+                            "sjdbList.fromGTF.out.tab:md5,392f2d09c243b7056227ae021d95f7f4",
+                            "sjdbList.out.tab:md5,cc5f00dccac5831ad53a4f25a56c14cc",
+                            "transcriptInfo.tab:md5,09b322f85d02f41e13cbad165e997975"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,b2bd061d6cbaaf3d6d3b1fed547f69b8"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.out.bam:md5,8bd9e200ef8f4a78fc7b59fb50bd4847"
+                    ]
+                ],
+                "7": [
+
+                ],
+                "8": [
+
+                ],
+                "9": [
+
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.out.bam:md5,8bd9e200ef8f4a78fc7b59fb50bd4847"
+                    ]
+                ],
+                "bam_sorted": [
+
+                ],
+                "bam_sorted_aligned": [
+
+                ],
+                "bam_transcript": [
+
+                ],
+                "bam_unsorted": [
+
+                ],
+                "bedgraph": [
+
+                ],
+                "fastq": [
+
+                ],
+                "junction": [
+
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,9804dd0ecb0bc71f42f0e895d9985914"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d0f0b145a7b14e136aa5e8ead8786a21"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,b2bd061d6cbaaf3d6d3b1fed547f69b8"
+                    ]
+                ],
+                "read_per_gene_tab": [
+
+                ],
+                "sam": [
+
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,93491b3c28b4397a2daf8b1904f1c7d1",
+                            "exonInfo.tab:md5,ab83d55c73ef3a86d14175575fbf1d6c",
+                            "geneInfo.tab:md5,c8d45d8388f5f1eb8c6e9ce730ac71cc",
+                            "sjdbInfo.txt:md5,985717bb0987124347a262801b5db347",
+                            "sjdbList.fromGTF.out.tab:md5,392f2d09c243b7056227ae021d95f7f4",
+                            "sjdbList.out.tab:md5,cc5f00dccac5831ad53a4f25a56c14cc",
+                            "transcriptInfo.tab:md5,09b322f85d02f41e13cbad165e997975"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+
+                ]
+            }
+        ],
+        "timestamp": "2026-06-10T19:43:16.671053037",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
     "homo_sapiens - paired_end - arriba": {
         "content": [
             "test.Log.final.out",
@@ -2222,6 +2477,291 @@
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.3"
+        }
+    },
+    "homo_sapiens - paired_end - with sjdb": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,71bcb3af5ac2907fa0a37ca0772bd6dc"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,4ac0a698cf163a6de6314a13b1b99676"
+                    ]
+                ],
+                "10": [
+
+                ],
+                "11": [
+
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,64ca2d5bc1765354c7c2b81562a5aab9",
+                            "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,64ca2d5bc1765354c7c2b81562a5aab9"
+                    ]
+                ],
+                "15": [
+
+                ],
+                "16": [
+
+                ],
+                "17": [
+
+                ],
+                "18": [
+
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,93491b3c28b4397a2daf8b1904f1c7d1",
+                            "exonInfo.tab:md5,ab83d55c73ef3a86d14175575fbf1d6c",
+                            "geneInfo.tab:md5,c8d45d8388f5f1eb8c6e9ce730ac71cc",
+                            "sjdbInfo.txt:md5,0daf45d6d7e2399e1763f271ec7ddf60",
+                            "sjdbList.fromGTF.out.tab:md5,392f2d09c243b7056227ae021d95f7f4",
+                            "sjdbList.out.tab:md5,cc5f00dccac5831ad53a4f25a56c14cc",
+                            "transcriptInfo.tab:md5,09b322f85d02f41e13cbad165e997975"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,b2bd061d6cbaaf3d6d3b1fed547f69b8"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.out.bam:md5,20c45cbb370c974577919e968b7e3cab"
+                    ]
+                ],
+                "7": [
+
+                ],
+                "8": [
+
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.toTranscriptome.out.bam:md5,5462a179ee3def0bc00f9d7f7cb50269"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.out.bam:md5,20c45cbb370c974577919e968b7e3cab"
+                    ]
+                ],
+                "bam_sorted": [
+
+                ],
+                "bam_sorted_aligned": [
+
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.toTranscriptome.out.bam:md5,5462a179ee3def0bc00f9d7f7cb50269"
+                    ]
+                ],
+                "bam_unsorted": [
+
+                ],
+                "bedgraph": [
+
+                ],
+                "fastq": [
+
+                ],
+                "junction": [
+
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,71bcb3af5ac2907fa0a37ca0772bd6dc"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,4ac0a698cf163a6de6314a13b1b99676"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,b2bd061d6cbaaf3d6d3b1fed547f69b8"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,64ca2d5bc1765354c7c2b81562a5aab9"
+                    ]
+                ],
+                "sam": [
+
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,93491b3c28b4397a2daf8b1904f1c7d1",
+                            "exonInfo.tab:md5,ab83d55c73ef3a86d14175575fbf1d6c",
+                            "geneInfo.tab:md5,c8d45d8388f5f1eb8c6e9ce730ac71cc",
+                            "sjdbInfo.txt:md5,0daf45d6d7e2399e1763f271ec7ddf60",
+                            "sjdbList.fromGTF.out.tab:md5,392f2d09c243b7056227ae021d95f7f4",
+                            "sjdbList.out.tab:md5,cc5f00dccac5831ad53a4f25a56c14cc",
+                            "transcriptInfo.tab:md5,09b322f85d02f41e13cbad165e997975"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,64ca2d5bc1765354c7c2b81562a5aab9",
+                            "test.SJ.out.tab:md5,8fda060d3adf45613e55ef7c5bf5b142"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+
+                ]
+            }
+        ],
+        "timestamp": "2026-06-10T19:49:40.607385833",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
         }
     }
 }
