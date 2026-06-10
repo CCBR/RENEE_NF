@@ -4,6 +4,7 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
+include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
 include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
 
@@ -82,6 +83,8 @@ workflow {
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
 
+        BBTOOLS_BBMERGE(CUTADAPT.out.reads)
+
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
                 def message = Utils.spooker(workflow)
@@ -97,6 +100,7 @@ workflow {
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
+        bbtools_ihist = BBTOOLS_BBMERGE.out.ihist
 }
 
 output {
@@ -118,5 +122,9 @@ output {
 
     fastqc_trimmed {
         path { meta, file -> "fastqc/trimmed/" }
+    }
+
+    bbtools_ihist {
+        path { meta, ihist -> "bbtools/${meta.id}/" }
     }
 }
