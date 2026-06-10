@@ -26,12 +26,12 @@ nextflow_process {
                     ]
                 ])
                 input[1] = Channel.of([
-                    [ id:'hg38_45' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/Indices/hg38_45/STAR/2.7.6a/genome', checkIfExists: true) ]
+                    [ id:'hg38_36' ],
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
                 ])
                 input[2] = Channel.of([
                     [ id:'test_gtf' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/Indices/hg38_45/gencode.v45.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
                 ])
                 input[3] = false
                 input[4] = false
@@ -63,12 +63,12 @@ nextflow_process {
                     ]
                 ])
                 input[1] = Channel.of([
-                    [ id:'hg38_45' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/Indices/hg38_45/STAR/2.7.6a/genome', checkIfExists: true) ]
+                    [ id:'hg38_36' ],
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
                 ])
                 input[2] = Channel.of([
                     [ id:'test_gtf' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/Indices/hg38_45/gencode.v45.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
                 ])
                 input[3] = false
                 input[4] = false

@@ -1464,21 +1464,21 @@
                     [
                         "STAR_ALIGN",
                         "star",
-                        "2.7.11b"
+                        "2.7.6a"
                     ]
                 ],
                 "4": [
                     [
                         "STAR_ALIGN",
                         "samtools",
-                        "1.21"
+                        "1.7"
                     ]
                 ],
                 "5": [
                     [
                         "STAR_ALIGN",
                         "gawk",
-                        "5.1.0"
+                        ""
                     ]
                 ],
                 "6": [
@@ -1688,21 +1688,21 @@
                     [
                         "STAR_ALIGN",
                         "gawk",
-                        "5.1.0"
+                        ""
                     ]
                 ],
                 "versions_samtools": [
                     [
                         "STAR_ALIGN",
                         "samtools",
-                        "1.21"
+                        "1.7"
                     ]
                 ],
                 "versions_star": [
                     [
                         "STAR_ALIGN",
                         "star",
-                        "2.7.11b"
+                        "2.7.6a"
                     ]
                 ],
                 "wig": [
@@ -1716,7 +1716,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-10T12:12:13.495289257",
+        "timestamp": "2026-06-10T16:11:27.89399718",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
