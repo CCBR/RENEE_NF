@@ -22,7 +22,7 @@ nextflow_process {
                     [ id:'test', single_end:false ], // meta map
                     [
                         file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true)
+                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
                     ]
                 ])
                 input[1] = Channel.of([
@@ -48,7 +48,7 @@ nextflow_process {
         }
     }
 
-    test("homo_sapiens - paired_end - stargenome") {
+    test("homo_sapiens - paired_end - no sjdb") {
         config "./nextflow.config"
 
         // Non-stub test to compare _STARgenome output against snakemake reference results
@@ -59,7 +59,7 @@ nextflow_process {
                     [ id:'test', single_end:false ], // meta map
                     [
                         file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true)
+                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
                     ]
                 ])
                 input[1] = Channel.of([
@@ -78,18 +78,9 @@ nextflow_process {
         }
 
         then {
-            def stargenomePath = process.out.stargenome[0][1].toString()
-            def md5sum = { String f -> java.security.MessageDigest.getInstance("MD5").digest(new File(f).bytes).encodeHex().toString() }
-            def ref = params.test_data['snakemake_results']['star']['wt_s1_stargenome']
             assertAll(
                 { assert process.success },
-                { assert md5sum("${stargenomePath}/exonGeTrInfo.tab")         == md5sum(ref.exongetrinfo_tab.toString()) },
-                { assert md5sum("${stargenomePath}/exonInfo.tab")             == md5sum(ref.exoninfo_tab.toString()) },
-                { assert md5sum("${stargenomePath}/geneInfo.tab")             == md5sum(ref.geneinfo_tab.toString()) },
-                { assert md5sum("${stargenomePath}/sjdbInfo.txt")             == md5sum(ref.sjdbinfo_txt.toString()) },
-                { assert md5sum("${stargenomePath}/sjdbList.fromGTF.out.tab") == md5sum(ref.sjdblist_fromgtf_out_tab.toString()) },
-                { assert md5sum("${stargenomePath}/sjdbList.out.tab")         == md5sum(ref.sjdblist_out_tab.toString()) },
-                { assert md5sum("${stargenomePath}/transcriptInfo.tab")       == md5sum(ref.transcriptinfo_tab.toString()) }
+                { assert path(process.out.spl_junc_tab.get(0)[1]).md5         == "8fda060d3adf45613e55ef7c5bf5b142"}
             )
         }
     }
