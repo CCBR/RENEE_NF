@@ -15,7 +15,7 @@ Changes in 'cutadapt/main.nf':
      script:
      def prefix = task.ext.prefix ?: "${meta.id}"
 -    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
-+    def isSingle = meta.layout == 'single'
++    def isSingle = meta.single_end
 +    def trimmed  = isSingle ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
 +
 +    // Snakemake parameters:
@@ -69,7 +69,7 @@ Changes in 'cutadapt/main.nf':
      stub:
      def prefix  = task.ext.prefix ?: "${meta.id}"
 -    def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
-+    def isSingle = meta.layout == 'single'
++    def isSingle = meta.single_end
 +    def trimmed = isSingle ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
      """
      touch ${prefix}.cutadapt.log
@@ -94,24 +94,7 @@ Changes in 'cutadapt/meta.yml':
        description: |
          Cutadapt finds and removes adapter sequences, primers, poly-A tails and other types of unwanted sequence from your high-throughput sequencing reads.
        documentation: https://cutadapt.readthedocs.io/en/stable/index.html
-@@ -17,7 +17,7 @@
-       type: map
-       description: |
-         Groovy Map containing sample information
--        e.g. [ id:'test', single_end:false ]
-+        e.g. [ id:'test', layout:'paired' ]
-   - reads:
-       type: file
-       description: |
-@@ -28,14 +28,14 @@
-       type: map
-       description: |
-         Groovy Map containing sample information
--        e.g. [ id:'test', single_end:false ]
-+        e.g. [ id:'test', layout:'paired' ]
-   - reads:
-       type: file
-       description: The trimmed/modified fastq reads
+@@ -35,7 +35,7 @@
        pattern: "*fastq.gz"
    - log:
        type: file

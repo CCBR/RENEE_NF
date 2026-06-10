@@ -17,7 +17,7 @@ process CUTADAPT {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def isSingle = meta.layout == 'single'
+    def isSingle = meta.single_end
     def trimmed  = isSingle ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
 
     // Snakemake parameters:
@@ -57,7 +57,7 @@ process CUTADAPT {
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def isSingle = meta.layout == 'single'
+    def isSingle = meta.single_end
     def trimmed = isSingle ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
     """
     touch ${prefix}.cutadapt.log

@@ -4,6 +4,7 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
+include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
 include {STAR_SJDB_FILTER} from './modules/local/star_sjdb_filter'
 include {STAR_ALIGN as STAR_ALIGN_PASS1} from './modules/nf-core/star/align'
@@ -73,7 +74,7 @@ workflow {
                     id       : "${row.sample}_${row.replicate}",
                     sample   : row.sample,
                     replicate: row.replicate,
-                    layout   : has_fastq_2 ? 'paired' : 'single',
+                    single_end   : !has_fastq_2
                 ]
 
                 def reads = [file(row.fastq_1)]
@@ -99,7 +100,7 @@ workflow {
         CUTADAPT(ch_validated_reads)
 
         FASTQC_TRIMMED(CUTADAPT.out.reads)
-
+        BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
         // STAR alignment steps ----------------------------------------------------------
 
@@ -136,6 +137,7 @@ workflow {
         cutadapt_reads = CUTADAPT.out.reads
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
+        bbtools_ihist = BBTOOLS_BBMERGE.out.ihist
         star_pass1_sj = STAR_ALIGN_PASS1.out.spl_junc_tab
         star_pass1_log = STAR_ALIGN_PASS1.out.log_final
         star_sjdb = STAR_SJDB_FILTER.out.sjdb
@@ -160,4 +162,8 @@ output {
     star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
+
+    bbtools_ihist {
+        path { meta, ihist -> "bbtools/${meta.id}/" }
+    }
 }
