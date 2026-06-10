@@ -36,6 +36,7 @@ process STAR_ALIGN {
     tuple val(meta), path('*.out.sam')                               , optional:true, emit: sam
     tuple val(meta), path('*.wig')                                   , optional:true, emit: wig
     tuple val(meta), path('*.bg')                                    , optional:true, emit: bedgraph
+    tuple val(meta), path('*._STARgenome')                           , optional:true, emit: stargenome
 
     when:
     task.ext.when == null || task.ext.when
@@ -73,6 +74,9 @@ process STAR_ALIGN {
         mv ${prefix}.Unmapped.out.mate2 ${prefix}.unmapped_2.fastq
         gzip ${prefix}.unmapped_2.fastq
     fi
+
+    # is not always cleaned up by STAR, especially in case of errors, and can take up a lot of space
+    rm -rf ${prefix}._STARtmp
     """
 
     stub:
@@ -95,5 +99,7 @@ process STAR_ALIGN {
     touch ${prefix}.out.sam
     touch ${prefix}.Signal.UniqueMultiple.str1.out.wig
     touch ${prefix}.Signal.UniqueMultiple.str1.out.bg
+    mkdir ${prefix}._STARgenome
+    touch ${prefix}._STARgenome/exonGeTrInfo.tab ${prefix}._STARgenome/exonInfo.tab ${prefix}._STARgenome/geneInfo.tab ${prefix}._STARgenome/sjdbInfo.txt ${prefix}._STARgenome/sjdbList.fromGTF.out.tab ${prefix}._STARgenome/sjdbList.out.tab ${prefix}._STARgenome/transcriptInfo.tab
     """
 }
