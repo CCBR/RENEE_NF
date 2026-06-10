@@ -6,8 +6,8 @@
                     [
                         {
                             "id": "test",
-                            "layout": "paired"
-                        },
+                            "single_end": false
+                        }
                         "test_insert_sizes.txt:md5,197950a13877c118b52fdb3775061f25"
                     ]
                 ],
@@ -22,8 +22,8 @@
                     [
                         {
                             "id": "test",
-                            "layout": "paired"
-                        },
+                            "single_end": false
+                        }
                         "test_insert_sizes.txt:md5,197950a13877c118b52fdb3775061f25"
                     ]
                 ],
