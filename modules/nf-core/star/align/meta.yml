@@ -46,9 +46,6 @@ input:
         description: Annotation GTF file
         pattern: "*.{gtf}"
         ontologies: []
-  - star_ignore_sjdbgtf:
-      type: boolean
-      description: Ignore annotation GTF file
   - star_use_sjdb:
       type: boolean
       description: Use supplied splice junction file for alignment

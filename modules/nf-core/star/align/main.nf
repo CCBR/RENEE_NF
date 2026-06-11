@@ -9,7 +9,6 @@ process STAR_ALIGN {
     tuple val(meta), path(reads, stageAs: "input*/*")
     tuple val(meta2), path(index)
     tuple val(meta3), path(gtf)
-    val star_ignore_sjdbgtf
     val star_use_sjdb
     path sjdb
 
@@ -45,7 +44,6 @@ process STAR_ALIGN {
     def reads1 = []
     def reads2 = []
     meta.single_end ? [reads].flatten().each{ read -> reads1 << read} : reads.eachWithIndex{ v, ix -> ( ix & 1 ? reads2 : reads1) << v }
-    def ignore_gtf      = star_ignore_sjdbgtf ? '' : "--sjdbGTFfile $gtf"
     def sjdb_arg        = star_use_sjdb ? "--sjdbFileChrStartEnd $sjdb" : ''
     attrRG          = args.contains("--outSAMattrRGline") ? "" : "--outSAMattrRGline 'ID:$prefix' 'SM:$prefix'"
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
@@ -57,7 +55,7 @@ process STAR_ALIGN {
         --runThreadN $task.cpus \\
         --outFileNamePrefix $prefix. \\
         $out_sam_type \\
-        $ignore_gtf \\
+        --sjdbGTFfile $gtf \\
         $sjdb_arg \\
         $attrRG \\
         $args

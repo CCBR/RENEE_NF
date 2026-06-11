@@ -104,13 +104,10 @@ workflow {
 
         // STAR alignment steps ----------------------------------------------------------
 
-        // TODO: switch from using layout: [paired/single] to meta.single_end: true/false for better readability and to avoid confusion with paired/single in other contexts. This would require updating the STAR_ALIGN module to use meta.single_end instead of meta.layout.
-        ch_star_reads = CUTADAPT.out.reads
-            .map { meta, reads -> tuple(meta + [single_end: meta.layout == 'single'], reads) }
 
 
-        // takes [ reads, index, gtf, star_ignore_sjdbgtf, star_use_sjdb, sjdb_path ]
-        STAR_ALIGN_PASS1(ch_star_reads, ch_star_index, ch_star_gtf, false, false, ch_sjdb_placeholder)
+        // takes [ reads, index, gtf, star_use_sjdb, sjdb_path ]
+        STAR_ALIGN_PASS1(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
 
         STAR_SJDB_FILTER(
             STAR_ALIGN_PASS1.out.spl_junc_tab
@@ -118,9 +115,8 @@ workflow {
                 .collect()
         )
 
-        ch_sjdb = STAR_SJDB_FILTER.out.sjdb.first()
 
-        STAR_ALIGN_PASS2(ch_star_reads, ch_star_index, ch_star_gtf, false, true, ch_sjdb)
+        STAR_ALIGN_PASS2(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, true, STAR_SJDB_FILTER.out.sjdb)
 
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
