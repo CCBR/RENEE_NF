@@ -1,0 +1,41 @@
+{
+    "sarscov2 paired-end [fastq]": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    [
+                        "test_1_screen.txt:md5,484dba0c12f755884152e33c3125fe95",
+                        "test_2_screen.txt:md5,2fbf2029a6a35fd5a947ddc3598da4d6"
+                    ]
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-22T15:28:30.52859255",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 single-end [fastq]": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test_1_screen.txt:md5,484dba0c12f755884152e33c3125fe95"
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-22T15:28:57.626311887",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
