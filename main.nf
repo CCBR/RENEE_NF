@@ -6,9 +6,7 @@ include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
 include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
-include {STAR_SJDB_FILTER} from './modules/local/star_sjdb_filter'
-include {STAR_ALIGN as STAR_ALIGN_PASS1} from './modules/nf-core/star/align'
-include {STAR_ALIGN as STAR_ALIGN_PASS2} from './modules/nf-core/star/align'
+include {star_align as STAR_ALIGN} from './subworkflows/local/star_align/main'
 include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
 
 
@@ -103,20 +101,7 @@ workflow {
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
         // STAR alignment steps ----------------------------------------------------------
-
-
-
-        // takes [ reads, index, gtf, star_use_sjdb, sjdb_path ]
-        STAR_ALIGN_PASS1(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
-
-        STAR_SJDB_FILTER(
-            STAR_ALIGN_PASS1.out.spl_junc_tab
-                .map { meta, sj -> sj }
-                .collect()
-        )
-
-
-        STAR_ALIGN_PASS2(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, true, STAR_SJDB_FILTER.out.sjdb)
+        STAR_ALIGN(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, ch_sjdb_placeholder)
 
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -134,14 +119,14 @@ workflow {
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
         bbtools_ihist = BBTOOLS_BBMERGE.out.ihist
-        star_pass1_sj = STAR_ALIGN_PASS1.out.spl_junc_tab
-        star_pass1_log = STAR_ALIGN_PASS1.out.log_final
-        star_sjdb = STAR_SJDB_FILTER.out.sjdb
-        star_pass2_log = STAR_ALIGN_PASS2.out.log_final.mix(STAR_ALIGN_PASS2.out.log_out).mix(STAR_ALIGN_PASS2.out.log_progress)
-        star_pass2_sj = STAR_ALIGN_PASS2.out.spl_junc_tab
-        star_pass2_reads_per_gene = STAR_ALIGN_PASS2.out.read_per_gene_tab
-        star_pass2_bam = STAR_ALIGN_PASS2.out.bam_sorted_aligned
-        star_pass2_transcript_bam = STAR_ALIGN_PASS2.out.bam_transcript
+        star_pass1_sj = STAR_ALIGN.out.pass1_sj
+        star_pass1_log = STAR_ALIGN.out.pass1_log
+        star_sjdb = STAR_ALIGN.out.sjdb
+        star_pass2_log = STAR_ALIGN.out.pass2_log
+        star_pass2_sj = STAR_ALIGN.out.pass2_sj
+        star_pass2_reads_per_gene = STAR_ALIGN.out.pass2_reads_per_gene
+        star_pass2_bam = STAR_ALIGN.out.pass2_bam
+        star_pass2_transcript_bam = STAR_ALIGN.out.pass2_transcript_bam
 }
 
 output {
