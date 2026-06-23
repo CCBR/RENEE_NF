@@ -9,7 +9,7 @@ process FASTQSCREEN_FASTQSCREEN {
 
     input:
     tuple val(meta), path(reads)
-    path database
+    path fastq_screen_config
 
     output:
     tuple val(meta), path("*.txt"), emit: txt
@@ -26,7 +26,7 @@ process FASTQSCREEN_FASTQSCREEN {
 
     """
     fastq_screen --threads ${task.cpus} \\
-        --conf ${database}/fastq_screen.conf \\
+        --conf ${fastq_screen_config} \\
         ${reads} \\
         ${args} \\
     """

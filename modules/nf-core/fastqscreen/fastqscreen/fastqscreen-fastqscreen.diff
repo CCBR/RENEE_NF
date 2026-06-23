@@ -1,0 +1,79 @@
+Changes in component 'nf-core/fastqscreen/fastqscreen'
+'modules/nf-core/fastqscreen/fastqscreen/environment.yml' is unchanged
+Changes in 'fastqscreen/fastqscreen/main.nf':
+--- modules/nf-core/fastqscreen/fastqscreen/main.nf
++++ modules/nf-core/fastqscreen/fastqscreen/main.nf
+@@ -9,7 +9,7 @@
+
+     input:
+     tuple val(meta), path(reads)
+-    path database
++    path fastq_screen_config
+
+     output:
+     tuple val(meta), path("*.txt"), emit: txt
+@@ -26,7 +26,7 @@
+
+     """
+     fastq_screen --threads ${task.cpus} \\
+-        --conf ${database}/fastq_screen.conf \\
++        --conf ${fastq_screen_config} \\
+         ${reads} \\
+         ${args} \\
+     """
+
+Changes in 'fastqscreen/fastqscreen/meta.yml':
+--- modules/nf-core/fastqscreen/fastqscreen/meta.yml
++++ modules/nf-core/fastqscreen/fastqscreen/meta.yml
+@@ -9,7 +9,8 @@
+   - reference
+ tools:
+   - "fastqscreen":
+-      description: "FastQ Screen allows you to screen a library of sequences in FastQ
++      description:
++        "FastQ Screen allows you to screen a library of sequences in FastQ
+         format against a set of sequence databases so you can see if the composition
+         of the library matches with what you expect."
+       homepage: "https://www.bioinformatics.babraham.ac.uk/projects/fastq_screen/"
+@@ -59,7 +60,8 @@
+           description: Groovy Map containing sample information
+       - "*.html":
+           type: file
+-          description: HTML file containing mapping results as a table and graphical
++          description:
++            HTML file containing mapping results as a table and graphical
+             representation
+           pattern: "*.html"
+           ontologies: []
+@@ -69,7 +71,8 @@
+           description: Groovy Map containing sample information
+       - "*.fastq.gz":
+           type: file
+-          description: FastQ file containing reads that did not align to any database
++          description:
++            FastQ file containing reads that did not align to any database
+             (optional)
+           pattern: "*.fastq.gz"
+           ontologies:
+
+'modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test' is unchanged
+Changes in 'fastqscreen/fastqscreen/tests/main.nf.test.snap':
+--- modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test.snap
++++ modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test.snap
+@@ -68,7 +68,7 @@
+         "content": [
+             {
+                 "fastq": [
+-
++
+                 ],
+                 "html": [
+                     [
+@@ -112,4 +112,4 @@
+             "nextflow": "25.10.4"
+         }
+     }
+-}+}
+
+'modules/nf-core/fastqscreen/fastqscreen/tests/nextflow.config' is unchanged
+************************************************************

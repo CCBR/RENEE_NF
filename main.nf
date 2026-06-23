@@ -6,8 +6,8 @@ include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
 include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
 include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
 include {CUTADAPT} from './modules/CCBR/cutadapt'
-include {FASTQ_SCREEN as FASTQ_SCREEN_1} from './modules/local/fastq_screen'
-include {FASTQ_SCREEN as FASTQ_SCREEN_2} from './modules/local/fastq_screen'
+include {FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_1} from './modules/nf-core/fastqscreen/fastqscreen/main.nf'
+include {FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_2} from './modules/nf-core/fastqscreen/fastqscreen/main.nf'
 include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
 
 
