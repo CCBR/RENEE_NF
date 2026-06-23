@@ -87,9 +87,22 @@ workflow {
 
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
-        FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), [])
-        FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), [])
+        ch_fqscreen_1_txt = Channel.empty()
+        ch_fqscreen_1_png = Channel.empty()
+        ch_fqscreen_2_txt = Channel.empty()
+        ch_fqscreen_2_png = Channel.empty()
 
+        if (params.fastq_screen_conf) {
+            FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), [])
+            ch_fqscreen_1_txt = FASTQ_SCREEN_1.out.txt
+            ch_fqscreen_1_png = FASTQ_SCREEN_1.out.png
+        }
+
+        if (params.fastq_screen_conf2) {
+            FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), [])
+            ch_fqscreen_2_txt = FASTQ_SCREEN_2.out.txt
+            ch_fqscreen_2_png = FASTQ_SCREEN_2.out.png
+        }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
                 def message = Utils.spooker(workflow)
@@ -106,10 +119,10 @@ workflow {
         cutadapt_log = CUTADAPT.out.log
         fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
         bbtools_ihist = BBTOOLS_BBMERGE.out.ihist
-        fqscreen_1_txt = FASTQ_SCREEN_1.out.txt
-        fqscreen_1_png = FASTQ_SCREEN_1.out.png
-        fqscreen_2_txt = FASTQ_SCREEN_2.out.txt
-        fqscreen_2_png = FASTQ_SCREEN_2.out.png
+        fqscreen_1_txt = ch_fqscreen_1_txt
+        fqscreen_1_png = ch_fqscreen_1_png
+        fqscreen_2_txt = ch_fqscreen_2_txt
+        fqscreen_2_png = ch_fqscreen_2_png
 }
 
 output {
