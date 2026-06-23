@@ -87,8 +87,8 @@ workflow {
 
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
-        FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf  ?: "${projectDir}/assets/fastq_screen_biowulf.conf"))
-        FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2 ?: "${projectDir}/assets/fastq_screen_biowulf_2.conf"))
+        FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), [])
+        FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), [])
 
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {

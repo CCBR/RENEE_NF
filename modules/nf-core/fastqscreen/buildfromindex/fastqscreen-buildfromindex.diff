@@ -1,0 +1,18 @@
+Changes in component 'nf-core/fastqscreen/buildfromindex'
+'modules/nf-core/fastqscreen/buildfromindex/environment.yml' is unchanged
+Changes in 'fastqscreen/buildfromindex/main.nf':
+--- modules/nf-core/fastqscreen/buildfromindex/main.nf
++++ modules/nf-core/fastqscreen/buildfromindex/main.nf
+@@ -12,6 +12,7 @@
+
+     output:
+     path ("FastQ_Screen_Genomes"), emit: database
++    path ("FastQ_Screen_Genomes/fastq_screen.conf"), emit: conf
+     tuple val("${task.process}"), val('fastqscreen'), eval('fastq_screen --version 2>&1 | sed "s/^.*FastQ Screen v//;"'), emit: versions_fastqscreen, topic: versions
+
+     when:
+
+'modules/nf-core/fastqscreen/buildfromindex/meta.yml' is unchanged
+'modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test' is unchanged
+'modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test.snap' is unchanged
+************************************************************

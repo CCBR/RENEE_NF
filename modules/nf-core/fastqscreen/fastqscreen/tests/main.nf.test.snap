@@ -9,15 +9,15 @@
                     [
                         "FASTQSCREEN_FASTQSCREEN",
                         "fastqscreen",
-                        "0.16.0"
+                        "0.13.0"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-02-19T14:07:14.82793136",
+        "timestamp": "2026-06-23T16:35:21.733903015",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
         }
     },
     "sarscov2 - human - tags": {
@@ -28,7 +28,7 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test_1_screen.txt:md5,7c0e31428663cce39b49f50cff70b02d"
+                    "test_1_screen.txt:md5,54bae94ef6bbbef52d44723b09cb3f8e"
                 ]
             ],
             [
@@ -58,15 +58,52 @@
             ],
             "test_1_screen.png"
         ],
-        "timestamp": "2026-02-19T14:08:42.876834897",
+        "timestamp": "2026-06-23T16:35:58.778591789",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
         }
     },
     "sarscov2 - human - stub": {
         "content": [
             {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test_screen.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test_screen.png:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test_screen.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+
+                ],
+                "4": [
+                    [
+                        "FASTQSCREEN_FASTQSCREEN",
+                        "fastqscreen",
+                        "0.13.0"
+                    ]
+                ],
                 "fastq": [
 
                 ],
@@ -101,15 +138,15 @@
                     [
                         "FASTQSCREEN_FASTQSCREEN",
                         "fastqscreen",
-                        "0.16.0"
+                        "0.13.0"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-02-19T14:03:24.797851274",
+        "timestamp": "2026-06-23T16:50:14.786928788",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
         }
     }
 }

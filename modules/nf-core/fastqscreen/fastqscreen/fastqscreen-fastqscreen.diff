@@ -3,16 +3,24 @@ Changes in component 'nf-core/fastqscreen/fastqscreen'
 Changes in 'fastqscreen/fastqscreen/main.nf':
 --- modules/nf-core/fastqscreen/fastqscreen/main.nf
 +++ modules/nf-core/fastqscreen/fastqscreen/main.nf
-@@ -9,7 +9,7 @@
+@@ -3,13 +3,12 @@
+     label 'process_medium'
+
+     conda "${moduleDir}/environment.yml"
+-    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fc/fc53eee7ca23c32220a9662fbb63c67769756544b6d74a1ee85cf439ea79a7ee/data'
+-        : 'community.wave.seqera.io/library/fastq-screen_perl-gdgraph:5c1786a5d5bc1309'}"
++    container "nciccbr/ccbr_fastq_screen_0.13.0:v2.0"
 
      input:
      tuple val(meta), path(reads)
 -    path database
 +    path fastq_screen_config
++    path database // this is needed to stage the database folder to the container
 
      output:
      tuple val(meta), path("*.txt"), emit: txt
-@@ -26,7 +26,7 @@
+@@ -26,7 +25,7 @@
 
      """
      fastq_screen --threads ${task.cpus} \\
@@ -56,24 +64,178 @@ Changes in 'fastqscreen/fastqscreen/meta.yml':
            pattern: "*.fastq.gz"
            ontologies:
 
-'modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test' is unchanged
+Changes in 'fastqscreen/fastqscreen/tests/main.nf.test':
+--- modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test
++++ modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test
+@@ -21,10 +21,10 @@
+                 """
+                 input[0] = channel.of([
+                     [id: "sarscov2"],
+-                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
++                    file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true)
+                 ], [
+                     [id: "human"],
+-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/chr21/sequence/genome.fasta', checkIfExists: true)
++                    file(params.test_data['homo_sapiens']['genome'].genome_21_fasta, checkIfExists: true)
+                 ])
+                 """
+             }
+@@ -48,9 +48,10 @@
+                 """
+                 input[0] = [
+                     [ id:'test', single_end:true ],
+-                    [file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastq/test_1.fastq.gz', checkIfExists: true)]
++                    [file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)]
+                 ]
+-                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.database
++                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.conf
++                input[2] = FASTQSCREEN_BUILDFROMINDEX.out.database
+                 """
+             }
+         }
+@@ -75,9 +76,10 @@
+                 """
+                 input[0] = [
+                     [ id:'test', single_end:false ],
+-                    [file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastq/test_1.fastq.gz', checkIfExists: true)]
++                    [file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)]
+                 ]
+-                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.database
++                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.conf
++                input[2] = FASTQSCREEN_BUILDFROMINDEX.out.database
+                 """
+             }
+         }
+@@ -103,9 +105,10 @@
+                 """
+                 input[0] = [
+                     [ id:'test', single_end:true ],
+-                    [file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastq/test_1.fastq.gz', checkIfExists: true)]
++                    [file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)]
+                 ]
+-                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.database
++                input[1] = FASTQSCREEN_BUILDFROMINDEX.out.conf
++                input[2] = FASTQSCREEN_BUILDFROMINDEX.out.database
+                 """
+             }
+         }
+@@ -113,7 +116,7 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert snapshot(sanitizeOutput(process.out)).match() }
++                { assert snapshot(process.out).match() }
+             )
+         }
+     }
+
 Changes in 'fastqscreen/fastqscreen/tests/main.nf.test.snap':
 --- modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test.snap
 +++ modules/nf-core/fastqscreen/fastqscreen/tests/main.nf.test.snap
-@@ -68,7 +68,7 @@
+@@ -9,15 +9,15 @@
+                     [
+                         "FASTQSCREEN_FASTQSCREEN",
+                         "fastqscreen",
+-                        "0.16.0"
++                        "0.13.0"
+                     ]
+                 ]
+             }
+         ],
+-        "timestamp": "2026-02-19T14:07:14.82793136",
++        "timestamp": "2026-06-23T16:35:21.733903015",
+         "meta": {
+-            "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.0"
+         }
+     },
+     "sarscov2 - human - tags": {
+@@ -28,7 +28,7 @@
+                         "id": "test",
+                         "single_end": false
+                     },
+-                    "test_1_screen.txt:md5,7c0e31428663cce39b49f50cff70b02d"
++                    "test_1_screen.txt:md5,54bae94ef6bbbef52d44723b09cb3f8e"
+                 ]
+             ],
+             [
+@@ -58,15 +58,52 @@
+             ],
+             "test_1_screen.png"
+         ],
+-        "timestamp": "2026-02-19T14:08:42.876834897",
++        "timestamp": "2026-06-23T16:35:58.778591789",
+         "meta": {
+-            "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.0"
+         }
+     },
+     "sarscov2 - human - stub": {
          "content": [
              {
-                 "fastq": [
--
++                "0": [
++                    [
++                        {
++                            "id": "test",
++                            "single_end": true
++                        },
++                        "test_screen.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "1": [
++                    [
++                        {
++                            "id": "test",
++                            "single_end": true
++                        },
++                        "test_screen.png:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "2": [
++                    [
++                        {
++                            "id": "test",
++                            "single_end": true
++                        },
++                        "test_screen.html:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "3": [
 +
++                ],
++                "4": [
++                    [
++                        "FASTQSCREEN_FASTQSCREEN",
++                        "fastqscreen",
++                        "0.13.0"
++                    ]
++                ],
+                 "fastq": [
+
                  ],
-                 "html": [
+@@ -101,15 +138,15 @@
                      [
-@@ -112,4 +112,4 @@
-             "nextflow": "25.10.4"
+                         "FASTQSCREEN_FASTQSCREEN",
+                         "fastqscreen",
+-                        "0.16.0"
++                        "0.13.0"
+                     ]
+                 ]
+             }
+         ],
+-        "timestamp": "2026-02-19T14:03:24.797851274",
++        "timestamp": "2026-06-23T16:50:14.786928788",
+         "meta": {
+-            "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.0"
          }
      }
--}+}
-
+ }
 'modules/nf-core/fastqscreen/fastqscreen/tests/nextflow.config' is unchanged
 ************************************************************
