@@ -1,15 +1,19 @@
 include { STAR_ALIGN as STAR_ALIGN_PASS1 } from '../../../modules/nf-core/star/align'
 include { STAR_ALIGN as STAR_ALIGN_PASS2 } from '../../../modules/nf-core/star/align'
 include { STAR_SJDB_FILTER }              from '../../../modules/local/star_sjdb_filter'
+include { prepare_genome as PREPARE_GENOME }                from './prepare_genome.nf'
 
 workflow star_align {
     take:
         ch_reads             // channel: [ meta, [ reads ] ]
-        ch_star_index        // channel: [ meta, index ]
-        ch_star_gtf          // channel: [ meta, gtf ]
         ch_sjdb_placeholder  // channel: path
 
     main:
+        PREPARE_GENOME()
+
+        ch_star_index = PREPARE_GENOME.out.star_index
+        ch_star_gtf   = PREPARE_GENOME.out.genes_gtf
+
         // Pass 1: align without SJDB
         STAR_ALIGN_PASS1(ch_reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
 

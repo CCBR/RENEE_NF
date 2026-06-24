@@ -48,19 +48,6 @@ workflow {
         LOG()
         validateParameters()
 
-        def genome_cfg = (params.genomes instanceof Map && params.genome) ? params.genomes[params.genome] : null
-        def star_index_path = params.star_index ?: genome_cfg?.star_index
-        def star_gtf_path = params.star_gtf ?: genome_cfg?.genes_gtf
-
-        if (!star_index_path) {
-            error "Missing STAR index. Set --star_index or define params.genomes['${params.genome}'].star_index."
-        }
-        if (!star_gtf_path) {
-            error "Missing STAR GTF. Set --star_gtf or define params.genomes['${params.genome}'].genes_gtf."
-        }
-
-        ch_star_index = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_index_path, checkIfExists: true)))
-        ch_star_gtf = Channel.value(tuple([id: params.genome ?: 'custom'], file(star_gtf_path, checkIfExists: true)))
         ch_sjdb_placeholder = Channel.value(file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true))
 
         ch_reads = Channel
@@ -101,7 +88,7 @@ workflow {
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
         // STAR alignment steps ----------------------------------------------------------
-        STAR_ALIGN(CUTADAPT.out.reads, ch_star_index, ch_star_gtf, ch_sjdb_placeholder)
+        STAR_ALIGN(CUTADAPT.out.reads, ch_sjdb_placeholder)
 
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {

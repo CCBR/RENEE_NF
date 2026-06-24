@@ -48,6 +48,8 @@ results/
 run_test_config.sh
 conf/test_invalidchars.config
 conf/local_singularity.config
+run_test_config_genome.sh
+
 
 # AI summary files
 snakemake_summaries/

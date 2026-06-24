@@ -19,4 +19,9 @@ process STAR_SJDB_FILTER {
         grep "^chr" | \
         grep -v "^chrM" > uniq.filtered.SJ.out.tab
     """
+
+    stub:
+    """
+    touch uniq.filtered.SJ.out.tab
+    """
 }
