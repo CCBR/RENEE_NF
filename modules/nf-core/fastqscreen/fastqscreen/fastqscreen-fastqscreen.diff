@@ -1,12 +1,12 @@
 Changes in component 'nf-core/fastqscreen/fastqscreen'
-'modules/nf-core/fastqscreen/fastqscreen/environment.yml' is unchanged
 Changes in 'fastqscreen/fastqscreen/main.nf':
 --- modules/nf-core/fastqscreen/fastqscreen/main.nf
 +++ modules/nf-core/fastqscreen/fastqscreen/main.nf
-@@ -3,13 +3,12 @@
+@@ -2,14 +2,12 @@
+     tag "${meta.id}"
      label 'process_medium'
 
-     conda "${moduleDir}/environment.yml"
+-    conda "${moduleDir}/environment.yml"
 -    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
 -        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/fc/fc53eee7ca23c32220a9662fbb63c67769756544b6d74a1ee85cf439ea79a7ee/data'
 -        : 'community.wave.seqera.io/library/fastq-screen_perl-gdgraph:5c1786a5d5bc1309'}"
@@ -20,15 +20,18 @@ Changes in 'fastqscreen/fastqscreen/main.nf':
 
      output:
      tuple val(meta), path("*.txt"), emit: txt
-@@ -26,7 +25,7 @@
+@@ -26,9 +24,9 @@
 
      """
      fastq_screen --threads ${task.cpus} \\
 -        --conf ${database}/fastq_screen.conf \\
 +        --conf ${fastq_screen_config} \\
          ${reads} \\
-         ${args} \\
+-        ${args} \\
++        ${args}
      """
+
+     stub:
 
 Changes in 'fastqscreen/fastqscreen/meta.yml':
 --- modules/nf-core/fastqscreen/fastqscreen/meta.yml
@@ -161,7 +164,7 @@ Changes in 'fastqscreen/fastqscreen/tests/main.nf.test.snap':
                  ]
              ],
              [
-@@ -58,15 +58,52 @@
+@@ -58,17 +58,54 @@
              ],
              "test_1_screen.png"
          ],
@@ -215,8 +218,11 @@ Changes in 'fastqscreen/fastqscreen/tests/main.nf.test.snap':
 +                    ]
 +                ],
                  "fastq": [
-
+-
++
                  ],
+                 "html": [
+                     [
 @@ -101,15 +138,15 @@
                      [
                          "FASTQSCREEN_FASTQSCREEN",
@@ -236,6 +242,8 @@ Changes in 'fastqscreen/fastqscreen/tests/main.nf.test.snap':
 +            "nextflow": "25.10.0"
          }
      }
- }
+-}+}
+
 'modules/nf-core/fastqscreen/fastqscreen/tests/nextflow.config' is unchanged
+'modules/nf-core/fastqscreen/fastqscreen/environment.yml' was removed
 ************************************************************

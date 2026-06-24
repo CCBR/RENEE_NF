@@ -26,7 +26,7 @@ process FASTQSCREEN_FASTQSCREEN {
     fastq_screen --threads ${task.cpus} \\
         --conf ${fastq_screen_config} \\
         ${reads} \\
-        ${args} \\
+        ${args}
     """
 
     stub:
