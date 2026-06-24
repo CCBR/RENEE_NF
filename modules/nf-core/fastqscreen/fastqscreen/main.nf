@@ -2,7 +2,6 @@ process FASTQSCREEN_FASTQSCREEN {
     tag "${meta.id}"
     label 'process_medium'
 
-    conda "${moduleDir}/environment.yml"
     container "nciccbr/ccbr_fastq_screen_0.13.0:v2.0"
 
     input:
