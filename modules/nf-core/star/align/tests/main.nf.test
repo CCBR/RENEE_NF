@@ -7,31 +7,360 @@ nextflow_process {
     tag "modules_nfcore"
     tag "star"
     tag "star/align"
+    tag "star/genomegenerate"
 
-
-
-    test("homo_sapiens - paired_end - stub") {
-        options "-stub"
+    test("sarscov2 - single_end") {
         config "./nextflow.config"
 
-        // Using pre-built genome index from run_test_config.sh for comparison with snakemake results
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:true ], // meta map
+                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.log_final[0][1]).name,
+                    file(process.out.log_out[0][1]).name,
+                    file(process.out.log_progress[0][1]).name,
+                    // Uses a plugin that was hard to download
+                    // bam(process.out.bam[0][1]).getReadsMD5(),
+                    // bam(process.out.bam_sorted_aligned[0][1]).getReadsMD5(),
+                    process.out.bedgraph,
+                    process.out.fastq,
+                    process.out.read_per_gene_tab,
+                    process.out.sam,
+                    process.out.spl_junc_tab,
+                    process.out.tab,
+                    process.out.wig,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end") {
+        config "./nextflow.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
         when {
             process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:false ], // meta map
                     [
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
                     ]
                 ])
-                input[1] = Channel.of([
-                    [ id:'hg38_36' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
-                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
                     [ id:'test_gtf' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.log_final[0][1]).name,
+                    file(process.out.log_out[0][1]).name,
+                    file(process.out.log_progress[0][1]).name,
+                    // bam(process.out.bam[0][1]).getReadsMD5(),
+                    // bam(process.out.bam_sorted_aligned[0][1]).getReadsMD5(),
+                    process.out.bedgraph,
+                    process.out.fastq,
+                    process.out.read_per_gene_tab,
+                    process.out.sam,
+                    process.out.spl_junc_tab,
+                    process.out.tab,
+                    process.out.wig,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - arriba") {
+        config "./nextflow.arriba.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.log_final[0][1]).name,
+                    file(process.out.log_out[0][1]).name,
+                    file(process.out.log_progress[0][1]).name,
+                    // bam(process.out.bam[0][1]).getReadsMD5(),
+                    process.out.bedgraph,
+                    process.out.fastq,
+                    process.out.read_per_gene_tab,
+                    process.out.sam,
+                    process.out.spl_junc_tab,
+                    process.out.tab,
+                    process.out.wig,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - starfusion") {
+        config "./nextflow.starfusion.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.log_final[0][1]).name,
+                    file(process.out.log_out[0][1]).name,
+                    file(process.out.log_progress[0][1]).name,
+                    file(process.out.junction[0][1]).name,
+                    // bam(process.out.bam[0][1]).getReadsMD5(),
+                    process.out.bedgraph,
+                    process.out.fastq,
+                    process.out.read_per_gene_tab,
+                    process.out.sam,
+                    process.out.spl_junc_tab,
+                    process.out.tab,
+                    process.out.wig,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - multiple") {
+        config "./nextflow.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.log_final[0][1]).name,
+                    file(process.out.log_out[0][1]).name,
+                    file(process.out.log_progress[0][1]).name,
+                    // bam(process.out.bam[0][1]).getReadsMD5(),
+                    // bam(process.out.bam_sorted_aligned[0][1]).getReadsMD5(),
+                    process.out.bedgraph,
+                    process.out.fastq,
+                    process.out.read_per_gene_tab,
+                    process.out.sam,
+                    process.out.spl_junc_tab,
+                    process.out.tab,
+                    process.out.wig,
+                    process.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - single_end - stub") {
+        options "-stub"
+        config "./nextflow.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:true ], // meta map
+                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
                 input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
@@ -47,27 +376,42 @@ nextflow_process {
         }
     }
 
-    test("homo_sapiens - paired_end - no sjdb") {
+    test("sarscov2 - paired_end - stub") {
+        options "-stub"
         config "./nextflow.config"
 
-        // Non-stub test to compare _STARgenome output against snakemake reference results
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
         when {
             process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:false ], // meta map
                     [
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
                     ]
                 ])
-                input[1] = Channel.of([
-                    [ id:'hg38_36' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
-                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
                     [ id:'test_gtf' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
                 input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
@@ -78,40 +422,50 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert path(process.out.spl_junc_tab.get(0)[1]).md5 == "8fda060d3adf45613e55ef7c5bf5b142"}, // md5sum /data/silverald/test_RNA_hg38/STAR_files/WT_S1.SJ.out.tab
-                { assert snapshot(
-                        process.out.spl_junc_tab,
-                        process.out.read_per_gene_tab
-                    ).match()
-                }
+                { assert snapshot(process.out).match() }
             )
         }
     }
 
-    test("homo_sapiens - paired_end - with sjdb") {
-        config "./nextflow_pass2.config"
+    test("sarscov2 - paired_end - arriba - stub") {
+        options "-stub"
+        config "./nextflow.arriba.config"
 
-        // Non-stub test to compare _STARgenome output against snakemake reference results
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
         when {
             process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:false ], // meta map
                     [
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r1_trim_fastq_gz, checkIfExists: true),
-                        file(params.test_data['snakemake_results']['trim'].wt_s1_r2_trim_fastq_gz, checkIfExists: true)
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
                     ]
                 ])
-                input[1] = Channel.of([
-                    [ id:'hg38_36' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/STAR/2.7.6a/genome', checkIfExists: true) ]
-                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
                     [ id:'test_gtf' ],
-                    [ file('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/gencode.v36.primary_assembly.annotation.gtf', checkIfExists: true) ]
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
-                input[3] = true
-                input[4] = Channel.of([file("/data/silverald/test_RNA_hg38/STAR_files/uniq.filtered.SJ.out.tab", checkIfExists: true)])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -119,12 +473,111 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert path(process.out.read_per_gene_tab.get(0)[1]).md5 == "64ca2d5bc1765354c7c2b81562a5aab9"}, // md5sum /data/silverald/test_RNA_hg38/STAR_files/WT_S1.p2.ReadsPerGene.out.tab
-                { assert snapshot(
-                        process.out.spl_junc_tab,
-                        process.out.read_per_gene_tab
-                    ).match()
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - starfusion - stub") {
+        options "-stub"
+        config "./nextflow.starfusion.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
                 }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - multiple - stub") {
+        options "-stub"
+        config "./nextflow.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                input[3] = false
+                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
             )
         }
     }
