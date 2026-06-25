@@ -1,13 +1,18 @@
 nextflow.enable.dsl = 2
 
 // Plugins
+// Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
-include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
-include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
-include {CUTADAPT} from './modules/CCBR/cutadapt'
-include {star_align as STAR_ALIGN} from './subworkflows/local/star_align/main'
-include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
+include {FASTQC as FASTQC_RAW}                   from './modules/local/fastqc'
+include {FASTQC as FASTQC_TRIMMED}               from './modules/local/fastqc'
+include {BBTOOLS_BBMERGE}                        from './modules/local/bbtools'
+include {CUTADAPT}                               from './modules/CCBR/cutadapt'
+
+// Subworkflows
+include {star_align as STAR_ALIGN}               from './subworkflows/local/star_align/main'
+include {validate_fastqs as VALIDATE_FASTQS}     from './subworkflows/local/validate_fastqs/main'
+include { prepare_genome as PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
+
 
 
 
@@ -30,17 +35,8 @@ workflow LOG {
     log.info paramsSummaryLog(workflow)
 }
 
-
-process yeet {
-    container "${params.containers.base}"
-
-    output:
-    stdout
-
-    script:
-    """
-    echo ${params.input}
-    """
+workflow MAKE_REFERENCE {
+    PREPARE_GENOME()
 }
 
 workflow {
@@ -88,7 +84,16 @@ workflow {
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
         // STAR alignment steps ----------------------------------------------------------
-        STAR_ALIGN(CUTADAPT.out.reads, ch_sjdb_placeholder)
+
+        PREPARE_GENOME()
+
+
+        STAR_ALIGN(
+            CUTADAPT.out.reads,
+            ch_sjdb_placeholder,
+            PREPARE_GENOME.out.star_index,
+            PREPARE_GENOME.out.genes_gtf
+            )
 
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {

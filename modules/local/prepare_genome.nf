@@ -3,7 +3,7 @@ process GTF2BED {
     tag { gtf }
     label 'process_single'
 
-    container 'nciccbr/ccbr_ubuntu_base_20.04:v5'
+    container "${params.containers.base}"
 
     input:
         path(gtf)
@@ -13,7 +13,9 @@ process GTF2BED {
 
     script:
     """
-    cat ${gtf} | gtf2bed > ${gtf.baseName}.bed
+    # remove comment lines and convert GTF to BED format.
+    # looks for transcript_id for test case
+    grep -v "^#" ${gtf} | grep 'transcript_id' | gtf2bed > ${gtf.baseName}.bed
 
     """
     stub:
@@ -24,7 +26,7 @@ process GTF2BED {
 process SPLIT_REF_CHROMS {
     tag { fasta }
     label 'process_single'
-    container "${params.containers_base}"
+    container "${params.containers.base}"
 
     input:
         path(fasta)
@@ -51,7 +53,7 @@ process RENAME_FASTA_CONTIGS {
     """
     tag { fasta }
 
-    container "${params.containers_base}"
+    container "${params.containers.base}"
 
     input:
         path(fasta)
@@ -124,69 +126,107 @@ process RENAME_DELIM_CONTIGS {
 
 process WRITE_GENOME_CONFIG {
     label 'process_single'
-    container "${params.containers_base}"
+    container "${params.containers.base}"
 
     input:
         path(fasta)
-        path(gtf)
-        tuple val(meta_ref), path(reference_index)
-        tuple val(meta_bl), path(blacklist_index)
-        path(chrom_sizes)
-        path(chrom_dir)
+        path(genes_gtf)
         path(gene_info)
-        val(effective_genome_size)
-        val(meme_motifs)
-        val(bioc_txdb)
-        val(bioc_annot)
-
+        path(star_index)
+        val(organism)
+        path(annotate)
+        path(annotate_isoforms)
+        path(refflat)
+        path(bed_ref)
+        path(qualimap_info)
+        path(karyobeds)
+        path(karyoploter)
+        val(rsem_ref)
+        path(rrna_list)
+        path(tin_ref)
+        path(fusion_blacklist)
+        path(fusion_cytoband)
+        path(fusion_protdomain)
 
     output:
         path("*.config"), emit: conf
-        path("custom_genome/"), emit: files // TODO can't use genome_name variable here, nextflow thinks it's null??
+        path("custom_genome/"), emit: files
 
     script:
     def genome_name = 'custom_genome'
     """
     #!/usr/bin/env python
     import os
-    import pprint
     import shutil
-    print("${meme_motifs}")
-    os.makedirs("${genome_name}/")
-    for subdir, filelist in (('reference/', "${reference_index}"), ('blacklist', "${blacklist_index}")):
-        dirpath = f"${{genome_name}}/{subdir}"
-        os.mkdir(dirpath)
-        for file in filelist.split():
-            shutil.copy(file, dirpath)
-    shutil.copytree("${chrom_dir}", '${genome_name}/chroms/')
-    for file in ("${fasta}", "${gtf}", "${chrom_sizes}", "${gene_info}"):
-        shutil.copy(file, "${genome_name}/")
 
-    genome = dict(fasta = '"\${params.index_dir}/${genome_name}/${fasta}"',
-                  genes_gtf = '"\${params.index_dir}/${genome_name}/${gtf}"',
-                  reference_index = '"\${params.index_dir}/${genome_name}/reference/*"',
-                  blacklist_index = '"\${params.index_dir}/${genome_name}/blacklist/*"',
-                  chromosomes_dir = '"\${params.index_dir}/${genome_name}/chroms/"',
-                  chrom_sizes = '"\${params.index_dir}/${genome_name}/${chrom_sizes}"',
-                  gene_info = '"\${params.index_dir}/${genome_name}/${gene_info}"',
-                  effective_genome_size = "${effective_genome_size}",
-                  meme_motifs = "${meme_motifs}",
-                  bioc_txdb = "${bioc_txdb}",
-                  bioc_annot = "${bioc_annot}"
-    )
-    pprint.pprint(genome)
-    with open('${genome_name}.config', 'w') as conf_file:
-        head = ["params {\\n",
-                '\\tindex_dir = "\${outputDir}/genome/"\\n',
-                "\\tgenomes {\\n"
-                "\\t\\t'${genome_name}' {\\n"]
-        conf_file.writelines(head)
+    genome_name = "${genome_name}"
+    os.makedirs(genome_name, exist_ok=True)
+
+    def stage_path(src, destdir):
+        if not src or not os.path.exists(src):
+            return
+        dst = os.path.join(destdir, os.path.basename(src))
+        if os.path.isdir(src):
+            shutil.copytree(src, dst)
+        else:
+            shutil.copy(src, dst)
+
+    # Stage required files
+    for f in ("${fasta}", "${genes_gtf}", "${gene_info}"):
+        stage_path(f, genome_name)
+
+    # Stage STAR index into a fixed subdirectory name
+    if os.path.isdir("${star_index}"):
+        shutil.copytree("${star_index}", os.path.join(genome_name, "star_index"))
+
+    # Stage optional files / directories
+    for f in ("${annotate}", "${annotate_isoforms}", "${refflat}",
+              "${bed_ref}", "${qualimap_info}", "${karyobeds}",
+              "${karyoploter}", "${rrna_list}", "${tin_ref}",
+              "${fusion_blacklist}", "${fusion_cytoband}", "${fusion_protdomain}"):
+        stage_path(f, genome_name)
+
+    idx = "\${params.index_dir}"
+    genome = {
+        "fasta":      f'"{idx}/{genome_name}/${fasta}"',
+        "genes_gtf":  f'"{idx}/{genome_name}/${genes_gtf}"',
+        "star_index": f'"{idx}/{genome_name}/star_index"',
+        "gene_info":  f'"{idx}/{genome_name}/${gene_info}"',
+        "organism":   '"${organism}"',
+    }
+
+    opt_paths = [
+        ("${annotate}",          "annotate"),
+        ("${annotate_isoforms}", "annotate_isoforms"),
+        ("${refflat}",           "refflat"),
+        ("${bed_ref}",           "bed_ref"),
+        ("${qualimap_info}",     "qualimap_info"),
+        ("${karyobeds}",         "karyobeds"),
+        ("${karyoploter}",       "karyoploter"),
+        ("${rrna_list}",         "rrna_list"),
+        ("${tin_ref}",           "tin_ref"),
+        ("${fusion_blacklist}",  "fusion_blacklist"),
+        ("${fusion_cytoband}",   "fusion_cytoband"),
+        ("${fusion_protdomain}", "fusion_protdomain"),
+    ]
+    for src, key in opt_paths:
+        if src and os.path.exists(src):
+            suffix = "/" if os.path.isdir(src) else ""
+            genome[key] = f'"{idx}/{genome_name}/{os.path.basename(src)}{suffix}"'
+
+    if "${rsem_ref}":
+        genome["rsem_ref"] = '"${rsem_ref}"'
+
+    with open(f"{genome_name}.config", "w") as out:
+        out.write("params {\\n")
+        out.write('\\tindex_dir = "\${outputDir}/genome/"\\n')
+        out.write("\\tgenomes {\\n")
+        out.write(f"\\t\\t'{genome_name}' {{\\n")
         for k, v in genome.items():
-            conf_file.write(f'\\t\\t\\t{k} = {v}\\n')
-        tail = ["\\t\\t}\\n",
-                "\\t}\\n",
-                "}\\n"]
-        conf_file.writelines(tail)
+            out.write(f"\\t\\t\\t{k:<20} = {v}\\n")
+        out.write("\\t\\t}\\n")
+        out.write("\\t}\\n")
+        out.write("}\\n")
     """
 
     stub:

@@ -14,7 +14,7 @@ workflow prepare_genome {
 
         ch_genome_conf = Channel.empty()
 
-        if (params.genomes[ params.genome ]) {
+        if (params.genome && params.genomes && params.genomes[ params.genome ]) {
 
             def g = params.genomes[ params.genome ]
 
@@ -106,7 +106,21 @@ workflow prepare_genome {
                 ch_fasta,
                 ch_genes_gtf,
                 ch_gene_info,
-                ch_star_index
+                ch_star_index,
+                ch_organism,
+                ch_annotate.ifEmpty([]),
+                ch_annotate_isoforms.ifEmpty([]),
+                ch_refflat.ifEmpty([]),
+                ch_bed_ref.ifEmpty([]),
+                ch_qualimap_info.ifEmpty([]),
+                ch_karyobeds.ifEmpty([]),
+                ch_karyoploter.ifEmpty([]),
+                ch_rsem_ref,
+                ch_rrna_list.ifEmpty([]),
+                ch_tin_ref.ifEmpty([]),
+                ch_fusion_blacklist.ifEmpty([]),
+                ch_fusion_cytoband.ifEmpty([]),
+                ch_fusion_protdomain.ifEmpty([])
             )
 
             ch_genome_conf = WRITE_GENOME_CONFIG.out.conf.mix(
