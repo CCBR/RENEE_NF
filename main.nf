@@ -93,13 +93,14 @@ workflow {
         ch_fqscreen_2_png = Channel.empty()
 
         if (params.fastq_screen_conf) {
-            FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), [])
+            ch_fqscreen_db_dir = Channel.fromPath(params.fastq_screen_db_dir)
+            FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), ch_fqscreen_db_dir)
             ch_fqscreen_1_txt = FASTQ_SCREEN_1.out.txt
             ch_fqscreen_1_png = FASTQ_SCREEN_1.out.png
         }
 
         if (params.fastq_screen_conf2) {
-            FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), [])
+            FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), ch_fqscreen_db_dir)
             ch_fqscreen_2_txt = FASTQ_SCREEN_2.out.txt
             ch_fqscreen_2_png = FASTQ_SCREEN_2.out.png
         }
