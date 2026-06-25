@@ -19,13 +19,13 @@ process FASTQSCREEN_BUILDFROMINDEX {
     task.ext.when == null || task.ext.when
 
     script:
-    dir = "FastQ_Screen_Genomes"
-    folder = indexes.collect { index -> index.toString() }
-    database = [genome_names, folder].transpose()
-    copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
+    def dir = "FastQ_Screen_Genomes"
+    def folder = indexes.collect { index -> index.toString() }
+    def database = [genome_names, folder].transpose()
+    def copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
 
     // Folder name and index (within folder) name could be different - use bash to look for index name
-    config = database
+    def config = database
         .collect { index -> "########## ${index[0]} \nDATABASE ${index[0]} ${dir}/${index[1]}/${index[1] + '_to_be_replaced'}" }
         .join("\n\n")
         .replace("\n", "\\n")
@@ -52,7 +52,7 @@ process FASTQSCREEN_BUILDFROMINDEX {
     """
 
     stub:
-    dir = "FastQ_Screen_Genomes"
+    def dir = "FastQ_Screen_Genomes"
     """
     mkdir ${dir}
     touch ${dir}/fastq_screen.conf

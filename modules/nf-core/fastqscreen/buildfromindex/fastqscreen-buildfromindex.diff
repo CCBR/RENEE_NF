@@ -3,7 +3,7 @@ Changes in component 'nf-core/fastqscreen/buildfromindex'
 Changes in 'fastqscreen/buildfromindex/main.nf':
 --- modules/nf-core/fastqscreen/buildfromindex/main.nf
 +++ modules/nf-core/fastqscreen/buildfromindex/main.nf
-@@ -12,6 +12,7 @@
+@@ -12,19 +12,20 @@
 
      output:
      path ("FastQ_Screen_Genomes"), emit: database
@@ -11,6 +11,33 @@ Changes in 'fastqscreen/buildfromindex/main.nf':
      tuple val("${task.process}"), val('fastqscreen'), eval('fastq_screen --version 2>&1 | sed "s/^.*FastQ Screen v//;"'), emit: versions_fastqscreen, topic: versions
 
      when:
+     task.ext.when == null || task.ext.when
+
+     script:
+-    dir = "FastQ_Screen_Genomes"
+-    folder = indexes.collect { index -> index.toString() }
+-    database = [genome_names, folder].transpose()
+-    copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
++    def dir = "FastQ_Screen_Genomes"
++    def folder = indexes.collect { index -> index.toString() }
++    def database = [genome_names, folder].transpose()
++    def copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
+
+     // Folder name and index (within folder) name could be different - use bash to look for index name
+-    config = database
++    def config = database
+         .collect { index -> "########## ${index[0]} \nDATABASE ${index[0]} ${dir}/${index[1]}/${index[1] + '_to_be_replaced'}" }
+         .join("\n\n")
+         .replace("\n", "\\n")
+@@ -51,7 +52,7 @@
+     """
+
+     stub:
+-    dir = "FastQ_Screen_Genomes"
++    def dir = "FastQ_Screen_Genomes"
+     """
+     mkdir ${dir}
+     touch ${dir}/fastq_screen.conf
 
 Changes in 'fastqscreen/buildfromindex/meta.yml':
 --- modules/nf-core/fastqscreen/buildfromindex/meta.yml
@@ -165,5 +192,6 @@ Changes in 'fastqscreen/buildfromindex/tests/main.nf.test.snap':
 +            "nextflow": "25.10.0"
          }
      }
- }
+-}+}
+
 ************************************************************
