@@ -12,18 +12,14 @@ class Genome:
         return all(
             k in self.attributes
             for k in [
-                "bioc_annot",
-                "bioc_txdb",
-                "blacklist_index",
-                "chrom_sizes",
-                "chromosomes_dir",
-                "effective_genome_size",
                 "fasta",
-                "gene_info",
                 "genes_gtf",
-                "meme_motifs",
-                "reference_index",
-                "species",
+                "star_index",
+                "gene_info",
+                "organism",
+                "refflat",
+                "rsem_ref",
+                "rrna_list",
             ]
         )
 
@@ -44,7 +40,7 @@ class Genome:
 
 def parse_genome_config(file_path):
     genomes = defaultdict(dict)
-    with open("conf/genomes.config", "r") as config_file:
+    with open(file_path, "r") as config_file:
         next(config_file)  # Skip the first line
         next(config_file)  # Skip the second line
         for line in config_file:
@@ -97,7 +93,8 @@ def to_markdown(genomes, md_head=MD_HEAD):
 
 
 def main():
-    genomes = parse_genome_config("conf/genomes.config")
+    genomes = parse_genome_config("conf/biowulf_genomes.config")
+    genomes.update(parse_genome_config("conf/frce_genomes.config"))
     markdown = to_markdown(genomes)
     with open("docs/_genomes_tail.md", "r") as tail_file:
         tail = tail_file.readlines()
