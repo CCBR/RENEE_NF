@@ -50,6 +50,7 @@ conf/test_invalidchars.config
 conf/local_singularity.config
 run_test_config_genome.sh
 run_test_config_copy.sh
+run_test_config_genome.sh
 
 
 # AI summary files
