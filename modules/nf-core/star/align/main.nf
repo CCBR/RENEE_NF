@@ -6,11 +6,10 @@ process STAR_ALIGN {
     container "nciccbr/ccbr_arriba_2.0.0:v0.0.1"
 
     input:
-    tuple val(meta), path(reads, stageAs: "input*/*")
+    tuple val(meta), path(reads, stageAs: "input*/*"), path(sjdb)
     tuple val(meta2), path(index)
     tuple val(meta3), path(gtf)
     val star_use_sjdb
-    path sjdb
 
     output:
     tuple val(meta), path('*Log.final.out')   , emit: log_final

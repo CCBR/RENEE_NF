@@ -168,7 +168,7 @@ output {
 
     star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
     star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }
-    star_sjdb { path { file -> 'STAR_files/pass1/' } }
+    star_sjdb { path { meta, file -> 'STAR_files/pass1/' } }
     star_pass2_log { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_sj { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }

@@ -2,14 +2,15 @@ process STAR_SJDB_FILTER {
     label 'process_low'
     container "${params.containers.base}"
     input:
-    path sj_tabs
+    tuple val(meta), path(sj_tabs)
 
     output:
-    path 'uniq.filtered.SJ.out.tab', emit: sjdb
+    tuple val(meta), path("${meta.id}.uniq.filtered.SJ.out.tab"), emit: sjdb
 
     script:
+    def sj_input = (sj_tabs instanceof List) ? sj_tabs.join(' ') : sj_tabs
     """
-    cat ${sj_tabs.join(' ')} | \
+    cat $sj_input | \
         sort | \
         uniq | \
         awk -F "\t" '{if (\$5>0 && \$6==1) {print}}' | \
@@ -17,11 +18,11 @@ process STAR_SJDB_FILTER {
         sort | \
         uniq | \
         grep "^chr" | \
-        grep -v "^chrM" > uniq.filtered.SJ.out.tab
+        grep -v "^chrM" > ${meta.id}.uniq.filtered.SJ.out.tab
     """
 
     stub:
     """
-    touch uniq.filtered.SJ.out.tab
+    touch ${meta.id}.uniq.filtered.SJ.out.tab
     """
 }

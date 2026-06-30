@@ -35,7 +35,8 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:true ], // meta map
-                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ]
+                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -43,7 +44,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -100,7 +100,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -108,7 +109,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -164,7 +164,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -172,7 +173,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -227,7 +227,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -235,7 +236,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -293,7 +293,8 @@ nextflow_process {
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -301,7 +302,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -355,7 +355,8 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:true ], // meta map
-                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ]
+                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -363,7 +364,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -406,7 +406,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -414,7 +415,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -457,7 +457,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -465,7 +466,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -508,7 +508,8 @@ nextflow_process {
                     [
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -516,7 +517,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }
@@ -561,7 +561,8 @@ nextflow_process {
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
                         file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
+                    ],
+                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
                 ])
                 input[1] = STAR_GENOMEGENERATE.out.index
                 input[2] = Channel.of([
@@ -569,7 +570,6 @@ nextflow_process {
                     [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
                 ])
                 input[3] = false
-                input[4] = Channel.of([file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)])
                 """
             }
         }

@@ -6,6 +6,7 @@
 
 ### New features
 
+- Added STAR 2-pass alignment with a `--star-2-pass-basic` mode: in basic mode, splice-junction filtering (`STAR_SJDB_FILTER`) runs independently per sample so each sample's Pass 2 alignment uses only its own filtered junctions; in standard mode, junctions are pooled across all samples before Pass 2. The SJDB is passed as part of the reads tuple to `STAR_ALIGN`, making per-sample pairing order-safe under SLURM.
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
 - Installed the nf-core `cutadapt` module, tracked it in `modules.json`, and wired `CUTADAPT(ch_reads)` into the main workflow after the local `FASTQC` step.
