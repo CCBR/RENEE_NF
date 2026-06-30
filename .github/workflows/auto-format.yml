@@ -42,7 +42,6 @@ jobs:
             CITATION.cff
             nextflow_schema.json
             nextflow.config
-            conf/genomes.config
             **.mermaid
             **.mmd
       - name: Write nf-schema docs
