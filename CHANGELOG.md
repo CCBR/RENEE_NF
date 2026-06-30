@@ -10,6 +10,7 @@
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
 - Installed the nf-core `cutadapt` module, tracked it in `modules.json`, and wired `CUTADAPT(ch_reads)` into the main workflow after the local `FASTQC` step.
 - Added a local BBtools `BBTOOLS_BBMERGE` module for paired-end insert-size histograms and a matching nf-test module test covering Snakemake-compatible `*_insert_sizes.txt` output naming.
+- Incorporated the nf-core `fastq_screen` module to screen reads against multiple reference genomes and detect sample contamination.
 - Added nested `snakemake_results` test-data links for the local RENEE hg38 Snakemake expected-output set.
 - Migrated pipeline result publishing from process-level `publishDir` directives to entry-workflow `publish` and top-level `output` blocks, with dynamic per-sample paths and CSV index manifests for FastQC and Cutadapt outputs.
 

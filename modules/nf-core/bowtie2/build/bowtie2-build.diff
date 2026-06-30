@@ -1,0 +1,27 @@
+Changes in component 'nf-core/bowtie2/build'
+'modules/nf-core/bowtie2/build/environment.yml' is unchanged
+'modules/nf-core/bowtie2/build/main.nf' is unchanged
+'modules/nf-core/bowtie2/build/meta.yml' is unchanged
+Changes in 'bowtie2/build/tests/main.nf.test':
+--- modules/nf-core/bowtie2/build/tests/main.nf.test
++++ modules/nf-core/bowtie2/build/tests/main.nf.test
+@@ -15,7 +15,7 @@
+                 """
+                 input[0] = [
+                     [ id:'test' ],
+-                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
++                    file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true)
+                 ]
+                 """
+             }
+
+Changes in 'bowtie2/build/tests/main.nf.test.snap':
+--- modules/nf-core/bowtie2/build/tests/main.nf.test.snap
++++ modules/nf-core/bowtie2/build/tests/main.nf.test.snap
+@@ -32,4 +32,4 @@
+         },
+         "timestamp": "2026-01-28T17:52:30.165111"
+     }
+-}+}
+
+************************************************************
