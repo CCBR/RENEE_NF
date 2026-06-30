@@ -1,6 +1,6 @@
 process STAR_SJDB_FILTER {
     label 'process_low'
-
+    container "${params.containers.base}"
     input:
     path sj_tabs
 

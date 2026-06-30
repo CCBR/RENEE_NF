@@ -18,12 +18,13 @@ workflow prepare_genome {
 
             def g = params.genomes[ params.genome ]
 
-            ch_fasta     = Channel.fromPath( g.fasta,     checkIfExists: true )
-            ch_genes_gtf = Channel.fromPath( g.genes_gtf, checkIfExists: true )
+            ch_fasta     = Channel.fromPath( g.fasta, checkIfExists: true )
+            ch_genes_gtf = Channel.fromPath( (params.star_gtf ?: g.genes_gtf), checkIfExists: true )
             ch_gene_info = Channel.fromPath( g.gene_info, checkIfExists: true )
 
-            if (g.star_index) {
-                ch_star_index = Channel.fromPath( g.star_index, type: 'dir', checkIfExists: true )
+            def star_index_path = params.star_index ?: g.star_index
+            if (star_index_path) {
+                ch_star_index = Channel.fromPath( star_index_path, type: 'dir', checkIfExists: true )
             } else {
                 ch_star_index = STAR_GENOMEGENERATE(
                     ch_fasta.map { fa -> [ [:], fa ] },
