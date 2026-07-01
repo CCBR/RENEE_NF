@@ -18,39 +18,39 @@ workflow prepare_genome {
 
             def g = params.genomes[ params.genome ]
 
-            ch_fasta     = Channel.fromPath( g.fasta, checkIfExists: true )
-            ch_genes_gtf = Channel.fromPath( (params.star_gtf ?: g.genes_gtf), checkIfExists: true )
-            ch_gene_info = Channel.fromPath( g.gene_info, checkIfExists: true )
+            ch_fasta     = Channel.value( file( g.fasta, checkIfExists: true ) )
+            ch_genes_gtf = Channel.value( file( (params.star_gtf ?: g.genes_gtf), checkIfExists: true ) )
+            ch_gene_info = Channel.value( file( g.gene_info, checkIfExists: true ) )
 
             def star_index_path = params.star_index ?: g.star_index
             if (star_index_path) {
-                ch_star_index = Channel.fromPath( star_index_path, type: 'dir', checkIfExists: true )
+                ch_star_index = Channel.value( file( star_index_path, checkIfExists: true ) )
             } else {
                 ch_star_index = STAR_GENOMEGENERATE(
                     ch_fasta.map { fa -> [ [:], fa ] },
                     ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-                ).index.map { meta, idx -> idx }
+                ).index.map { meta, idx -> idx }.first()
             }
 
             ch_organism          = Channel.value( g.organism )
-            ch_annotate          = Channel.fromPath( g.annotate,          checkIfExists: true )
-            ch_annotate_isoforms = Channel.fromPath( g.annotate_isoforms, checkIfExists: true )
-            ch_refflat           = Channel.fromPath( g.refflat,           checkIfExists: true )
-            ch_bed_ref           = Channel.fromPath( g.bed_ref,           checkIfExists: true )
-            ch_qualimap_info     = Channel.fromPath( g.qualimap_info,     checkIfExists: true )
-            ch_karyobeds         = Channel.fromPath( g.karyobeds,         checkIfExists: true )
-            ch_karyoploter       = Channel.fromPath( g.karyoploter,       checkIfExists: true )
+            ch_annotate          = Channel.value( file( g.annotate,          checkIfExists: true ) )
+            ch_annotate_isoforms = Channel.value( file( g.annotate_isoforms, checkIfExists: true ) )
+            ch_refflat           = Channel.value( file( g.refflat,           checkIfExists: true ) )
+            ch_bed_ref           = Channel.value( file( g.bed_ref,           checkIfExists: true ) )
+            ch_qualimap_info     = Channel.value( file( g.qualimap_info,     checkIfExists: true ) )
+            ch_karyobeds         = Channel.value( file( g.karyobeds,         checkIfExists: true ) )
+            ch_karyoploter       = Channel.value( file( g.karyoploter,       checkIfExists: true ) )
             ch_rsem_ref          = Channel.value( g.rsem_ref )
-            ch_rrna_list         = Channel.fromPath( g.rrna_list,         checkIfExists: true )
-            ch_tin_ref           = Channel.fromPath( g.tin_ref,           checkIfExists: true )
+            ch_rrna_list         = Channel.value( file( g.rrna_list,         checkIfExists: true ) )
+            ch_tin_ref           = Channel.value( file( g.tin_ref,           checkIfExists: true ) )
 
-            ch_fusion_blacklist  = g.fusion_blacklist  ? Channel.fromPath( g.fusion_blacklist,  checkIfExists: true ) : Channel.empty()
-            ch_fusion_cytoband   = g.fusion_cytoband   ? Channel.fromPath( g.fusion_cytoband,   checkIfExists: true ) : Channel.empty()
-            ch_fusion_protdomain = g.fusion_protdomain ? Channel.fromPath( g.fusion_protdomain, checkIfExists: true ) : Channel.empty()
+            ch_fusion_blacklist  = g.fusion_blacklist  ? Channel.value( file( g.fusion_blacklist,  checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_cytoband   = g.fusion_cytoband   ? Channel.value( file( g.fusion_cytoband,   checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_protdomain = g.fusion_protdomain ? Channel.value( file( g.fusion_protdomain, checkIfExists: true ) ) : Channel.empty()
 
         } else if (params.genome_fasta && params.genes_gtf) {
 
-            fasta_file = Channel.fromPath( params.genome_fasta, checkIfExists: true )
+            fasta_file = Channel.value( file( params.genome_fasta, checkIfExists: true ) )
             gtf_file   = file( params.genes_gtf, checkIfExists: true )
 
             if (params.rename_contigs) {
@@ -70,7 +70,7 @@ workflow prepare_genome {
             } else {
 
                 ch_fasta = fasta_file
-                ch_gtf = Channel.fromPath( params.genes_gtf, checkIfExists: true )
+                ch_gtf = Channel.value( file( params.genes_gtf, checkIfExists: true ) )
             }
 
             ch_genes_gtf = ch_gtf
@@ -86,7 +86,7 @@ workflow prepare_genome {
             ch_star_index = STAR_GENOMEGENERATE(
                 ch_fasta.map { fa -> [ [:], fa ] },
                 ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-            ).index.map { meta, idx -> idx }
+            ).index.map { meta, idx -> idx }.first()
 
             ch_organism          = Channel.value( params.organism ?: 'custom' )
             ch_annotate          = Channel.empty()

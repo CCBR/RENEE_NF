@@ -95,7 +95,7 @@ workflow {
         if (!params.fastq_screen_db_dir) {
             log.warn "No FastQ Screendatabase directory provided. FastQ Screen will be skipped."
         } else {
-            ch_fqscreen_db_dir = Channel.fromPath(params.fastq_screen_db_dir)
+            ch_fqscreen_db_dir = Channel.value(file(params.fastq_screen_db_dir))
 
             if (params.fastq_screen_conf) {
                 FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), ch_fqscreen_db_dir)
