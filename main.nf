@@ -46,7 +46,7 @@ workflow {
         LOG()
         validateParameters()
 
-        ch_sjdb_placeholder = Channel.value(file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true))
+        ch_sjdb_placeholder = Channel.value(file(params.sjdb_placeholder_tab, checkIfExists: true))
 
         ch_reads = Channel
             .fromPath(params.input, checkIfExists: true)
