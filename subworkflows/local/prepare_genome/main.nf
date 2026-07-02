@@ -3,12 +3,12 @@ include {
     RENAME_DELIM_CONTIGS
     GTF2BED
     WRITE_GENOME_CONFIG
-} from "../../../modules/local/prepare_genome.nf"
+} from "../../../modules/local/prepare_genome/main.nf"
 
 include { STAR_GENOMEGENERATE } from "../../../modules/nf-core/star/genomegenerate/main.nf"
 
 
-workflow prepare_genome {
+workflow prepare_genome_workflow {
 
     main:
 

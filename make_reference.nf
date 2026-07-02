@@ -1,6 +1,6 @@
 nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-include { prepare_genome as PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
+include { prepare_genome_workflow as PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
 
 workflow version {
     println "RENEE_NF ${workflow.manifest.version}"

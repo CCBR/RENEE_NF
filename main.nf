@@ -11,9 +11,9 @@ include {FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_1} from './modules/nf-core/fast
 include {FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_2} from './modules/nf-core/fastqscreen/fastqscreen/main.nf'
 
 // Subworkflows
-include {star_align as STAR_ALIGN}               from './subworkflows/local/star_align/main'
+include {star_align_workflow as STAR_ALIGN}       from './subworkflows/local/star_align/main'
 include {validate_fastqs as VALIDATE_FASTQS}     from './subworkflows/local/validate_fastqs/main'
-include { prepare_genome as PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
+include { prepare_genome_workflow as PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
 
 
 
