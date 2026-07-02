@@ -45,8 +45,7 @@ results/
 /setup-nextflow/
 
 # running nextflow scripts
-run_test_config.sh
-conf/test_invalidchars.config
+run_scripts
 conf/local_singularity.config
 
 # AI summary files
