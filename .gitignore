@@ -54,3 +54,4 @@ run_test_config_genome.sh
 
 # AI summary files
 snakemake_summaries/
+.github/copilot-instructions.md

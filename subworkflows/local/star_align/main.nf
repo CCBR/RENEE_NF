@@ -5,14 +5,13 @@ include { STAR_SJDB_FILTER }              from '../../../modules/local/star_sjdb
 workflow star_align_workflow {
     take:
         ch_reads             // channel: [ meta, [ reads ] ]
-        ch_sjdb_placeholder  // channel: path
 
         ch_star_index  // channel: path
         ch_star_gtf    // channel: path
 
     main:
-
         // Pass 1: align without SJDB
+        ch_sjdb_placeholder = Channel.value(file(params.sjdb_placeholder_tab, checkIfExists: true))
         STAR_ALIGN_PASS1(ch_reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
 
         // Filter splice junctions for Pass 2
