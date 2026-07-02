@@ -85,7 +85,7 @@ workflow {
         FASTQC_TRIMMED(CUTADAPT.out.reads)
         BBTOOLS_BBMERGE(CUTADAPT.out.reads)
 
-                ch_fqscreen_1_txt = Channel.empty()
+        ch_fqscreen_1_txt = Channel.empty()
         ch_fqscreen_1_png = Channel.empty()
         ch_fqscreen_2_txt = Channel.empty()
         ch_fqscreen_2_png = Channel.empty()
