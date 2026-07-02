@@ -50,4 +50,3 @@ conf/local_singularity.config
 
 # AI summary files
 snakemake_summaries/
-.github/copilot-instructions.md
