@@ -1,0 +1,124 @@
+{
+    "arriba - homo_sapiens - paired_end - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.tsv:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.discarded.tsv:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "2": [
+                    [
+                        "ARRIBA_ARRIBA",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ],
+                "fusions": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.tsv:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "fusions_fail": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.discarded.tsv:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "versions_arriba": [
+                    [
+                        "ARRIBA_ARRIBA",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:18:20.711522564",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "arriba - homo_sapiens - paired_end": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.tsv:md5,7c3383f7eb6d79b84b0bd30a7ef02d70"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.discarded.tsv:md5,c636d114fda1b1f35803168386423f0c"
+                    ]
+                ],
+                "2": [
+                    [
+                        "ARRIBA_ARRIBA",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ],
+                "fusions": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.tsv:md5,7c3383f7eb6d79b84b0bd30a7ef02d70"
+                    ]
+                ],
+                "fusions_fail": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fusions.discarded.tsv:md5,c636d114fda1b1f35803168386423f0c"
+                    ]
+                ],
+                "versions_arriba": [
+                    [
+                        "ARRIBA_ARRIBA",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-06T15:14:32.015502218",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
