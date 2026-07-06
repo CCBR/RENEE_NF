@@ -51,10 +51,10 @@ workflow {
             prepare_genome_conf = Channel.empty() // dont save genome copy if not in build mode
 
             // Read samplesheet and emit channel of reads
-            READ_SAMPLES(params.input)
+            CHECK_INPUT(params.input)
 
             // Initial QC, trimming, and FastQ Screen steps
-            INITIAL_QC(READ_SAMPLES.out.reads)
+            INITIAL_QC(CHECK_INPUT.out.reads)
 
 
             // STAR alignment steps ----------------------------------------------------------
