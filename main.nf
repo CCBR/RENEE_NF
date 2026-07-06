@@ -144,7 +144,7 @@ output {
 
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
-    arriba_bam          { path { meta, file -> 'fusions/' } }
+    arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
     arriba_pdf          { path { meta, file -> 'fusions/' } }
     arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
 }
