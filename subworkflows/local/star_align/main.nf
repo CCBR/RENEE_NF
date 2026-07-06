@@ -5,12 +5,13 @@ include { STAR_SJDB_FILTER }              from '../../../modules/local/star_sjdb
 workflow star_align_workflow {
     take:
         ch_reads             // channel: [ meta, [ reads ] ]
-
         ch_star_index  // channel: path
         ch_star_gtf    // channel: path
 
     main:
 
+        // Initialize a placeholder for the SJDB input to Pass 1; this will be replaced with the actual SJDB in Pass 2
+        ch_sjdb_placeholder = Channel.value( file( params.sjdb_placeholder_tab, checkIfExists: true ) )
 
         // Pass 1: align without SJDB; combine reads with placeholder to form the input tuple
         STAR_ALIGN_PASS1(
