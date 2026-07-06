@@ -35,7 +35,7 @@ View the full list of pipeline parameters below.
 
 # CCBR/RENEE_NF pipeline parameters
 
-bulk RNA-seq pipeline in Nextflow
+Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE/latest/
 
 ## Input/output options
 
@@ -52,3 +52,45 @@ Define where the pipeline should find input data and save output data.
 | `outputDir`        |                                                                                                                                                                                                                                                                                                                                                                                              | `string` | results                    |          | True   |
 | `tracedir`         |                                                                                                                                                                                                                                                                                                                                                                                              | `string` | ${outputDir}/pipeline_info |          | True   |
 | `publish_dir_mode` | How to publish files to the results directory. This parameter sets Nextflow's workflow.output.mode configuration option. (accepted: `link`\|`copy`\|`move`\|`copyNoFollow`\|`rellink`\|`symlink`)                                                                                                                                                                                            | `string` | link                       |          |        |
+
+## Reference genome options
+
+Options for supplying or building a custom reference genome.
+
+| Parameter        | Description                                                                                                                                                                  | Type      | Default | Required | Hidden |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
+| `genome_fasta`   | Path to reference genome FASTA file. Required when building a custom reference with --genes_gtf.                                                                             | `string`  |         |          |        |
+| `genes_gtf`      | Path to gene annotation GTF file. Required when building a custom reference with --genome_fasta.                                                                             | `string`  |         |          |        |
+| `rename_contigs` | Path to a two-column tab-delimited file mapping old contig names (column 1) to new contig names (column 2). Applied to both the FASTA and GTF when building a custom genome. | `string`  |         |          |        |
+| `organism`       | Short organism identifier written into the genome config (e.g. homo_sapiens, mus_musculus). Defaults to 'custom' when not provided.                                          | `string`  |         |          |        |
+| `rsem_ref`       | Path prefix to a pre-built RSEM reference (e.g. /path/to/rsemref/hg38_30). Used when supplying a custom genome via --genome_fasta/--genes_gtf.                               | `string`  |         |          |        |
+| `index_dir`      | Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set.                                          | `string`  |         |          |        |
+| `build_genome`   | When true, the pipeline stops after building the custom genome reference without proceeding to alignment.                                                                    | `boolean` |         |          |        |
+
+## QC options
+
+Options for FastQ Screen contamination screening.
+
+| Parameter             | Description                                                                                                                                        | Type     | Default | Required | Hidden |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- | -------- | ------ |
+| `fastq_screen_conf`   | Path to the primary FastQ Screen configuration file. Set automatically by HPC profiles (biowulf, frce). FastQ Screen is skipped when not provided. | `string` |         |          |        |
+| `fastq_screen_conf2`  | Path to the secondary FastQ Screen configuration file (second screening panel). Set automatically by HPC profiles (biowulf, frce).                 | `string` |         |          |        |
+| `fastq_screen_db_dir` | Path to the FastQ Screen database directory. Set automatically by HPC profiles (biowulf, frce).                                                    | `string` |         |          |        |
+
+## Alignment options
+
+Options controlling the two-pass STAR alignment workflow.
+
+| Parameter              | Description                                                                                                 | Type     | Default                                          | Required | Hidden |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ | -------- | ------ |
+| `sjdb_placeholder_tab` | Path to an empty splice-junction placeholder file passed to STAR_ALIGN pass 1 in place of a real SJDB file. | `string` | ${projectDir}/assets/sjdb_placeholder.SJ.out.tab |          |        |
+
+## Max job request options
+
+Set the top limit for requested compute resources. These values cap the per-process resource labels defined in conf/base.config.
+
+| Parameter    | Description                                                                        | Type      | Default | Required | Hidden |
+| ------------ | ---------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
+| `max_cpus`   | Maximum number of CPUs that can be requested for any single job.                   | `integer` | 32      |          |        |
+| `max_memory` | Maximum amount of memory that can be requested for any single job (e.g. '224 GB'). | `string`  | 224 GB  |          |        |
+| `max_time`   | Maximum wall-time that can be requested for any single job (e.g. '72 h').          | `string`  | 72 h    |          |        |
