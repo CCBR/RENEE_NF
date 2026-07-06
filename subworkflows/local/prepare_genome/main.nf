@@ -1,9 +1,7 @@
-include {
-    RENAME_FASTA_CONTIGS as RENAME_FASTA_CONTIGS_REF
-    RENAME_DELIM_CONTIGS
-    GTF2BED
-    WRITE_GENOME_CONFIG
-} from "../../../modules/local/prepare_genome/main.nf"
+include { GTF2BED             } from "../../../modules/local/gtf2bed/main.nf"
+include { RENAME_FASTA_CONTIGS as RENAME_FASTA_CONTIGS_REF } from "../../../modules/local/rename_fasta_contigs/main.nf"
+include { RENAME_DELIM_CONTIGS } from "../../../modules/local/rename_delim_contigs/main.nf"
+include { WRITE_GENOME_CONFIG  } from "../../../modules/local/write_genome_config/main.nf"
 
 include { STAR_GENOMEGENERATE } from "../../../modules/nf-core/star/genomegenerate/main.nf"
 
