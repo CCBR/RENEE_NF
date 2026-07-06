@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF//nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF/main/nextflow_schema.json",
     "title": "CCBR/RENEE_NF pipeline parameters",
-    "description": "bulk RNA-seq pipeline in Nextflow",
+    "description": "Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE/latest/",
     "type": "object",
     "$defs": {
         "input_output_options": {
@@ -36,6 +36,7 @@
                 "star_gtf": {
                     "type": "string",
                     "format": "file-path",
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
                     "description": "Path to GTF annotation for STAR. If unset, the pipeline attempts params.genomes[genome].genes_gtf."
                 },
                 "star_pass1_args": {
@@ -72,11 +73,132 @@
                     "description": "How to publish files to the results directory. This parameter sets Nextflow's workflow.output.mode configuration option."
                 }
             }
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Options for supplying or building a custom reference genome.",
+            "properties": {
+                "genome_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(fa|fasta)(\\.gz)?$",
+                    "description": "Path to reference genome FASTA file. Required when building a custom reference with --genes_gtf."
+                },
+                "genes_gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.gtf(\\.gz)?$",
+                    "description": "Path to gene annotation GTF file. Required when building a custom reference with --genome_fasta."
+                },
+                "rename_contigs": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+$",
+                    "description": "Path to a two-column tab-delimited file mapping old contig names (column 1) to new contig names (column 2). Applied to both the FASTA and GTF when building a custom genome."
+                },
+                "organism": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_]+$",
+                    "description": "Short organism identifier written into the genome config (e.g. homo_sapiens, mus_musculus). Defaults to 'custom' when not provided."
+                },
+                "rsem_ref": {
+                    "type": "string",
+                    "description": "Path prefix to a pre-built RSEM reference (e.g. /path/to/rsemref/hg38_30). Used when supplying a custom genome via --genome_fasta/--genes_gtf."
+                },
+                "index_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set."
+                },
+                "build_genome": {
+                    "type": "boolean",
+                    "description": "When true, the pipeline stops after building the custom genome reference without proceeding to alignment."
+                }
+            }
+        },
+        "qc_options": {
+            "title": "QC options",
+            "type": "object",
+            "fa_icon": "fas fa-microscope",
+            "description": "Options for FastQ Screen contamination screening.",
+            "properties": {
+                "fastq_screen_conf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.conf$",
+                    "description": "Path to the primary FastQ Screen configuration file. Set automatically by HPC profiles (biowulf, frce). FastQ Screen is skipped when not provided."
+                },
+                "fastq_screen_conf2": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.conf$",
+                    "description": "Path to the secondary FastQ Screen configuration file (second screening panel). Set automatically by HPC profiles (biowulf, frce)."
+                },
+                "fastq_screen_db_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the FastQ Screen database directory. Set automatically by HPC profiles (biowulf, frce)."
+                }
+            }
+        },
+        "alignment_options": {
+            "title": "Alignment options",
+            "type": "object",
+            "fa_icon": "fas fa-align-left",
+            "description": "Options controlling the two-pass STAR alignment workflow.",
+            "properties": {
+                "sjdb_placeholder_tab": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.tab$",
+                    "default": "${projectDir}/assets/sjdb_placeholder.SJ.out.tab",
+                    "description": "Path to an empty splice-junction placeholder file passed to STAR_ALIGN pass 1 in place of a real SJDB file."
+                }
+            }
+        },
+        "max_job_request_options": {
+            "title": "Max job request options",
+            "type": "object",
+            "fa_icon": "fas fa-microchip",
+            "description": "Set the top limit for requested compute resources. These values cap the per-process resource labels defined in conf/base.config.",
+            "properties": {
+                "max_cpus": {
+                    "type": "integer",
+                    "default": 32,
+                    "description": "Maximum number of CPUs that can be requested for any single job."
+                },
+                "max_memory": {
+                    "type": "string",
+                    "default": "224 GB",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "description": "Maximum amount of memory that can be requested for any single job (e.g. '224 GB')."
+                },
+                "max_time": {
+                    "type": "string",
+                    "default": "72 h",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(s|m|h|d)$",
+                    "description": "Maximum wall-time that can be requested for any single job (e.g. '72 h')."
+                }
+            }
         }
     },
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/qc_options"
+        },
+        {
+            "$ref": "#/$defs/alignment_options"
+        },
+        {
+            "$ref": "#/$defs/max_job_request_options"
         }
     ]
 }
