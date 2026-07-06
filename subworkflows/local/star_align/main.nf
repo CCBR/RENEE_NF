@@ -2,10 +2,9 @@ include { STAR_ALIGN as STAR_ALIGN_PASS1 } from '../../../modules/nf-core/star/a
 include { STAR_ALIGN as STAR_ALIGN_PASS2 } from '../../../modules/nf-core/star/align'
 include { STAR_SJDB_FILTER }              from '../../../modules/local/star_sjdb_filter'
 
-workflow star_align {
+workflow star_align_workflow {
     take:
         ch_reads             // channel: [ meta, [ reads ] ]
-        ch_sjdb_placeholder  // channel: path
 
         ch_star_index  // channel: path
         ch_star_gtf    // channel: path

@@ -94,7 +94,6 @@ def to_markdown(genomes, md_head=MD_HEAD):
 
 def main():
     genomes = parse_genome_config("conf/genomes/biowulf_genomes.config")
-    genomes.update(parse_genome_config("conf/genomes/frce_genomes.config"))
     markdown = to_markdown(genomes)
     with open("docs/_genomes_tail.md", "r") as tail_file:
         tail = tail_file.readlines()
