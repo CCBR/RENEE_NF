@@ -5,10 +5,10 @@ nextflow.enable.dsl = 2
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
 // Subworkflows
-include { star_align_workflow as STAR_ALIGN }         from './subworkflows/local/star_align/main'
-include { prepare_genome_workflow as PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
-include { initial_qc_workflow as INITIAL_QC }         from './subworkflows/local/initial_qc/main'
-include { read_samples_workflow as READ_SAMPLES }     from './subworkflows/local/read_samples/main'
+include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
+include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
+include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
+include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
 
 
 

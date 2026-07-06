@@ -6,7 +6,7 @@ include { WRITE_GENOME_CONFIG  } from "../../../modules/local/write_genome_confi
 include { STAR_GENOMEGENERATE } from "../../../modules/nf-core/star/genomegenerate/main.nf"
 
 
-workflow prepare_genome_workflow {
+workflow PREPARE_GENOME {
 
     main:
 

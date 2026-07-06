@@ -1,4 +1,4 @@
-workflow read_samples_workflow {
+workflow CHECK_INPUT {
     take:
         samplesheet  // path: CSV samplesheet
 
