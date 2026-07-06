@@ -52,3 +52,4 @@ run*.sh
 
 # AI summary files
 snakemake_summaries/
+.github/copilot-instructions.md
