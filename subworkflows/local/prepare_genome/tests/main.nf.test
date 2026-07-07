@@ -2,7 +2,7 @@ nextflow_workflow {
 
     name "Test Workflow prepare_genome_workflow"
     script "subworkflows/local/prepare_genome/main.nf"
-    workflow "prepare_genome_workflow"
+    workflow "PREPARE_GENOME"
 
     test("fasta_gtf") {
         config "./nextflow.config"
