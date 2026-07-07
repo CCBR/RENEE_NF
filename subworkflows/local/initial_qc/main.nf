@@ -4,7 +4,7 @@ include { BBTOOLS_BBMERGE }                             from '../../../modules/l
 include { CUTADAPT }                                    from '../../../modules/CCBR/cutadapt'
 include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_1 }  from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
 include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_2 }  from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
-include { validate_fastqs as VALIDATE_FASTQS }          from '../validate_fastqs/main'
+include { VALIDATE_FASTQS }                             from '../validate_fastqs/main'
 
 workflow INITIAL_QC {
     take:
