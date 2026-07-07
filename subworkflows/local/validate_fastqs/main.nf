@@ -1,6 +1,6 @@
 include { FASTQVALIDATOR } from "../../../modules/local/fastqvalidator"
 
-workflow validate_fastqs {
+workflow VALIDATE_FASTQS {
     take:
         ch_individual_fastqs
         ch_reads
