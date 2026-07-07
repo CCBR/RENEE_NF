@@ -47,6 +47,8 @@ results/
 # running nextflow scripts
 run_scripts
 conf/local_singularity.config
+run*.sh
+
 
 # AI summary files
 snakemake_summaries/

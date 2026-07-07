@@ -1,0 +1,2328 @@
+{
+    "sarscov2 - single_end": {
+        "content": [
+            "test.Log.final.out",
+            "test.Log.out",
+            "test.Log.progress.out",
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:53:42.391263355",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - arriba - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "11": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "15": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "16": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "17": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "18": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "bam_sorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_sorted_aligned": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_unsorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bedgraph": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "junction": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "sam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:12:49.272115046",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - starfusion - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "11": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "15": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "16": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "17": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "18": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "bam_sorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_sorted_aligned": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_unsorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bedgraph": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "junction": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "sam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:13:03.46708914",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - single_end - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "11": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "15": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "16": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "17": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "18": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "bam_sorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_sorted_aligned": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_unsorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bedgraph": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "junction": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "sam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:12:18.48849123",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - arriba": {
+        "content": [
+            "test.Log.final.out",
+            "test.Log.out",
+            "test.Log.progress.out",
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:56:16.076765277",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - multiple": {
+        "content": [
+            "test.Log.final.out",
+            "test.Log.out",
+            "test.Log.progress.out",
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,2d1f0694d46c5a560323cde23b4c1341"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,2d1f0694d46c5a560323cde23b4c1341"
+                ]
+            ],
+            [
+
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:56:50.538963879",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - multiple - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "11": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "15": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "16": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "17": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "18": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "bam_sorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_sorted_aligned": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_unsorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bedgraph": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "junction": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "sam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:13:19.449879949",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - starfusion": {
+        "content": [
+            "test.Log.final.out",
+            "test.Log.out",
+            "test.Log.progress.out",
+            "test.Chimeric.out.junction",
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,f0a74ccbae0644bc32b8ec41ed85c114"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,f0a74ccbae0644bc32b8ec41ed85c114"
+                ]
+            ],
+            [
+
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:56:32.855598231",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "10": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "11": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "12": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "13": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "14": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "15": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "16": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "17": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "18": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "19": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "4": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "5": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "8": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "9": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "testXd.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "bam_sorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_sorted_aligned": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.sortedByCoord.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.toTranscriptome.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_unsorted": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Aligned.unsort.out.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bedgraph": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.bg:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fastq": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.unmapped_1.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                            "test.unmapped_2.fastq.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "junction": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Chimeric.out.junction:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_final": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.final.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_out": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log_progress": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Log.progress.out:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "read_per_gene_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "sam": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.out.sam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "spl_junc_tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stargenome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tab": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        [
+                            "test.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ],
+                "wig": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.Signal.UniqueMultiple.str1.out.wig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:12:34.773022432",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end": {
+        "content": [
+            "test.Log.final.out",
+            "test.Log.out",
+            "test.Log.progress.out",
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "STAR_ALIGN",
+                        "gawk",
+                        ""
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "STAR_ALIGN",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "STAR_ALIGN",
+                        "star",
+                        "2.7.6a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-11T11:53:59.947122949",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

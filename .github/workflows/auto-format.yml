@@ -53,7 +53,7 @@ jobs:
             CITATION.cff
             nextflow_schema.json
             nextflow.config
-            conf/genomes.config
+            conf/genomes/**
             **.mermaid
             **.mmd
 

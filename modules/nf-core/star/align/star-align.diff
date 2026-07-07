@@ -1,0 +1,49 @@
+Changes in component 'nf-core/star/align'
+'modules/nf-core/star/align/environment.yml' is unchanged
+Changes in 'star/align/main.nf':
+--- modules/nf-core/star/align/main.nf
++++ modules/nf-core/star/align/main.nf
+@@ -12,6 +12,8 @@
+     tuple val(meta2), path(index)
+     tuple val(meta3), path(gtf)
++    val star_use_sjdb
++    path sjdb
+
+     output:
+     tuple val(meta), path('*Log.final.out')   , emit: log_final
+@@ -45,6 +47,7 @@
+     def reads2 = []
+     meta.single_end ? [reads].flatten().each{ read -> reads1 << read} : reads.eachWithIndex{ v, ix -> ( ix & 1 ? reads2 : reads1) << v }
++    def sjdb_arg        = star_use_sjdb ? "--sjdbFileChrStartEnd $sjdb" : ''
+     attrRG          = args.contains("--outSAMattrRGline") ? "" : "--outSAMattrRGline 'ID:$prefix' 'SM:$prefix'"
+     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
+     mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
+@@ -56,6 +59,7 @@
+         --outFileNamePrefix $prefix. \\
+         $out_sam_type \\
++        $sjdb_arg \\
+         $attrRG \\
+         $args
+
+
+Changes in 'star/align/meta.yml':
+--- modules/nf-core/star/align/meta.yml
++++ modules/nf-core/star/align/meta.yml
+@@ -49,6 +49,13 @@
+   - star_use_sjdb:
++      type: boolean
++      description: Use supplied splice junction file for alignment
++    - sjdb:
++      type: file
++      description: STAR splice junction file used with --sjdbFileChrStartEnd
++      pattern: "*.SJ.out.tab"
+ output:
+   log_final:
+     - - meta:
+
+'modules/nf-core/star/align/tests/main.nf.test' is unchanged
+'modules/nf-core/star/align/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/star/align/tests/nextflow.arriba.config' is unchanged
+'modules/nf-core/star/align/tests/nextflow.config' is unchanged
+'modules/nf-core/star/align/tests/nextflow.starfusion.config' is unchanged
+************************************************************
