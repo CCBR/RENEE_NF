@@ -1,0 +1,72 @@
+// Split from main.nf.test so this test gets a fresh runner with clean memory.
+// STAR --twopassMode Basic loads and internally rebuilds the genome in a single
+// process, requiring ~2 GB peak RAM. Running it after other STAR tests in the
+// same job exhausts GitHub Actions runner memory (7 GB total).
+
+nextflow_workflow {
+
+    name "Test Workflow STAR_ALIGN (part 2)"
+    script "subworkflows/local/star_align/main.nf"
+    workflow "STAR_ALIGN"
+
+    test("sarscov2 - paired_end - per-sample two-pass basic (star_2_pass_basic = true)") {
+        config "./nextflow.config"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../../modules/nf-core/star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                sjdb_placeholder_tab = "${projectDir}/assets/sjdb_placeholder.SJ.out.tab"
+                star_2_pass_basic    = true
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.pass2_log.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.pass2_sj,
+                    workflow.out.pass2_reads_per_gene,
+                    // workflow.out.pass2_bam,
+                    // workflow.out.pass2_transcript_bam,
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+
+    }
+
+}
