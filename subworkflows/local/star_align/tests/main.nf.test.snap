@@ -62,7 +62,7 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test.p2.SJ.out.tab:md5,f0a74ccbae0644bc32b8ec41ed85c114"
+                    "test.p2.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             [
@@ -71,14 +71,14 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test.p2.ReadsPerGene.out.tab:md5,7694e3d06e8db4fcac12a8d00bd0709e"
+                    "test.p2.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
             {
 
             }
         ],
-        "timestamp": "2026-07-08T09:58:45.493538544",
+        "timestamp": "2026-07-08T11:54:48.27381432",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

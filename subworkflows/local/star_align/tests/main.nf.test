@@ -69,6 +69,7 @@ nextflow_workflow {
 
     test("sarscov2 - paired_end - stub - per-sample two-pass basic (star_2_pass_basic = true)") {
         config "./nextflow.config"
+        options "-stub"
 
         setup {
             run("STAR_GENOMEGENERATE") {
