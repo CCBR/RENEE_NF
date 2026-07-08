@@ -1,0 +1,208 @@
+{
+    "sarscov2 - paired_end - stub - multi-sample two-pass (star_2_pass_basic = false)": {
+        "content": [
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                "test.Log.final.out"
+            ],
+            [
+                "uniq.filtered.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-07T20:01:44.131945059",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end -stub - multi-sample two-pass (star_2_pass_basic = false)": {
+        "content": [
+            [
+                "test.p2.Log.final.out",
+                "test.p2.Log.out",
+                "test.p2.Log.progress.out"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                "test.Log.final.out"
+            ],
+            [
+                "uniq.filtered.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-07T20:22:26.150888079",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - stub - per-sample two-pass basic (star_2_pass_basic = true)": {
+        "content": [
+            [
+                "test.p2.Log.final.out",
+                "test.p2.Log.out",
+                "test.p2.Log.progress.out"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.SJ.out.tab:md5,f0a74ccbae0644bc32b8ec41ed85c114"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.ReadsPerGene.out.tab:md5,7694e3d06e8db4fcac12a8d00bd0709e"
+                ]
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-07T20:01:54.870054308",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - per-sample two-pass basic (star_2_pass_basic = true)": {
+        "content": [
+            [
+                "test.p2.Log.final.out",
+                "test.p2.Log.out",
+                "test.p2.Log.progress.out"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.SJ.out.tab:md5,f0a74ccbae0644bc32b8ec41ed85c114"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.ReadsPerGene.out.tab:md5,7694e3d06e8db4fcac12a8d00bd0709e"
+                ]
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-07T20:07:54.495338999",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end  - multi-sample two-pass (star_2_pass_basic = false)": {
+        "content": [
+            [
+                "test.p2.Log.final.out",
+                "test.p2.Log.out",
+                "test.p2.Log.progress.out"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.p2.ReadsPerGene.out.tab:md5,cadc6a85a4ea58a258321657ff7c3abc"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.SJ.out.tab:md5,a45560da5b25c47416eb42bdb5a918b2"
+                ]
+            ],
+            [
+                "test.Log.final.out"
+            ],
+            [
+                "uniq.filtered.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-07T20:13:40.043314461",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
