@@ -23,18 +23,18 @@ input:
 output:
   blacklist:
     - blacklist*${genome}*.tsv.gz:
-        type: string
+        type: file
         description:
           The blacklist removes recurrent alignment artifacts and transcripts
           which are present in healthy tissue
-        pattern: ".tsv.gz"
+        pattern: "*.tsv.gz"
   cytobands:
     - cytobands*${genome}*.tsv:
         type: file
         description:
           Coordinates of the Giemsa staining bands. This information is used
           to draw ideograms
-        pattern: ".tsv"
+        pattern: "*.tsv"
         ontologies:
           - edam: http://edamontology.org/format_3475
   protein_domains:
