@@ -9,8 +9,7 @@ include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { PICARD_QC }          from './subworkflows/local/picard_qc/main'
-
+include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
 
 
 
@@ -66,12 +65,10 @@ workflow {
                 PREPARE_GENOME.out.genes_gtf
             )
 
-            PICARD_QC(
-                STAR_ALIGN.out.pass2_bam,
-                PREPARE_GENOME.out.fasta,
-                PREPARE_GENOME.out.refflat,
-                PREPARE_GENOME.out.rrna_list
-            )
+            // post-alignment steps ----------------------------------------------------------
+
+            PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
+
 
         }
         workflow.onComplete = {
@@ -107,11 +104,9 @@ workflow {
         star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
         star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
 
-        picard_bam                = params.build_genome ? Channel.empty() : PICARD_QC.out.bam
-        picard_bai                = params.build_genome ? Channel.empty() : PICARD_QC.out.bai
-        picard_duplicate_metrics  = params.build_genome ? Channel.empty() : PICARD_QC.out.duplicate_metrics
-        picard_rnaseq_metrics     = params.build_genome ? Channel.empty() : PICARD_QC.out.rnaseq_metrics
-        picard_flagstat_concord   = params.build_genome ? Channel.empty() : PICARD_QC.out.flagstat_concord
+        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
+        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+
 }
 
 output {
@@ -138,7 +133,4 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
-    picard_duplicate_metrics { path { meta, file -> 'logfiles/' } }
-    picard_rnaseq_metrics { path { meta, file -> 'logfiles/' } }
-    picard_flagstat_concord { path { meta, file -> 'logfiles/' } }
 }
