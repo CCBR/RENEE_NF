@@ -66,7 +66,6 @@ workflow {
             )
 
             // post-alignment steps ----------------------------------------------------------
-
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
 
