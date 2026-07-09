@@ -26,8 +26,8 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.p2.arribaXd.out].sorted.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test.p2.arribaXd.out].sorted.bam.bai:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.p2.arribaXd.out.sorted.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test.p2.arribaXd.out.sorted.bam.bai:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "3": [
@@ -54,8 +54,8 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.p2.arribaXd.out].sorted.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
-                        "test.p2.arribaXd.out].sorted.bam.bai:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.p2.arribaXd.out.sorted.bam:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "test.p2.arribaXd.out.sorted.bam.bai:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "fusions": [
@@ -96,7 +96,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-06T15:45:44.955607703",
+        "timestamp": "2026-07-09T15:09:32.452536634",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

@@ -51,6 +51,9 @@
 
                 ],
                 "18": [
+
+                ],
+                "19": [
                     [
                         "genome.fa:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ],
@@ -126,6 +129,9 @@
                 "fusion_cytoband": [
 
                 ],
+                "fusion_known_fusions": [
+
+                ],
                 "fusion_protdomain": [
 
                 ],
@@ -191,7 +197,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-25T15:33:22.872383199",
+        "timestamp": "2026-07-09T15:08:41.176043529",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
