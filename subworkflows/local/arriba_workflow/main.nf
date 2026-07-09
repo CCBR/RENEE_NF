@@ -63,8 +63,19 @@ workflow arriba_workflow {
         // PREPARE_GENOME emits fasta as a bare path, so we wrap it here.
         ch_fasta_ref = ch_fasta.map { fa -> [ [id: 'reference'], fa ] }
 
+        // STAR_ALIGN emits `bam` using a glob that can match multiple BAMs (esp. in stub runs).
+        // Normalize to a single BAM file for downstream processes.
+        ch_arriba_bam = STAR_ALIGN_ARRIBA.out.bam.map { meta, bam ->
+            def bams = [ bam ].flatten()
+            def selected = bams.find { p ->
+                def n = p.getFileName().toString()
+                n.endsWith('Xd.out.bam') || n.endsWith('Aligned.out.bam')
+            } ?: bams.first()
+            tuple(meta, selected)
+        }
+
         ARRIBA_ARRIBA(
-            STAR_ALIGN_ARRIBA.out.bam,
+            ch_arriba_bam,
             ch_fasta_ref,
             ch_genes_gtf,
             ch_blacklist.ifEmpty( [] ),
@@ -75,7 +86,7 @@ workflow arriba_workflow {
 
         // Sort and index the chimeric BAM (CCBR samtools/sort writes BAI in one step).
         // Prefix is set to "${meta.id}.arriba" via modules.config SAMTOOLS_SORT_ARRIBA block.
-        SAMTOOLS_SORT_ARRIBA( STAR_ALIGN_ARRIBA.out.bam )
+        SAMTOOLS_SORT_ARRIBA( ch_arriba_bam )
 
         // Join sorted BAM + BAI with fusions TSV → [ meta, bam, bai, fusions ]
         // to satisfy the ARRIBA_VISUALISATION input tuple.

@@ -24,7 +24,7 @@ process ARRIBA_DOWNLOAD {
     script:
     def arriba_version = '2.5.0'
     """
-    wget https://github.com/suhrig/arriba/releases/download/v${arriba_version}/arriba_v${arriba_version}.tar.gz -O arriba_v${arriba_version}.tar.gz --no-check-certificate
+    wget https://github.com/suhrig/arriba/releases/download/v${arriba_version}/arriba_v${arriba_version}.tar.gz -O arriba_v${arriba_version}.tar.gz
     tar -xzvf arriba_v${arriba_version}.tar.gz
     rm arriba_v${arriba_version}.tar.gz
     mv arriba_v${arriba_version}/database/* .
