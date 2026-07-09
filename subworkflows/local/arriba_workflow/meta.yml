@@ -1,50 +1,103 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "arriba_workflow"
-## TODO nf-core: Add a description of the subworkflow and list keywords
-description: Sort SAM/BAM/CRAM file
+description: |
+  Arriba gene-fusion calling subworkflow. Mirrors the paired-end arriba
+  Snakemake rule from RENEE: (1) STAR alignment with chimeric-detection
+  parameters and two-pass basic mode, (2) Arriba fusion calling on the
+  unsorted BAM, (3) samtools sort + index of the chimeric BAM, and
+  (4) draw_fusions.R visualisation. The subworkflow is gated on the
+  blacklist channel — if no blacklist is supplied all steps are skipped.
+  Single-end reads are excluded. cytobands and protein_domains are optional.
 keywords:
-  - sort
-  - bam
-  - sam
-  - cram
-## TODO nf-core: Add a list of the modules and/or subworkflows used in the subworkflow
+  - fusion
+  - gene-fusion
+  - arriba
+  - star
+  - rna-seq
 components:
+  - star/align
+  - arriba/arriba
   - samtools/sort
-  - samtools/index
-## TODO nf-core: List all of the channels used as input with a description and their structure
+  - arriba/visualisation
 input:
-  - ch_bam:
+  - ch_reads:
       type: file
       description: |
-        The input channel containing the BAM/CRAM/SAM files
-        Structure: [ val(meta), path(bam) ]
-      pattern: "*.{bam/cram/sam}"
-## TODO nf-core: List all of the channels used as output with a descriptions and their structure
+        Trimmed paired-end FASTQ reads (single-end samples are filtered out).
+        Structure: [ val(meta), path(reads) ]
+      pattern: "*.fastq.gz"
+  - ch_star_index:
+      type: directory
+      description: |
+        STAR genome index directory.
+        Structure: [ val(meta2), path(index) ]
+  - ch_genes_gtf:
+      type: file
+      description: |
+        Genome annotation GTF file.
+        Structure: [ val(meta3), path(gtf) ]
+      pattern: "*.gtf"
+  - ch_fasta:
+      type: file
+      description: |
+        Genome FASTA file (bare path; wrapped internally to a meta tuple).
+        Structure: path(fasta)
+      pattern: "*.{fa,fasta,fa.gz,fasta.gz}"
+  - ch_blacklist:
+      type: file
+      description: |
+        Arriba fusion blacklist. If empty the entire subworkflow is skipped.
+        Structure: path(blacklist)
+      pattern: "*.tsv.gz"
+  - ch_known_fusions:
+      type: file
+      description: |
+        Optional Arriba known-fusions file. Pass an empty channel to omit.
+        Structure: path(known_fusions)
+      pattern: "*.tsv.gz"
+  - ch_cytobands:
+      type: file
+      description: |
+        Optional cytobands file for draw_fusions.R. Pass an empty channel to omit.
+        Structure: path(cytobands)
+      pattern: "*.tsv"
+  - ch_protein_domains:
+      type: file
+      description: |
+        Optional protein-domains file for draw_fusions.R. Pass an empty channel to omit.
+        Structure: path(protein_domains)
+      pattern: "*.gff3"
 output:
+  - fusions:
+      type: file
+      description: |
+        Arriba fusion calls that pass all filters (highest to lowest confidence).
+        Structure: [ val(meta), path(*.fusions.tsv) ]
+      pattern: "*.fusions.tsv"
+  - fusions_fail:
+      type: file
+      description: |
+        Arriba fusion calls classified as artefacts or observed in healthy tissue.
+        Structure: [ val(meta), path(*.fusions.discarded.tsv) ]
+      pattern: "*.fusions.discarded.tsv"
   - bam:
       type: file
       description: |
-        Channel containing BAM files
-        Structure: [ val(meta), path(bam) ]
+        Chimeric BAM sorted by coordinate (with BAI index) for Arriba visualisation.
+        Structure: [ val(meta), path(sorted.bam), path(sorted.bam.bai) ]
       pattern: "*.bam"
-  - bai:
+  - pdf:
       type: file
       description: |
-        Channel containing indexed BAM (BAI) files
-        Structure: [ val(meta), path(bai) ]
-      pattern: "*.bai"
-  - csi:
+        Gene-fusion visualisation figure produced by draw_fusions.R.
+        Structure: [ val(meta), path(*.pdf) ]
+      pattern: "*.pdf"
+  - star_log:
       type: file
       description: |
-        Channel containing CSI files
-        Structure: [ val(meta), path(csi) ]
-      pattern: "*.csi"
-  - versions:
-      type: file
-      description: |
-        File containing software versions
-        Structure: [ path(versions.yml) ]
-      pattern: "versions.yml"
+        STAR alignment summary log (Log.final.out).
+        Structure: [ val(meta), path(*Log.final.out) ]
+      pattern: "*Log.final.out"
 authors:
   - "@AlecSilver"
 maintainers:
