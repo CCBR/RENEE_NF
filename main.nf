@@ -74,7 +74,7 @@ workflow {
                 PREPARE_GENOME.out.genes_gtf,
                 PREPARE_GENOME.out.fasta,
                 PREPARE_GENOME.out.fusion_blacklist,
-                Channel.empty(),                      // known_fusions — not used in RENEE, so pass empty channel
+                PREPARE_GENOME.out.fusion_known_fusions,
                 PREPARE_GENOME.out.fusion_cytoband,
                 PREPARE_GENOME.out.fusion_protdomain
             )

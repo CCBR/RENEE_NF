@@ -21,6 +21,7 @@ process WRITE_GENOME_CONFIG {
         path(fusion_blacklist)
         path(fusion_cytoband)
         path(fusion_protdomain)
+        path(fusion_known_fusions)
 
     output:
         path("*.config"), emit: conf
@@ -57,7 +58,8 @@ process WRITE_GENOME_CONFIG {
     for f in ("${annotate}", "${annotate_isoforms}", "${refflat}",
               "${bed_ref}", "${qualimap_info}", "${karyobeds}",
               "${karyoploter}", "${rrna_list}", "${tin_ref}",
-              "${fusion_blacklist}", "${fusion_cytoband}", "${fusion_protdomain}"):
+              "${fusion_blacklist}", "${fusion_cytoband}", "${fusion_protdomain}",
+              "${fusion_known_fusions}"):
         stage_path(f, genome_name)
 
     idx = "\${params.index_dir}"
@@ -79,9 +81,10 @@ process WRITE_GENOME_CONFIG {
         ("${karyoploter}",       "karyoploter"),
         ("${rrna_list}",         "rrna_list"),
         ("${tin_ref}",           "tin_ref"),
-        ("${fusion_blacklist}",  "fusion_blacklist"),
-        ("${fusion_cytoband}",   "fusion_cytoband"),
-        ("${fusion_protdomain}", "fusion_protdomain"),
+        ("${fusion_blacklist}",     "fusion_blacklist"),
+        ("${fusion_cytoband}",      "fusion_cytoband"),
+        ("${fusion_protdomain}",    "fusion_protdomain"),
+        ("${fusion_known_fusions}", "fusion_known_fusions"),
     ]
     for src, key in opt_paths:
         if src and os.path.exists(src):

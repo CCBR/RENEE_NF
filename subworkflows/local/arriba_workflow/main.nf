@@ -84,6 +84,7 @@ workflow arriba_workflow {
             ch_protein_domains.ifEmpty( [] )
         )
 
+
         // Sort and index the chimeric BAM (CCBR samtools/sort writes BAI in one step).
         // Prefix is set to "${meta.id}.arriba" via modules.config SAMTOOLS_SORT_ARRIBA block.
         SAMTOOLS_SORT_ARRIBA( ch_arriba_bam )
@@ -114,7 +115,7 @@ workflow arriba_workflow {
     emit:
         fusions      = ARRIBA_ARRIBA.out.fusions       // [ meta, fusions.tsv ]
         fusions_fail = ARRIBA_ARRIBA.out.fusions_fail  // [ meta, fusions.discarded.tsv ]
-        bam          = SAMTOOLS_SORT_ARRIBA.out.bam    // [ meta, sorted.bam, bai ]
+        bam          = SAMTOOLS_SORT_ARRIBA.out.bam   // [ meta, sorted.bam, bai ]
         pdf          = ARRIBA_VISUALISATION.out.pdf    // [ meta, fusions.pdf ]
         star_log     = STAR_ALIGN_ARRIBA.out.log_final // [ meta, Log.final.out ]
 }

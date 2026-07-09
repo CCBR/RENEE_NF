@@ -42,9 +42,13 @@ workflow PREPARE_GENOME {
             ch_rrna_list         = Channel.value( file( g.rrna_list,         checkIfExists: true ) )
             ch_tin_ref           = Channel.value( file( g.tin_ref,           checkIfExists: true ) )
 
-            ch_fusion_blacklist  = g.fusion_blacklist  ? Channel.value( file( g.fusion_blacklist,  checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_cytoband   = g.fusion_cytoband   ? Channel.value( file( g.fusion_cytoband,   checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_protdomain = g.fusion_protdomain ? Channel.value( file( g.fusion_protdomain, checkIfExists: true ) ) : Channel.empty()
+            // arriba vars
+            ch_fusion_blacklist     = g.fusion_blacklist     ? Channel.value( file( g.fusion_blacklist,     checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_cytoband      = g.fusion_cytoband      ? Channel.value( file( g.fusion_cytoband,      checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_protdomain    = g.fusion_protdomain    ? Channel.value( file( g.fusion_protdomain,    checkIfExists: true ) ) : Channel.empty()
+
+            // fusion channel will often be empty, but will terminate the process if not a value channel
+            ch_fusion_known_fusions = g.fusion_known_fusions ? Channel.value( file( g.fusion_known_fusions, checkIfExists: true ) ) : Channel.value([])
 
         } else if (params.genome_fasta && params.genes_gtf) {
 
@@ -97,9 +101,10 @@ workflow PREPARE_GENOME {
             ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
             ch_rrna_list         = Channel.empty()
             ch_tin_ref           = Channel.empty()
-            ch_fusion_blacklist  = Channel.empty()
-            ch_fusion_cytoband   = Channel.empty()
-            ch_fusion_protdomain = Channel.empty()
+            ch_fusion_blacklist     = Channel.empty()
+            ch_fusion_cytoband      = Channel.empty()
+            ch_fusion_protdomain    = Channel.empty()
+            ch_fusion_known_fusions = Channel.empty()
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,
@@ -119,7 +124,8 @@ workflow PREPARE_GENOME {
                 ch_tin_ref.ifEmpty([]),
                 ch_fusion_blacklist.ifEmpty([]),
                 ch_fusion_cytoband.ifEmpty([]),
-                ch_fusion_protdomain.ifEmpty([])
+                ch_fusion_protdomain.ifEmpty([]),
+                ch_fusion_known_fusions.ifEmpty([])
             )
 
             ch_genome_conf = WRITE_GENOME_CONFIG.out.conf.mix(
@@ -153,8 +159,9 @@ workflow PREPARE_GENOME {
         rsem_ref         = ch_rsem_ref
         rrna_list        = ch_rrna_list
         tin_ref          = ch_tin_ref
-        fusion_blacklist  = ch_fusion_blacklist
-        fusion_cytoband   = ch_fusion_cytoband
-        fusion_protdomain = ch_fusion_protdomain
+        fusion_blacklist     = ch_fusion_blacklist
+        fusion_cytoband      = ch_fusion_cytoband
+        fusion_protdomain    = ch_fusion_protdomain
+        fusion_known_fusions = ch_fusion_known_fusions
         conf             = ch_genome_conf
 }
