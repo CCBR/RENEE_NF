@@ -47,6 +47,11 @@
                     "type": "string",
                     "description": "Additional command-line arguments appended to STAR in pass 2."
                 },
+                "star_2_pass_basic": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Run STAR in per-sample two-pass basic mode (--twopassMode Basic) instead of the default multi-sample two-pass alignment."
+                },
                 "outputDir": {
                     "type": "string",
                     "default": "results",

@@ -16,8 +16,10 @@ process STAR_SJDB_FILTER {
         cut -f1-4 | \
         sort | \
         uniq | \
-        grep "^chr" | \
-        grep -v "^chrM" > uniq.filtered.SJ.out.tab
+        awk '/^chr/ && !/^chrM/' > uniq.filtered.SJ.out.tab
+        # awk is used instead of grep to avoid a non-zero exit code when no
+        # chr-prefixed junctions are present (e.g. sarscov2 test data). grep
+        # exits 1 on no match; awk always exits 0, so pipeline errors are real.
     """
 
     stub:

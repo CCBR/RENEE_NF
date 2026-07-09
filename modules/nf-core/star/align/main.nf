@@ -73,6 +73,7 @@ process STAR_ALIGN {
 
     # is not always cleaned up by STAR, especially in case of errors, and can take up a lot of space
     rm -rf ${prefix}._STARtmp
+    rm -rf ${prefix}._STARgenome
     """
 
     stub:
