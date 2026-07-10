@@ -16,12 +16,17 @@
         "content": [
             {
                 "0": [
-                    "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    ]
                 ],
                 "1": [
                     [
                         {
-                            "id": null
+                            "id": "reference"
                         },
                         "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
                     ]
@@ -65,7 +70,7 @@
                 "3": [
                     [
                         {
-                            "id": null
+                            "id": "reference"
                         },
                         [
                             "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -121,7 +126,12 @@
                     "custom_genome.config:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "fasta": [
-                    "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    ]
                 ],
                 "fusion_blacklist": [
 
@@ -141,7 +151,7 @@
                 "genes_gtf": [
                     [
                         {
-                            "id": null
+                            "id": "reference"
                         },
                         "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
                     ]
@@ -170,7 +180,7 @@
                 "star_index": [
                     [
                         {
-                            "id": null
+                            "id": "reference"
                         },
                         [
                             "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -197,7 +207,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-09T15:08:41.176043529",
+        "timestamp": "2026-07-10T13:04:54.345752435",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

@@ -16,18 +16,18 @@ workflow PREPARE_GENOME {
 
             def g = params.genomes[ params.genome ]
 
-            ch_fasta     = Channel.value( file( g.fasta, checkIfExists: true ) )
-            ch_genes_gtf = Channel.value( file( (params.star_gtf ?: g.genes_gtf), checkIfExists: true ) )
+            ch_fasta     = Channel.value( [[id: params.genome], file( g.fasta, checkIfExists: true )] )
+            ch_genes_gtf = Channel.value( [[id: params.genome], file( (params.star_gtf ?: g.genes_gtf), checkIfExists: true )] )
             ch_gene_info = Channel.value( file( g.gene_info, checkIfExists: true ) )
 
             def star_index_path = params.star_index ?: g.star_index
             if (star_index_path) {
-                ch_star_index = Channel.value( file( star_index_path, checkIfExists: true ) )
+                ch_star_index = Channel.value( [[id: params.genome],file( star_index_path, checkIfExists: true )] )
             } else {
                 ch_star_index = STAR_GENOMEGENERATE(
-                    ch_fasta.map { fa -> [ [:], fa ] },
-                    ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-                ).index.map { meta, idx -> idx }.first()
+                    ch_fasta,
+                    ch_genes_gtf
+                ).index
             }
 
             ch_organism          = Channel.value( g.organism )
@@ -51,9 +51,9 @@ workflow PREPARE_GENOME {
             ch_fusion_known_fusions = g.fusion_known_fusions ? Channel.value( file( g.fusion_known_fusions, checkIfExists: true ) ) : Channel.value([])
 
         } else if (params.genome_fasta && params.genes_gtf) {
-
-            fasta_file = Channel.value( file( params.genome_fasta, checkIfExists: true ) )
-            gtf_file   = file( params.genes_gtf, checkIfExists: true )
+            // If no genome config is provided, fall back to user-specified FASTA and GTF files.
+            fasta_file = Channel.value( [[id: 'reference'], file( params.genome_fasta, checkIfExists: true )] )
+            gtf_file   = Channel.value( [[id: 'reference'], file( params.genes_gtf, checkIfExists: true )] )
 
             if (params.rename_contigs) {
 
@@ -72,7 +72,7 @@ workflow PREPARE_GENOME {
             } else {
 
                 ch_fasta = fasta_file
-                ch_gtf = Channel.value( file( params.genes_gtf, checkIfExists: true ) )
+                ch_gtf = gtf_file
             }
 
             ch_genes_gtf = ch_gtf
@@ -86,9 +86,9 @@ workflow PREPARE_GENOME {
              * input signature of your STAR_GENOMEGENERATE module.
              */
             ch_star_index = STAR_GENOMEGENERATE(
-                ch_fasta.map { fa -> [ [:], fa ] },
-                ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-            ).index.map { meta, idx -> idx }.first()
+                ch_fasta,
+                ch_genes_gtf
+            ).index
 
             ch_organism          = Channel.value( params.organism ?: 'custom' )
             ch_annotate          = Channel.empty()
@@ -145,9 +145,9 @@ workflow PREPARE_GENOME {
     emit:
 
         fasta            = ch_fasta
-        genes_gtf        = ch_genes_gtf.map  { gtf -> [ [id: params.genome], gtf ] }
+        genes_gtf        = ch_genes_gtf
         gene_info        = ch_gene_info
-        star_index       = ch_star_index.map { idx -> [ [id: params.genome], idx ] }
+        star_index       = ch_star_index
         organism         = ch_organism
         annotate         = ch_annotate
         annotate_isoforms = ch_annotate_isoforms

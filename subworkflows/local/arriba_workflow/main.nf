@@ -59,9 +59,7 @@ workflow arriba_workflow {
             ch_sjdb_placeholder
         )
 
-        // ARRIBA_ARRIBA expects fasta as tuple val(meta), path(fasta).
-        // PREPARE_GENOME emits fasta as a bare path, so we wrap it here.
-        ch_fasta_ref = ch_fasta.map { fa -> [ [id: 'reference'], fa ] }
+
 
         // STAR_ALIGN emits `bam` using a glob that can match multiple BAMs (esp. in stub runs).
         // Normalize to a single BAM file for downstream processes.
@@ -76,7 +74,7 @@ workflow arriba_workflow {
 
         ARRIBA_ARRIBA(
             ch_arriba_bam,
-            ch_fasta_ref,
+            ch_fasta,
             ch_genes_gtf,
             ch_blacklist.ifEmpty( [] ),
             ch_known_fusions.ifEmpty( [] ),

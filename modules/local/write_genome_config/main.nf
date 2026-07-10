@@ -3,10 +3,10 @@ process WRITE_GENOME_CONFIG {
     container "${params.containers.base}"
 
     input:
-        path(fasta)
-        path(genes_gtf)
+        tuple val(meta), path(fasta)
+        tuple val(meta2), path(genes_gtf)
         path(gene_info)
-        path(star_index)
+        tuple val(meta4), path(star_index)
         val(organism)
         path(annotate)
         path(annotate_isoforms)
