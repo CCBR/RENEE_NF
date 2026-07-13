@@ -68,7 +68,7 @@ workflow {
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
-            ARRIBA_WORKFLOW(
+            ARRIBA(
                 INITIAL_QC.out.trimmed_reads,
                 PREPARE_GENOME.out.star_index,
                 PREPARE_GENOME.out.genes_gtf,
@@ -113,11 +113,11 @@ workflow {
         star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
         star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
 
-        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA_WORKFLOW.out.fusions
-        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA_WORKFLOW.out.fusions_fail
-        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA_WORKFLOW.out.bam
-        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA_WORKFLOW.out.pdf
-        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA_WORKFLOW.out.star_log
+        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
+        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
+        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
+        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
+        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
 }
 
 output {
