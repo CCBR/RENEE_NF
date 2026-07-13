@@ -35,10 +35,12 @@ process UCSC_GTFTOGENEPRED {
     """
 
     stub:
+    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def gen_refflat = args.contains('-genePredExt') && args.contains('-geneNameAsName2')
     """
     touch ${prefix}.genepred
-    touch ${prefix}.refflat
+    ${ gen_refflat ? "touch ${prefix}.refflat" : "" }
 
     """
 }

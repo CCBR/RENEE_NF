@@ -16,6 +16,6 @@ workflow PICARD_INITIAL_QC {
         ch_markdup_bai = PICARD_MARKDUPLICATES.out.bai
 
     emit:
-        bam = PICARD_MARKDUPLICATES.out.bam // [ meta, *.bam ]
-        bai = PICARD_MARKDUPLICATES.out.bai // [ meta, *.bai ]
+        bam = ch_markdup_bam // [ meta, *.bam ]
+        bai = ch_markdup_bai // [ meta, *.bai ]
 }

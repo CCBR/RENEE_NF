@@ -56,7 +56,7 @@ process PICARD_MARKDUPLICATES {
     }
     """
     touch ${prefix}.${suffix}
-    touch ${prefix}.${suffix}.bai
+    ${ suffix == 'bam' ? "touch ${prefix}.${suffix}.bai" : "" }
     touch ${prefix}.metrics.txt
     """
 }
