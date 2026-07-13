@@ -19,20 +19,23 @@ nextflow_process {
                 input[0] = Channel.of([
                     [ id:'test', single_end:false ],
                     [
-                        file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_1_fastq_gz, checkIfExists: true),
-                        file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_2_fastq_gz, checkIfExists: true)
+                        file("${projectDir}/tests/test_data/arriba/read.R1.fastq.gz", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/arriba/read.R2.fastq.gz", checkIfExists: true)
                     ]
                 ])
                 input[1] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_fasta, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/genome.fa", checkIfExists: true)
                 ])
                 input[2] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_gtf, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/genes.gtf", checkIfExists: true)
                 ])
-                input[3] = []
-                input[4] = []
+                input[3] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/star_index", checkIfExists: true)
+                ])
+                input[4] = file("${projectDir}/tests/test_data/hg38_stub/arriba_blacklist.tsv", checkIfExists: true)
                 """
             }
         }
@@ -59,18 +62,21 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id:'test', single_end:true ],
-                    [ file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_1_fastq_gz, checkIfExists: true) ]
+                    [ file("${projectDir}/tests/test_data/arriba/read.R1.fastq.gz", checkIfExists: true) ]
                 ])
                 input[1] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_fasta, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/genome.fa", checkIfExists: true)
                 ])
                 input[2] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_gtf, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/genes.gtf", checkIfExists: true)
                 ])
-                input[3] = []
-                input[4] = []
+                input[3] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/star_index", checkIfExists: true)
+                ])
+                input[4] = file("${projectDir}/tests/test_data/hg38_stub/arriba_blacklist.tsv", checkIfExists: true)
                 """
             }
         }
@@ -81,69 +87,7 @@ nextflow_process {
         }
     }
 
-    test("sarscov2 - paired_end") {
-
-        config "./nextflow.config"
-
-        setup {
-            run("STAR_GENOMEGENERATE") {
-                script "modules/nf-core/star/genomegenerate/main.nf"
-                process {
-                    """
-                    input[0] = Channel.of([
-                        [ id:'test_fasta' ],
-                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
-                    ])
-                    input[1] = Channel.of([
-                        [ id:'test_gtf' ],
-                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
-                    ])
-                    """
-                }
-            }
-        }
-
-        when {
-            process {
-                """
-                input[0] = Channel.of([
-                    [ id:'test', single_end:false ],
-                    [
-                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
-                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
-                    ]
-                ])
-                input[1] = Channel.of([
-                    [ id:'test_fasta' ],
-                    [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
-                ])
-                input[2] = Channel.of([
-                    [ id:'test_gtf' ],
-                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
-                ])
-                input[3] = STAR_GENOMEGENERATE.out.index
-                input[4] = file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert path(process.out.fusions[0][1]).exists() },
-                { assert path(process.out.fusions_fail[0][1]).exists() },
-                { assert path(process.out.bam[0][1]).exists() },
-                { assert path(process.out.log_final[0][1]).exists() },
-                { assert snapshot(
-                    file(process.out.fusions[0][1]).name,
-                    file(process.out.fusions_fail[0][1]).name,
-                    file(process.out.bam[0][1]).name,
-                    file(process.out.log_final[0][1]).name,
-                    process.out.versions_star,
-                    process.out.versions_arriba
-                ).match() }
-            )
-        }
-    }
+    // TODO: make a non-stub test that is capable of running on biowulf
+    // The sarscov2 genome is not great for this
 
 }

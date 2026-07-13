@@ -102,6 +102,9 @@ process FUSIONARRIBA {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    if (meta.single_end) {
+        error "FUSIONARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
+    }
 
     """
     echo $args
