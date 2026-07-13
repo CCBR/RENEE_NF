@@ -9,7 +9,7 @@ include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { arriba_workflow as ARRIBA_WORKFLOW } from './subworkflows/local/arriba_workflow/main'
+include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
 
 
 

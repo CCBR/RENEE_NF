@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "arriba_workflow"
+name: "arriba"
 description: |
   Arriba gene-fusion calling subworkflow. Mirrors the paired-end arriba
   Snakemake rule from RENEE: (1) STAR alignment with chimeric-detection

@@ -1,17 +1,17 @@
 nextflow_workflow {
 
-    name "Test Subworkflow arriba_workflow"
+    name "Test Subworkflow arriba"
     script "../main.nf"
-    workflow "arriba_workflow"
+    workflow "arriba"
 
     tag "subworkflows"
-    tag "subworkflows/arriba_workflow"
+    tag "subworkflows/arriba"
     tag "star/align"
     tag "arriba/arriba"
     tag "samtools/sort"
     tag "arriba/visualisation"
 
-    test("arriba_workflow - homo_sapiens - paired_end - stub") {
+    test("arriba - homo_sapiens - paired_end - stub") {
 
         options "-stub"
         config "./nextflow.config"
@@ -23,28 +23,27 @@ nextflow_workflow {
                 input[0] = Channel.of([
                     [ id:'test', single_end:false ],
                     [
-                        file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_1_fastq_gz, checkIfExists: true),
-                        file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_2_fastq_gz, checkIfExists: true)
+                        file("${projectDir}/tests/test_data/arriba/read.R1.fastq.gz", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/arriba/read.R2.fastq.gz", checkIfExists: true)
                     ]
                 ])
                 // STAR genome index — tuple [meta, dir]
                 input[1] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_fasta, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/star_index", checkIfExists: true)
                 ])
                 // Annotation GTF — tuple [meta, file]
                 input[2] = Channel.of([
                     [ id:'genome' ],
-                    file(params.test_data['homo_sapiens']['genome'].genome_gtf, checkIfExists: true)
+                    file("${projectDir}/tests/test_data/hg38_stub/genes.gtf", checkIfExists: true)
                 ])
-                // Genome FASTA — bare path
-                input[3] = Channel.value(
-                    file(params.test_data['homo_sapiens']['genome'].genome_fasta, checkIfExists: true)
-                )
-                // Fusion blacklist — use sjdb_placeholder as a stand-in so the blacklist gate fires
-                input[4] = Channel.value(
-                    file("${projectDir}/assets/sjdb_placeholder.SJ.out.tab", checkIfExists: true)
-                )
+                // Genome FASTA — tuple [meta, file]
+                input[3] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/genome.fa", checkIfExists: true)
+                ])
+                // Fusion blacklist
+                input[4] = Channel.of(file("${projectDir}/tests/test_data/hg38_stub/arriba_blacklist.tsv", checkIfExists: true))
                 // known_fusions, cytobands, protein_domains — all optional / absent
                 input[5] = Channel.empty()
                 input[6] = Channel.empty()

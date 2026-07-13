@@ -15,13 +15,13 @@ include { ARRIBA_VISUALISATION                     } from '../../../modules/nf-c
 // cytobands and protein_domains are optional; visualisation degrades gracefully
 // when they are absent (flags are omitted from the draw_fusions.R call).
 
-workflow arriba_workflow {
+workflow arriba{
 
     take:
         ch_reads            // channel: [ val(meta), path(reads) ]         trimmed FASTQ reads (paired-end)
         ch_star_index       // channel: [ val(meta2), path(index) ]        STAR genome index
         ch_genes_gtf        // channel: [ val(meta3), path(gtf) ]          annotation GTF
-        ch_fasta            // channel: path(fasta)                         genome FASTA
+        ch_fasta            // channel: [ val(meta), path(fasta) ]          genome FASTA
         ch_blacklist        // channel: path(blacklist)     — may be empty
         ch_known_fusions    // channel: path(known_fusions) — may be empty
         ch_cytobands        // channel: path(cytobands)     — may be empty
@@ -37,20 +37,27 @@ workflow arriba_workflow {
         // dedicated Arriba fusion-calling rule.
 
         // Gate on the blacklist: if the genome config does not supply a fusion blacklist
-        // (ch_blacklist is Channel.empty()), combine() produces no items and all
-        // downstream processes are skipped — mirroring the Snakemake conditional rule.
+        // (ch_blacklist is empty), combine() produces no items and all downstream
+        // processes are skipped — mirroring the Snakemake conditional rule.
         // Single-end reads are also excluded: the Snakemake arriba rule is paired-end only.
-        ch_reads_gated = ch_reads
+        //
+        // The blacklist is carried through combine() so ch_blacklist is only consumed once
+        // (queue channels cannot be safely reused across multiple operators).
+        ch_reads
             .filter { meta, reads -> !meta.single_end }
             .combine( ch_blacklist )
-            .map { meta, reads, bl -> tuple( meta, reads ) }
+            .multiMap { meta, reads, bl ->
+                reads_in:     tuple( meta, reads )
+                blacklist_in: bl
+            }
+            .set { ch_fusionarriba_inputs }
 
         FUSIONARRIBA(
-            ch_reads_gated,
+            ch_fusionarriba_inputs.reads_in,
             ch_fasta,
             ch_genes_gtf,
             ch_star_index,
-            ch_blacklist.ifEmpty( [] )
+            ch_fusionarriba_inputs.blacklist_in
         )
 
         // Sort and index the chimeric BAM (CCBR samtools/sort writes BAI in one step).
@@ -63,8 +70,8 @@ workflow arriba_workflow {
             .join( FUSIONARRIBA.out.fusions )
 
         // Wrap optional reference paths as tuples for ARRIBA_VISUALISATION.
-        // An empty list is falsy in Groovy, so the draw_fusions.R flags are
-        // omitted automatically when the channels carry no data.
+        // Falls back to a null-meta empty tuple so the process flag is omitted
+        // when the reference file is absent.
         ch_prot_vis = ch_protein_domains
             .map { pd -> [ [id: 'reference'], pd ] }
             .ifEmpty( [ [id: 'null'], [] ] )

@@ -1,17 +1,17 @@
 nextflow_workflow {
 
-    name "Test Subworkflow arriba_workflow"
+    name "Test Subworkflow arriba"
     script "../main.nf"
-    workflow "arriba_workflow"
+    workflow "arriba"
 
     tag "subworkflows"
-    tag "subworkflows/arriba_workflow"
+    tag "subworkflows/arriba"
     tag "star/align"
     tag "arriba/arriba"
     tag "samtools/sort"
     tag "arriba/visualisation"
 
-        test("arriba_workflow full") {
+        test("arriba full") {
 
         config "./nextflow.config"
 
