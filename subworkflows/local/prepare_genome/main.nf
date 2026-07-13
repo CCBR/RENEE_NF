@@ -143,11 +143,11 @@ workflow PREPARE_GENOME {
 
 
     emit:
-
-        fasta            = ch_fasta
-        genes_gtf        = ch_genes_gtf
+        // emits path unless otherwise specified
+        fasta            = ch_fasta // tuple val(meta), path(fasta)
+        genes_gtf        = ch_genes_gtf // tuple val(meta2), path(genes_gtf)
         gene_info        = ch_gene_info
-        star_index       = ch_star_index
+        star_index       = ch_star_index // tuple val(meta4), path(star_index)
         organism         = ch_organism
         annotate         = ch_annotate
         annotate_isoforms = ch_annotate_isoforms

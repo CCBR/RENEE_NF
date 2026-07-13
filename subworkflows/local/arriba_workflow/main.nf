@@ -1,5 +1,4 @@
-include { STAR_ALIGN as STAR_ALIGN_ARRIBA          } from '../../../modules/nf-core/star/align'
-include { ARRIBA_ARRIBA                            } from '../../../modules/nf-core/arriba/arriba/main.nf'
+include { FUSIONARRIBA                             } from '../../../modules/local/fusionarriba/main.nf'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_ARRIBA    } from '../../../modules/CCBR/samtools/sort/main.nf'
 include { ARRIBA_VISUALISATION                     } from '../../../modules/nf-core/arriba/visualisation/main.nf'
 
@@ -37,11 +36,6 @@ workflow arriba_workflow {
         // is also shared with all STAR alignment rules. Single-end mode does not have a
         // dedicated Arriba fusion-calling rule.
 
-        // Placeholder satisfies the reads+sjdb tuple shape expected by STAR_ALIGN.
-        // No external SJDB is needed here because --twopassMode Basic is configured
-        // in modules.config for STAR_ALIGN_ARRIBA.
-        ch_sjdb_placeholder = Channel.value( file( params.sjdb_placeholder_tab, checkIfExists: true ) )
-
         // Gate on the blacklist: if the genome config does not supply a fusion blacklist
         // (ch_blacklist is Channel.empty()), combine() produces no items and all
         // downstream processes are skipped — mirroring the Snakemake conditional rule.
@@ -51,46 +45,22 @@ workflow arriba_workflow {
             .combine( ch_blacklist )
             .map { meta, reads, bl -> tuple( meta, reads ) }
 
-        STAR_ALIGN_ARRIBA(
+        FUSIONARRIBA(
             ch_reads_gated,
-            ch_star_index,
-            ch_genes_gtf,
-            false,
-            ch_sjdb_placeholder
-        )
-
-
-
-        // STAR_ALIGN emits `bam` using a glob that can match multiple BAMs (esp. in stub runs).
-        // Normalize to a single BAM file for downstream processes.
-        ch_arriba_bam = STAR_ALIGN_ARRIBA.out.bam.map { meta, bam ->
-            def bams = [ bam ].flatten()
-            def selected = bams.find { p ->
-                def n = p.getFileName().toString()
-                n.endsWith('Xd.out.bam') || n.endsWith('Aligned.out.bam')
-            } ?: bams.first()
-            tuple(meta, selected)
-        }
-
-        ARRIBA_ARRIBA(
-            ch_arriba_bam,
             ch_fasta,
             ch_genes_gtf,
-            ch_blacklist.ifEmpty( [] ),
-            ch_known_fusions.ifEmpty( [] ),
-            ch_cytobands.ifEmpty( [] ),
-            ch_protein_domains.ifEmpty( [] )
+            ch_star_index,
+            ch_blacklist.ifEmpty( [] )
         )
-
 
         // Sort and index the chimeric BAM (CCBR samtools/sort writes BAI in one step).
         // Prefix is set to "${meta.id}.arriba" via modules.config SAMTOOLS_SORT_ARRIBA block.
-        SAMTOOLS_SORT_ARRIBA( ch_arriba_bam )
+        SAMTOOLS_SORT_ARRIBA( FUSIONARRIBA.out.bam )
 
         // Join sorted BAM + BAI with fusions TSV → [ meta, bam, bai, fusions ]
         // to satisfy the ARRIBA_VISUALISATION input tuple.
         ch_vis_input = SAMTOOLS_SORT_ARRIBA.out.bam
-            .join( ARRIBA_ARRIBA.out.fusions )
+            .join( FUSIONARRIBA.out.fusions )
 
         // Wrap optional reference paths as tuples for ARRIBA_VISUALISATION.
         // An empty list is falsy in Groovy, so the draw_fusions.R flags are
@@ -111,9 +81,9 @@ workflow arriba_workflow {
         )
 
     emit:
-        fusions      = ARRIBA_ARRIBA.out.fusions       // [ meta, fusions.tsv ]
-        fusions_fail = ARRIBA_ARRIBA.out.fusions_fail  // [ meta, fusions.discarded.tsv ]
-        bam          = SAMTOOLS_SORT_ARRIBA.out.bam   // [ meta, sorted.bam, bai ]
+        fusions      = FUSIONARRIBA.out.fusions        // [ meta, fusions.tsv ]
+        fusions_fail = FUSIONARRIBA.out.fusions_fail   // [ meta, fusions.discarded.tsv ]
+        bam          = SAMTOOLS_SORT_ARRIBA.out.bam    // [ meta, sorted.bam, bai ]
         pdf          = ARRIBA_VISUALISATION.out.pdf    // [ meta, fusions.pdf ]
-        star_log     = STAR_ALIGN_ARRIBA.out.log_final // [ meta, Log.final.out ]
+        star_log     = FUSIONARRIBA.out.log_final      // [ meta, Log.final.out ]
 }
