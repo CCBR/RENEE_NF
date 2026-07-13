@@ -44,9 +44,25 @@ process FUSIONARRIBA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
+    def args  = task.ext.args  != null ? task.ext.args  : ''
+    def args2 = task.ext.args2 != null ? task.ext.args2 : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+
+    def star_arriba_args = [
+        '--outFilterMultimapNmax 50',
+        '--peOverlapNbasesMin 10',
+        '--alignSplicedMateMapLminOverLmate 0.5',
+        '--alignSJstitchMismatchNmax 5 -1 5 5',
+        '--chimSegmentMin 10',
+        '--chimOutType WithinBAM HardClip',
+        '--chimJunctionOverhangMin 10',
+        '--chimScoreDropMax 30',
+        '--chimScoreJunctionNonGTAG 0',
+        '--chimScoreSeparation 1',
+        '--chimSegmentReadGapMax 3',
+        '--chimMultimapNmax 50'
+    ].join(' ')
+
     if (meta.single_end) {
         error "FUSIONARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
     }
@@ -69,21 +85,10 @@ process FUSIONARRIBA {
         --outStd BAM_Unsorted \\
         --outSAMtype BAM Unsorted \\
         --outSAMunmapped Within \\
-        --outFilterMultimapNmax 50 \\
-        --peOverlapNbasesMin 10 \\
-        --alignSplicedMateMapLminOverLmate 0.5 \\
-        --alignSJstitchMismatchNmax 5 -1 5 5 \\
-        --chimSegmentMin 10 \\
-        --chimOutType WithinBAM HardClip \\
-        --chimJunctionOverhangMin 10 \\
-        --chimScoreDropMax 30 \\
-        --chimScoreJunctionNonGTAG 0 \\
-        --chimScoreSeparation 1 \\
-        --chimSegmentReadGapMax 3 \\
-        --chimMultimapNmax 50 \\
+        ${star_arriba_args} \\
+        ${args} \\
         --twopassMode Basic \\
         --outFileNamePrefix ${prefix}. \\
-        ${args} \\
     | tee ${prefix}.Aligned.out.bam | \\
     arriba -x /dev/stdin \\
         -o ${prefix}.fusions.tsv \\
@@ -101,6 +106,7 @@ process FUSIONARRIBA {
 
     stub:
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (meta.single_end) {
         error "FUSIONARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
@@ -108,6 +114,7 @@ process FUSIONARRIBA {
 
     """
     echo $args
+    echo $args2
     touch ${prefix}.fusions.tsv
     touch ${prefix}.fusions.discarded.tsv
     touch ${prefix}.Aligned.out.bam
