@@ -1,0 +1,469 @@
+{
+    "homo_sapiens - stub": {
+        "content": [
+            {
+                "versions_rsem": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        "1.3.1"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "star",
+                        "2.7.10a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-02-02T16:06:46.672144942",
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        }
+    },
+    "homo_sapiens - fastq": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    "test.genes.results:md5,c7ec226f76736ea805771e73553ae359"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    "test.isoforms.results:md5,99f7f80aa505b44ca429fdebbd7dd5d8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    [
+                        "test.cnt:md5,76249e6b2f3c104f414aae596ba2c2f4",
+                        "test.model:md5,a7a4bc1734918ef5848604e3362b83e2",
+                        "test.theta:md5,de2e4490c98cc5383a86ae8225fd0a28"
+                    ]
+                ]
+            ],
+            {
+                "versions_rsem": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        "1.3.1"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "star",
+                        "2.7.10a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-02-02T16:06:40.332161512",
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        }
+    },
+    "hg38 - paired-end toTranscriptome BAM - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.genes.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.isoforms.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.stat:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        ""
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.STAR.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.transcript.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_genome": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_star": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.STAR.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.transcript.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "counts_gene": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.genes.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "counts_transcript": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.isoforms.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "logs": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stat": [
+                    [
+                        {
+                            "id": "KO_S3",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "KO_S3.RSEM.stat:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_rsem": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        ""
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-14T12:41:38.692969737",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired-end - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.genes.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.isoforms.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.stat:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "4": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        ""
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.STAR.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.transcript.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_genome": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_star": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.STAR.genome.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "bam_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.transcript.bam:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "counts_gene": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.genes.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "counts_transcript": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.isoforms.results:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "logs": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.log:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "stat": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false,
+                            "strandedness": "none"
+                        },
+                        "test.RSEM.stat:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_rsem": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        ""
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-14T12:47:42.981883085",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "homo_sapiens - bam": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    "test.genes.results:md5,c7ec226f76736ea805771e73553ae359"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    "test.isoforms.results:md5,99f7f80aa505b44ca429fdebbd7dd5d8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "strandedness": "forward"
+                    },
+                    [
+                        "test.cnt:md5,76249e6b2f3c104f414aae596ba2c2f4",
+                        "test.model:md5,a7a4bc1734918ef5848604e3362b83e2",
+                        "test.theta:md5,de2e4490c98cc5383a86ae8225fd0a28"
+                    ]
+                ]
+            ],
+            {
+                "versions_rsem": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "rsem",
+                        "1.3.1"
+                    ]
+                ],
+                "versions_star": [
+                    [
+                        "RSEM_CALCULATEEXPRESSION",
+                        "star",
+                        "2.7.10a"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-02-02T16:04:53.881673089",
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.3"
+        }
+    }
+}
