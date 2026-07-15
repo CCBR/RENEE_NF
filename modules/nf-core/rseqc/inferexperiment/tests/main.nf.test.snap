@@ -1,0 +1,71 @@
+{
+    "sarscov2 - [[meta] - bam] - bed - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.strand.infer_experiment.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "RSEQC_INFEREXPERIMENT",
+                        "rseqc",
+                        "4.0.0"
+                    ]
+                ],
+                "txt": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.strand.infer_experiment.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_rseqc": [
+                    [
+                        "RSEQC_INFEREXPERIMENT",
+                        "rseqc",
+                        "4.0.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-15T14:58:58.904446778",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - [[meta] - bam] - bed": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.strand.infer_experiment.txt:md5,f9d0bfc239df637cd8aeda40ade3c59a"
+                ]
+            ],
+            null,
+            [
+                [
+                    "RSEQC_INFEREXPERIMENT",
+                    "rseqc",
+                    "4.0.0"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-15T14:58:52.290702951",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
