@@ -3,7 +3,7 @@ nextflow.enable.dsl = 2
 // Plugins
 // Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-
+include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
@@ -68,6 +68,12 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            // flagstat takes the bam and bai as a single tuple channel
+            piccard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+
+            SAMTOOLS_FLAGSTAT(piccard_bam_bai_ch)
+
+
 
         }
         workflow.onComplete = {
@@ -106,6 +112,9 @@ workflow {
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
 
+        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+
 }
 
 output {
@@ -132,4 +141,7 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
+
+    flagstat { path { meta, file -> 'log_files/' } }
+    flagstat_versions { path { file -> 'log_files/' } }
 }
