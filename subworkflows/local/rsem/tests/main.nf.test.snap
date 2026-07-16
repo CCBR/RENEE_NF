@@ -1,0 +1,42 @@
+{
+    "hg38 - paired-end toTranscriptome BAMs - stub": {
+        "content": [
+            [
+                "KO_S3.RSEM.genes.results",
+                "KO_S4.RSEM.genes.results"
+            ],
+            [
+                "KO_S3.RSEM.isoforms.results",
+                "KO_S4.RSEM.isoforms.results"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-14T12:44:31.566070548",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired-end - stub": {
+        "content": [
+            [
+                "sample1.RSEM.genes.results",
+                "sample2.RSEM.genes.results"
+            ],
+            [
+                "sample1.RSEM.isoforms.results",
+                "sample2.RSEM.isoforms.results"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-14T12:47:48.976603193",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

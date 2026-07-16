@@ -10,7 +10,8 @@ include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
-include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
+include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'include { RSEM }           from './subworkflows/local/rsem/main'
+
 
 
 
@@ -79,6 +80,16 @@ workflow {
             )
 
 
+            // RSEM quantification -----------------------------------------------
+            // strand_info is emitted as empty channel until RSeQC is integrated;
+            // strandedness defaults to unstranded (--forward-prob 0.5)
+            RSEM(
+                STAR_ALIGN.out.pass2_transcript_bam,
+                Channel.empty(),
+                PREPARE_GENOME.out.rsem_ref,
+                PREPARE_GENOME.out.annotate
+            )
+
         }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -112,18 +123,6 @@ workflow {
         star_pass2_reads_per_gene = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
         star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
         star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
-
-        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
-        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
-
-        rseqc_infer_experiment       = params.build_genome ? Channel.empty() : RSEQC_QC.out.infer_experiment
-        rseqc_read_distribution      = params.build_genome ? Channel.empty() : RSEQC_QC.out.read_distribution
-        rseqc_inner_distance_freq    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_freq
-        rseqc_inner_distance_dist    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_dist
-        rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_rscript
-        rseqc_tin_txt                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_txt
-        rseqc_tin_xls                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_xls
-
 }
 
 output {
@@ -147,15 +146,4 @@ output {
     star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
-
-    picard_bam { path { meta, file -> 'bams/' } }
-    picard_bai { path { meta, file -> 'bams/' } }
-
-    rseqc_infer_experiment       { path { meta, file -> 'RSeQC/' } }
-    rseqc_read_distribution      { path { meta, file -> 'RSeQC/' } }
-    rseqc_inner_distance_freq    { path { meta, file -> 'RSeQC/' } }
-    rseqc_inner_distance_dist    { path { meta, file -> 'RSeQC/' } }
-    rseqc_inner_distance_rscript { path { meta, file -> 'RSeQC/' } }
-    rseqc_tin_txt                { path { meta, file -> 'RSeQC/' } }
-    rseqc_tin_xls                { path { meta, file -> 'RSeQC/' } }
 }

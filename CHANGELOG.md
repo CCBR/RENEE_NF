@@ -7,6 +7,16 @@
 ### New features
 
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
+- **RSEM integration**: Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
+  - Installed `rsem/calculateexpression` from nf-core modules; patched container to `nciccbr/ccbr_rsem_1.3.3:v1.0` via `modules/nf-core/rsem/calculateexpression/rsem-calculateexpression.diff`.
+  - Created local `RSEM_MERGE` module (`modules/local/rsem_merge/main.nf`) using the RENEE Python merge script (`bin/merge_rsem_results.py`), producing annotated expected-count, FPKM, TPM, and reformatted TSV matrices per the Snakemake version.
+  - Created `subworkflows/local/rsem/main.nf` which: reads `strand.info` from `infer_experiment.py` to compute `meta.strandedness` (mirroring the Snakemake `--forward-prob` logic), stages the RSEM reference directory from the `rsem_ref` prefix in genome configs, calls `RSEM_CALCULATEEXPRESSION` in `--alignments` (BAM) mode, and gathers results into `RSEM_MERGE`.
+  - Wired `RSEM` subworkflow into `main.nf` downstream of `STAR_ALIGN`; all outputs published to `DEG_ALL/`.
+  - Parameters match Snakemake exactly: `--no-bam-output --calc-ci --seed 12345 --time --keep-intermediate-files --estimate-rspd`.
+  - `rsem_ref` genome config key already present in all Biowulf and FRCE genome configs.
+  - Added nf-test stub tests for `RSEM_CALCULATEEXPRESSION` and the `RSEM` subworkflow using sarscov2 data (both passing).
+- **Agent & hooks**: Added `.github/agents/renee-nf-dev.agent.md` specialist agent for future RENEE_NF porting work; added `.github/hooks/nf-test-runner.json` + companion script that automatically runs `nf-test` with the Singularity profile after editing any `.nf.test` file.
+
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
