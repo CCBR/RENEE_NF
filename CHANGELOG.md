@@ -6,6 +6,7 @@
 
 ### New features
 
+- STAR align now useses the max read length of samples to calculate --sjdbOverhang, matching snakemake
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
