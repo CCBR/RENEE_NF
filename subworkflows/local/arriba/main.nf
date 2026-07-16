@@ -50,24 +50,24 @@ workflow arriba{
                 reads_in:     tuple( meta, reads )
                 blacklist_in: bl
             }
-            .set { ch_fusionarriba_inputs }
+            .set { ch_fusion_arriba_inputs }
 
-        FUSIONARRIBA(
-            ch_fusionarriba_inputs.reads_in,
+        FUSION_ARRIBA(
+            ch_fusion_arriba_inputs.reads_in,
             ch_fasta,
             ch_genes_gtf,
             ch_star_index,
-            ch_fusionarriba_inputs.blacklist_in
+            ch_fusion_arriba_inputs.blacklist_in
         )
 
         // Sort and index the chimeric BAM (CCBR samtools/sort writes BAI in one step).
         // Prefix is set to "${meta.id}.arriba" via modules.config SAMTOOLS_SORT_ARRIBA block.
-        SAMTOOLS_SORT_ARRIBA( FUSIONARRIBA.out.bam )
+        SAMTOOLS_SORT_ARRIBA( FUSION_ARRIBA.out.bam )
 
         // Join sorted BAM + BAI with fusions TSV → [ meta, bam, bai, fusions ]
         // to satisfy the ARRIBA_VISUALISATION input tuple.
         ch_vis_input = SAMTOOLS_SORT_ARRIBA.out.bam
-            .join( FUSIONARRIBA.out.fusions )
+            .join( FUSION_ARRIBA.out.fusions )
 
         // Wrap optional reference paths as tuples for ARRIBA_VISUALISATION.
         // Falls back to a null-meta empty tuple so the process flag is omitted
@@ -88,9 +88,9 @@ workflow arriba{
         )
 
     emit:
-        fusions      = FUSIONARRIBA.out.fusions        // [ meta, fusions.tsv ]
-        fusions_fail = FUSIONARRIBA.out.fusions_fail   // [ meta, fusions.discarded.tsv ]
+        fusions      = FUSION_ARRIBA.out.fusions        // [ meta, fusions.tsv ]
+        fusions_fail = FUSION_ARRIBA.out.fusions_fail   // [ meta, fusions.discarded.tsv ]
         bam          = SAMTOOLS_SORT_ARRIBA.out.bam    // [ meta, sorted.bam, bai ]
         pdf          = ARRIBA_VISUALISATION.out.pdf    // [ meta, fusions.pdf ]
-        star_log     = FUSIONARRIBA.out.log_final      // [ meta, Log.final.out ]
+        star_log     = FUSION_ARRIBA.out.log_final      // [ meta, Log.final.out ]
 }

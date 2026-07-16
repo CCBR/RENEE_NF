@@ -1,12 +1,12 @@
 nextflow_process {
 
-    name "Test Process FUSIONARRIBA"
+    name "Test Process FUSION_ARRIBA"
     script "../main.nf"
-    process "FUSIONARRIBA"
+    process "FUSION_ARRIBA"
 
     tag "modules"
     tag "modules_local"
-    tag "fusionarriba"
+    tag "fusion_arriba"
 
     test("homo_sapiens - paired_end - stub") {
 
@@ -83,7 +83,7 @@ nextflow_process {
 
         then {
             assert process.failed
-            assert process.errorReport.contains("FUSIONARRIBA requires paired-end reads")
+            assert process.errorReport.contains("FUSION_ARRIBA requires paired-end reads")
         }
     }
 

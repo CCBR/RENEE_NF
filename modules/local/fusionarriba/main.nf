@@ -15,7 +15,7 @@
 // TODO nf-core: Optional inputs are not currently supported by Nextflow. However, using an empty
 //               list (`[]`) instead of a file can be used to work around this issue.
 
-process FUSIONARRIBA {
+process FUSION_ARRIBA {
     tag "$meta.id"
     label 'process_high'
 
@@ -64,7 +64,7 @@ process FUSIONARRIBA {
     ].join(' ')
 
     if (meta.single_end) {
-        error "FUSIONARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
+        error "FUSION_ARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
     }
 
     """
@@ -109,7 +109,7 @@ process FUSIONARRIBA {
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (meta.single_end) {
-        error "FUSIONARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
+        error "FUSION_ARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
     }
 
     """
