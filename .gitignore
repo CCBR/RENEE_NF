@@ -54,3 +54,4 @@ run*.sh
 snakemake_summaries/
 .github/agents/
 .github/hooks/
+docs/dev/
