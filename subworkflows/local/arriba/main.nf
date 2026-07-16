@@ -1,4 +1,4 @@
-include { FUSIONARRIBA                             } from '../../../modules/local/fusionarriba/main.nf'
+include { FUSION_ARRIBA                             } from '../../../modules/local/fusion_arriba/main.nf'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_ARRIBA    } from '../../../modules/CCBR/samtools/sort/main.nf'
 include { ARRIBA_VISUALISATION                     } from '../../../modules/nf-core/arriba/visualisation/main.nf'
 

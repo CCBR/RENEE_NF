@@ -44,11 +44,13 @@ process FUSION_ARRIBA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args  = task.ext.args  != null ? task.ext.args  : ''
-    def args2 = task.ext.args2 != null ? task.ext.args2 : ''
+    def args_STAR  = task.ext.args_STAR  != null ? task.ext.args_STAR  : ''
+    def args_arriba = task.ext.args_arriba != null ? task.ext.args_arriba : ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    def star_arriba_args = [
+    // These are the default STAR parameters recommended by Arriba
+    // Can change them by providing a string of additional parameters to the task.ext.args_STAR_defaults variable in module.config
+    def star_defaults = task.ext.args_STAR_defaults != null ? task.ext.args_STAR_defaults : [
         '--outFilterMultimapNmax 50',
         '--peOverlapNbasesMin 10',
         '--alignSplicedMateMapLminOverLmate 0.5',
@@ -85,8 +87,8 @@ process FUSION_ARRIBA {
         --outStd BAM_Unsorted \\
         --outSAMtype BAM Unsorted \\
         --outSAMunmapped Within \\
-        ${star_arriba_args} \\
-        ${args} \\
+        ${star_defaults} \\
+        ${args_STAR} \\
         --twopassMode Basic \\
         --outFileNamePrefix ${prefix}. \\
     | tee ${prefix}.Aligned.out.bam | \\
@@ -96,7 +98,7 @@ process FUSION_ARRIBA {
         -a ${fasta} \\
         -g ${gtf} \\
         -b ${blacklist} \\
-        ${args2}
+        ${args_arriba}
 
     # Temporary STAR directories
     # are not always cleaned up by STAR, especially in case of errors, and can take up a lot of space

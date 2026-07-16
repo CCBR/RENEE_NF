@@ -1,14 +1,14 @@
 nextflow_process {
 
-    name "Test Process FUSIONARRIBA"
+    name "Test Process FUSION_ARRIBA"
     script "../main.nf"
-    process "FUSIONARRIBA"
+    process "FUSION_ARRIBA"
 
     tag "modules"
     tag "modules_local"
-    tag "fusionarriba"
+    tag "fusion_arriba"
 
-    test("fusionarriba full - biowulf") {
+    test("fusion_arriba full - biowulf") {
 
         config "./nextflow.config"
 
