@@ -15,7 +15,7 @@ include { ARRIBA_VISUALISATION                     } from '../../../modules/nf-c
 // cytobands and protein_domains are optional; visualisation degrades gracefully
 // when they are absent (flags are omitted from the draw_fusions.R call).
 
-workflow arriba{
+workflow arriba {
 
     take:
         ch_reads            // channel: [ val(meta), path(reads) ]         trimmed FASTQ reads (paired-end)
