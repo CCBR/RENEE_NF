@@ -105,6 +105,8 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        preseq_ccurve             = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.preseq_ccurve
+        preseq_log                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.preseq_log
 
 }
 
@@ -132,4 +134,6 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
+    preseq_ccurve { path { meta, file -> 'preseq/' } }
+    preseq_log    { path { meta, file -> 'preseq/' } }
 }

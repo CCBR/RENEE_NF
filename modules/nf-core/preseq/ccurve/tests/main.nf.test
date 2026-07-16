@@ -1,0 +1,86 @@
+
+nextflow_process {
+
+    name "Test Process PRESEQ_CCURVE"
+    script "../main.nf"
+    process "PRESEQ_CCURVE"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "preseq"
+    tag "preseq/ccurve"
+
+    test("sarscov2 - single_end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:true ],
+                    file(params.test_data['sarscov2']['illumina'].test_single_end_sorted_bam, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.c_curve,
+                    process.out.log,
+                    process.out.versions
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.c_curve,
+                    process.out.log,
+                    process.out.versions
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - stub") {
+        options '-stub'
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}
