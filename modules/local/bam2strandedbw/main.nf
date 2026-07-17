@@ -2,7 +2,7 @@ process BAM2STRANDEDBW {
     tag { meta.id }
     label 'process_high'
 
-    container "${params.containers.bam2strandedbw}"
+    container 'nciccbr/ccbr_bam2strandedbw:v0.0.1'
 
     input:
         tuple val(meta), path(bam), path(bai)
