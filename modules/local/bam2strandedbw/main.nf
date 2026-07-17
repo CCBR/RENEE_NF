@@ -20,6 +20,7 @@ process BAM2STRANDEDBW {
     def prefix     = task.ext.prefix     ?: "${meta.id}"
     def swap       = task.ext.swap_strands ?: false
 
+    # TODO - Add support for strandedness detection (e.g. using RSeQC infer_experiment.py)
     if (meta.single_end) {
         """
         # Extract chromosome sizes from BAM header

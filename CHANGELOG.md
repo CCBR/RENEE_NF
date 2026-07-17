@@ -6,6 +6,7 @@
 
 ### New features
 
+- Added a local `BAM2STRANDEDBW` module that converts STAR-aligned, duplicate-marked BAMs into forward and reverse strand BigWig files, porting the `bam2bw_rnaseq` rule from Snakemake RENEE. Handles both paired-end and single-end libraries and supports strand swapping via `--swap_strands` for non-dUTP libraries.
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
