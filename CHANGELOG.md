@@ -6,6 +6,7 @@
 
 ### New features
 
+- Implemented `RSeQC` for post-alignment RNA-seq quality control, including read distribution, infer experiment, and junction annotation analyses.
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
 - **RSEM integration**: Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
   - Installed `rsem/calculateexpression` from nf-core modules; patched container to `nciccbr/ccbr_rsem_1.3.3:v1.0` via `modules/nf-core/rsem/calculateexpression/rsem-calculateexpression.diff`.
