@@ -11,6 +11,9 @@ include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
 
+// Modules
+include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
+
 
 
 
@@ -68,6 +71,12 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            // BAM to stranded BigWig files
+            BAM2STRANDEDBW(
+                PICARD_INITIAL_QC.out.bam
+                    .join(PICARD_INITIAL_QC.out.bai)
+            )
+
 
         }
         workflow.onComplete = {
@@ -106,6 +115,9 @@ workflow {
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
 
+        bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
+        bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+
 }
 
 output {
@@ -132,4 +144,7 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
+
+    bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
+    bam2bw_rev { path { meta, file -> 'bigwigs/' } }
 }

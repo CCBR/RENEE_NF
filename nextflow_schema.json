@@ -173,6 +173,19 @@
                 }
             }
         },
+        "bam2bw_options": {
+            "title": "BAM to BigWig options",
+            "type": "object",
+            "fa_icon": "fas fa-chart-area",
+            "description": "Options controlling the BAM to stranded BigWig conversion step.",
+            "properties": {
+                "swap_strands": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Swap forward and reverse strand BigWig outputs. Enable for non-dUTP libraries where R1 maps in the same direction as the RNA strand (FIRST_READ_TRANSCRIPTION_STRAND)."
+                }
+            }
+        },
         "max_job_request_options": {
             "title": "Max job request options",
             "type": "object",
@@ -211,6 +224,9 @@
         },
         {
             "$ref": "#/$defs/alignment_options"
+        },
+        {
+            "$ref": "#/$defs/bam2bw_options"
         },
         {
             "$ref": "#/$defs/max_job_request_options"
