@@ -6,6 +6,7 @@
 
 ### New features
 
+- Incorporated the nf-core `qualimap/bamqc` module to perform post-alignment BAM quality control.
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.

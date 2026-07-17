@@ -71,7 +71,7 @@ workflow {
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
             // QualiMap BAM QC ---------------------------------------------------------------
-            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }.first()
+            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
             QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
 
 
