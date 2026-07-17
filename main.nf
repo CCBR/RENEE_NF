@@ -3,6 +3,8 @@ nextflow.enable.dsl = 2
 // Plugins
 // Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+include { PRESEQ_CCURVE }     from './modules/nf-core/preseq/ccurve/main'
+
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -10,6 +12,7 @@ include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
+
 
 
 
@@ -68,6 +71,9 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
+            PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
+
 
         }
         workflow.onComplete = {
@@ -105,8 +111,8 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
-        preseq_ccurve             = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.preseq_ccurve
-        preseq_log                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.preseq_log
+        preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
+        preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
 
 }
 

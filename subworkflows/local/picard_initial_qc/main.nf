@@ -1,6 +1,5 @@
 include { PICARD_ADDORREPLACEREADGROUPS } from '../../../modules/nf-core/picard/addorreplacereadgroups/main.nf'
 include { PICARD_MARKDUPLICATES }         from '../../../modules/nf-core/picard/markduplicates/main.nf'
-include { PRESEQ_CCURVE }                from '../../../modules/nf-core/preseq/ccurve/main.nf'
 
 workflow PICARD_INITIAL_QC {
     take:
@@ -16,12 +15,7 @@ workflow PICARD_INITIAL_QC {
         ch_markdup_bam = PICARD_MARKDUPLICATES.out.bam
         ch_markdup_bai = PICARD_MARKDUPLICATES.out.bai
 
-        // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
-        PRESEQ_CCURVE(ch_markdup_bam)
-
     emit:
         bam             = ch_markdup_bam               // [ meta, *.bam ]
         bai             = ch_markdup_bai               // [ meta, *.bai ]
-        preseq_ccurve   = PRESEQ_CCURVE.out.c_curve    // [ meta, *.c_curve.txt ]
-        preseq_log      = PRESEQ_CCURVE.out.log        // [ meta, *.log ]
 }

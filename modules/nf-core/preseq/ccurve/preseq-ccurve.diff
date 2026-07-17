@@ -1,6 +1,19 @@
 Changes in component 'nf-core/preseq/ccurve'
 'modules/nf-core/preseq/ccurve/environment.yml' is unchanged
-'modules/nf-core/preseq/ccurve/main.nf' is unchanged
+Changes in 'preseq/ccurve/main.nf':
+--- modules/nf-core/preseq/ccurve/main.nf
++++ modules/nf-core/preseq/ccurve/main.nf
+@@ -22,8 +22,6 @@
+     script:
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def paired_end = meta.single_end ? '' : '-pe'
+     """
+     preseq \\
+         c_curve \\
+         $args \\
+-        $paired_end \\
+         -output ${prefix}.c_curve.txt \\
 'modules/nf-core/preseq/ccurve/meta.yml' is unchanged
 Changes in 'preseq/ccurve/tests/main.nf.test':
 --- modules/nf-core/preseq/ccurve/tests/main.nf.test

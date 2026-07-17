@@ -22,12 +22,10 @@ process PRESEQ_CCURVE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def paired_end = meta.single_end ? '' : '-pe'
     """
     preseq \\
         c_curve \\
         $args \\
-        $paired_end \\
         -output ${prefix}.c_curve.txt \\
         $bam
     cp .command.err ${prefix}.command.log
