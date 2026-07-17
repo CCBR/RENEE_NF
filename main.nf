@@ -14,6 +14,9 @@ include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
 include { RSEM }           from './subworkflows/local/rsem/main'
 
 
+// Modules
+include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
+
 
 
 
@@ -91,6 +94,12 @@ workflow {
                 PREPARE_GENOME.out.rsem_ref,
                 PREPARE_GENOME.out.annotate
             )
+            // BAM to stranded BigWig files
+            BAM2STRANDEDBW(
+                PICARD_INITIAL_QC.out.bam
+                    .join(PICARD_INITIAL_QC.out.bai)
+            )
+
 
         }
         workflow.onComplete = {
@@ -148,6 +157,8 @@ workflow {
         rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_rscript
         rseqc_tin_txt                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_txt
         rseqc_tin_xls                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_xls
+        bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
+        bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
 
 }
 
@@ -195,4 +206,6 @@ output {
     rseqc_inner_distance_rscript { path { meta, file -> 'RSeQC/' } }
     rseqc_tin_txt                { path { meta, file -> 'RSeQC/' } }
     rseqc_tin_xls                { path { meta, file -> 'RSeQC/' } }
+    bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
+    bam2bw_rev { path { meta, file -> 'bigwigs/' } }
 }
