@@ -2,16 +2,32 @@
     "sarscov2 paired-end [bam]": {
         "content": [
             [
-
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.summary.txt:md5,9d98447e178b89a89f6f5aba7a772fe6"
+                ]
             ],
             [
-
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.tin.xls:md5,abdbb6d51a5cd7038cd862ce241ecef1"
+                ]
             ],
             [
-
+                [
+                    "RSEQC_TIN",
+                    "rseqc",
+                    "4.0.0"
+                ]
             ]
         ],
-        "timestamp": "2026-07-15T14:59:37.284528725",
+        "timestamp": "2026-07-17T11:34:46.624472674",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

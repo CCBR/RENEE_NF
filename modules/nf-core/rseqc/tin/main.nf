@@ -24,7 +24,9 @@ process RSEQC_TIN {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     # tin.py requires the index to be named {bam}.bai, not {bam.baseName}.bai
-    ln -sf $bai ${bam}.bai
+    if [[ "$bai" != "${bam}.bai" ]]; then
+        ln -sf $bai ${bam}.bai
+    fi
 
     tin.py \\
         -i $bam \\
