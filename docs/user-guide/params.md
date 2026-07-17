@@ -87,6 +87,14 @@ Options controlling the two-pass STAR alignment workflow.
 | ---------------------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ | -------- | ------ |
 | `sjdb_placeholder_tab` | Path to an empty splice-junction placeholder file passed to STAR_ALIGN pass 1 in place of a real SJDB file. | `string` | ${projectDir}/assets/sjdb_placeholder.SJ.out.tab |          |        |
 
+## BAM to BigWig options
+
+Options controlling the BAM to stranded BigWig conversion step.
+
+| Parameter      | Description                                                                                                                                                            | Type      | Default | Required | Hidden |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
+| `swap_strands` | Swap forward and reverse strand BigWig outputs. Enable for non-dUTP libraries where R1 maps in the same direction as the RNA strand (FIRST_READ_TRANSCRIPTION_STRAND). | `boolean` | False   |          |        |
+
 ## Max job request options
 
 Set the top limit for requested compute resources. These values cap the per-process resource labels defined in conf/base.config.
