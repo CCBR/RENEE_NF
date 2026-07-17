@@ -1,8 +1,10 @@
 nextflow.enable.dsl = 2
 
 // Plugins
-// Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+
+// Modules
+include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -68,6 +70,10 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            // QualiMap BAM QC ---------------------------------------------------------------
+            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }.first()
+            QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
+
 
         }
         workflow.onComplete = {
@@ -105,6 +111,7 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
 }
 
@@ -132,4 +139,5 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
+    qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
 }
