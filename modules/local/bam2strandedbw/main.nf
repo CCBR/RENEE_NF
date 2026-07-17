@@ -5,7 +5,7 @@ process BAM2STRANDEDBW {
     container 'nciccbr/ccbr_bam2strandedbw:v0.0.1'
 
     input:
-        tuple val(meta), path(bam), path(bai)
+        tuple val(meta), path(bam), path(bai), path(strand_info)
 
     output:
         tuple val(meta), path("*.fwd.bw"), emit: fwd_bw
@@ -17,10 +17,8 @@ process BAM2STRANDEDBW {
         task.ext.when == null || task.ext.when
 
     script:
-    def prefix     = task.ext.prefix     ?: "${meta.id}"
-    def swap       = task.ext.swap_strands ?: false
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
-    # TODO - Add support for strandedness detection (e.g. using RSeQC infer_experiment.py)
     if (meta.single_end) {
         """
         # Extract chromosome sizes from BAM header
@@ -49,8 +47,10 @@ process BAM2STRANDEDBW {
 
         rm -f ${prefix}.fwd.bg ${prefix}.rev.bg ${bam}.genome
 
-        # Swap fwd/rev if requested (non-dUTP / FIRST_READ_TRANSCRIPTION_STRAND)
-        if [ "${swap}" = "true" ]; then
+        # Swap fwd/rev for non-dUTP libraries (fr-firststrand):
+        # RSeQC infer_experiment last line fraction < 0.25 means R1 is sense (not dUTP)
+        strandinfo=\$(tail -n1 ${strand_info} | awk '{print \$NF}')
+        if [ \$(echo "\$strandinfo < 0.25" | bc) -eq 1 ]; then
             mv ${prefix}.fwd.bw ${prefix}.fwd.bw.tmp
             mv ${prefix}.rev.bw ${prefix}.fwd.bw
             mv ${prefix}.fwd.bw.tmp ${prefix}.rev.bw
@@ -108,8 +108,10 @@ process BAM2STRANDEDBW {
 
         rm -f ${prefix}.fwd*.bg ${prefix}.rev*.bg ${bam}.genome
 
-        # Swap fwd/rev if requested (non-dUTP / FIRST_READ_TRANSCRIPTION_STRAND)
-        if [ "${swap}" = "true" ]; then
+        # Swap fwd/rev for non-dUTP libraries (fr-firststrand):
+        # RSeQC infer_experiment last line fraction < 0.25 means R1 is sense (not dUTP)
+        strandinfo=\$(tail -n1 ${strand_info} | awk '{print \$NF}')
+        if [ \$(echo "\$strandinfo < 0.25" | bc) -eq 1 ]; then
             mv ${prefix}.fwd.bw ${prefix}.fwd.bw.tmp
             mv ${prefix}.rev.bw ${prefix}.fwd.bw
             mv ${prefix}.fwd.bw.tmp ${prefix}.rev.bw

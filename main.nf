@@ -98,6 +98,7 @@ workflow {
             BAM2STRANDEDBW(
                 PICARD_INITIAL_QC.out.bam
                     .join(PICARD_INITIAL_QC.out.bai)
+                    .join(RSEQC_QC.out.infer_experiment)
             )
 
 

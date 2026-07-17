@@ -25,9 +25,11 @@ workflow RSEM {
         ch_rsem_input = ch_bam_with_strand.map { meta, bam, strand_info ->
             def strandedness = 'none'
             if (strand_info) {
-                def lines = strand_info.readLines()
-                def lastVal = lines.last().tokenize().last() as float
-                strandedness = lastVal > 0.75 ? 'reverse' : (lastVal < 0.25 ? 'forward' : 'none')
+                def lines = strand_info.readLines().findAll { it.trim() }
+                if (lines) {
+                    def lastVal = lines.last().tokenize().last() as float
+                    strandedness = lastVal > 0.75 ? 'reverse' : (lastVal < 0.25 ? 'forward' : 'none')
+                }
             }
             [ meta + [strandedness: strandedness], bam ]
         }
