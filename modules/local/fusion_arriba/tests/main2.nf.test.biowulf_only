@@ -1,0 +1,52 @@
+nextflow_process {
+
+    name "Test Process FUSION_ARRIBA"
+    script "../main.nf"
+    process "FUSION_ARRIBA"
+
+    tag "modules"
+    tag "modules_local"
+    tag "fusion_arriba"
+
+    test("fusion_arriba full - biowulf") {
+
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    [
+                        file('${projectDir}/tests/test_data/arriba/read.R1.fastq.gz', checkIfExists: true),
+                        file('${projectDir}/tests/test_data/arriba/read.R2.fastq.gz', checkIfExists: true)
+                    ]
+                ])
+                input[1] = Channel.of([
+                    [ id:'genome' ],
+                    [ file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/GRCh38.d1.vd1.fa", checkIfExists: true) ]
+                ])
+                input[2] = Channel.of([
+                    [ id:'genome' ],
+                    [ file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/gencode.v48.primary_assembly.annotation.gtf.reformat.gtf", checkIfExists: true) ]
+                ])
+                input[3] = Channel.of([
+                    [ id:'genome' ],
+                    file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/STAR/2.7.6a/genome", checkIfExists: true)
+                ])
+                input[4] = file("/data/CCBR_Pipeliner/db/PipeDB/arriba/arriba_v2.4.0/database/blacklist_hg38_GRCh38_v2.4.0.tsv.gz", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fusions[0][1]).exists() },
+                { assert path(process.out.fusions_fail[0][1]).exists() },
+                { assert path(process.out.bam[0][1]).exists() },
+                { assert path(process.out.log_final[0][1]).exists() }
+            )
+        }
+    }
+}

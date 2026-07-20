@@ -7,7 +7,7 @@ process RENAME_FASTA_CONTIGS {
     container "${params.containers.base}"
 
     input:
-        path(fasta)
+        tuple val(meta), path(fasta)
         path(map)
 
     output:
