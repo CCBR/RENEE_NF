@@ -23,9 +23,14 @@ process QUALIMAP_BAMQC {
     prefix   = task.ext.prefix ?: "${meta.id}"
 
     def collect_pairs = meta.single_end ? '' : '--collect-overlap-pairs'
-    def memory = (task.memory.mega*0.8).intValue() + 'M'
+    def avail_mem = 3072
+    if (!task.memory) {
+        log.info('[Qualimap BamQC] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.')
+    } else {
+        avail_mem = (task.memory.mega * 0.8).intValue()
+    }
+    def memory = "${avail_mem}M"
     def regions = gff ? "--gff $gff" : ''
-
     def strandedness = 'non-strand-specific'
     if (meta.strandedness == 'forward') {
         strandedness = 'strand-specific-forward'
@@ -49,7 +54,7 @@ process QUALIMAP_BAMQC {
     """
 
     stub:
-    prefix = task.ext.suffix ? "${meta.id}${task.ext.suffix}" : "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir -p $prefix/css
     mkdir $prefix/images_qualimapReport
