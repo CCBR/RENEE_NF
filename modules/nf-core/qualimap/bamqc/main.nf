@@ -54,7 +54,7 @@ process QUALIMAP_BAMQC {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir -p $prefix/css
     mkdir $prefix/images_qualimapReport
