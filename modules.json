@@ -79,8 +79,9 @@
                     },
                     "ucsc/gtftogenepred": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["modules"]
+                        "git_sha": "5488955899b1c02180ca6049d954f7be861b9e74",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/ucsc/gtftogenepred/ucsc-gtftogenepred.diff"
                     }
                 }
             }
