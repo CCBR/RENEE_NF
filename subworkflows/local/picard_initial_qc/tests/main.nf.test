@@ -1,0 +1,66 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PICARD_INITIAL_QC"
+    script "../main.nf"
+    workflow "PICARD_INITIAL_QC"
+
+    tag "subworkflows"
+    tag "subworkflows/picard_initial_qc"
+    tag "picard"
+    tag "picard/addorreplacereadgroups"
+    tag "picard/markduplicates"
+
+    test("sarscov2 - paired_end - bam - stub") {
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.bam.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.bai.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("sarscov2 - paired_end - bam") {
+        config "./nextflow.config"
+        // options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.bam.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.bai.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+}

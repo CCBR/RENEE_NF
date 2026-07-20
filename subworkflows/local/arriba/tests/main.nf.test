@@ -1,0 +1,62 @@
+nextflow_workflow {
+
+    name "Test Subworkflow arriba"
+    script "../main.nf"
+    workflow "arriba"
+
+    tag "subworkflows"
+    tag "subworkflows/arriba"
+    tag "star/align"
+    tag "arriba/arriba"
+    tag "samtools/sort"
+    tag "arriba/visualisation"
+
+    test("arriba - homo_sapiens - paired_end - stub") {
+
+        options "-stub"
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                // Paired-end trimmed reads
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    [
+                        file("${projectDir}/tests/test_data/arriba/read.R1.fastq.gz", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/arriba/read.R2.fastq.gz", checkIfExists: true)
+                    ]
+                ])
+                // STAR genome index — tuple [meta, dir]
+                input[1] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/star_index", checkIfExists: true)
+                ])
+                // Annotation GTF — tuple [meta, file]
+                input[2] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/genes.gtf", checkIfExists: true)
+                ])
+                // Genome FASTA — tuple [meta, file]
+                input[3] = Channel.of([
+                    [ id:'genome' ],
+                    file("${projectDir}/tests/test_data/hg38_stub/genome.fa", checkIfExists: true)
+                ])
+                // Fusion blacklist
+                input[4] = Channel.of(file("${projectDir}/tests/test_data/hg38_stub/arriba_blacklist.tsv", checkIfExists: true))
+                // known_fusions, cytobands, protein_domains — all optional / absent
+                input[5] = Channel.empty()
+                input[6] = Channel.empty()
+                input[7] = Channel.empty()
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+}

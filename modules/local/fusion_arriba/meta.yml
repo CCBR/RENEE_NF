@@ -1,0 +1,182 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "fusionarriba"
+description: |
+  Align paired-end RNA-seq reads to a reference genome using STAR and detect
+  gene fusions using Arriba in a single streaming pipeline.
+keywords:
+  - alignment
+  - fusion detection
+  - RNA-seq
+  - gene fusion
+  - STAR
+  - arriba
+tools:
+  - star:
+      description: |
+        STAR is a software package for mapping RNA-seq reads against a large
+        reference genome, such as the human genome.
+      homepage: https://github.com/alexdobin/STAR
+      documentation: https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
+      doi: 10.1093/bioinformatics/bts635
+      licence: ["MIT"]
+      identifier: biotools:star
+  - arriba:
+      description: |
+        Arriba is a command-line tool for the detection of gene fusions from
+        RNA-seq data. It uses the chimeric alignments produced by STAR as input.
+      homepage: https://github.com/suhrig/arriba
+      documentation: https://arriba.readthedocs.io/en/latest/
+      doi: 10.1101/gr.277958.123
+      licence: ["MIT"]
+      identifier: biotools:arriba
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - reads:
+        type: file
+        description: |
+          List of input paired-end FastQ files (size 2).
+          Single-end data is not supported.
+        pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+        ontologies:
+          - edam: http://edamontology.org/format_1930 # FASTQ
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing reference information
+          e.g. [ id:'genome' ]
+    - fasta:
+        type: file
+        description: Reference genome FASTA file
+        pattern: "*.{fa,fasta,fna}"
+        ontologies:
+          - edam: http://edamontology.org/format_1929 # FASTA
+  - - meta3:
+        type: map
+        description: |
+          Groovy Map containing reference information
+          e.g. [ id:'genome' ]
+    - gtf:
+        type: file
+        description: Genome annotation GTF file
+        pattern: "*.gtf"
+        ontologies:
+          - edam: http://edamontology.org/format_2306 # GTF
+  - - meta4:
+        type: map
+        description: |
+          Groovy Map containing reference information
+          e.g. [ id:'genome' ]
+    - index:
+        type: directory
+        description: STAR genome index directory
+        pattern: "star"
+  - blacklist:
+      type: file
+      description: |
+        Arriba blacklist file listing recurrent artifactual fusions to be
+        filtered out.
+      pattern: "*.tsv.gz"
+  - known_fusions:
+      type: file
+      description: |
+        Arriba known fusions file used to boost sensitivity for previously
+        reported fusions.
+      pattern: "*.tsv.gz"
+  - cytobands:
+      type: file
+      description: |
+        Arriba cytobands file for annotating fusion breakpoints with
+        chromosomal band information.
+      pattern: "*.tsv"
+  - protein_domains:
+      type: file
+      description: |
+        Arriba protein domains GFF3 file used to annotate fusions with
+        affected protein domains.
+      pattern: "*.gff3"
+
+output:
+  fusions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.fusions.tsv":
+          type: file
+          description: TSV file containing detected gene fusions
+          pattern: "*.fusions.tsv"
+          ontologies:
+            - edam: http://edamontology.org/format_3475 # TSV
+  fusions_fail:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.fusions.discarded.tsv":
+          type: file
+          description: TSV file containing discarded/low-confidence fusion candidates
+          pattern: "*.fusions.discarded.tsv"
+          ontologies:
+            - edam: http://edamontology.org/format_3475 # TSV
+  log_final:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*Log.final.out":
+          type: file
+          description: STAR final summary log file
+          pattern: "*Log.final.out"
+  log_out:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*Log.out":
+          type: file
+          description: STAR main log file
+          pattern: "*Log.out"
+  log_progress:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*Log.progress.out":
+          type: file
+          description: STAR progress log file
+          pattern: "*Log.progress.out"
+  versions_star:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - star:
+          type: string
+          description: The name of the tool
+      - STAR --version | sed "s/STAR_//":
+          type: eval
+          description: The expression to obtain the version of STAR
+  versions_arriba:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - arriba:
+          type: string
+          description: The name of the tool
+      - "arriba -h | grep 'Version:' 2>&1 | sed 's/Version:\\s//'":
+          type: eval
+          description: The expression to obtain the version of Arriba
+
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"

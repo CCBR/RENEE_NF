@@ -15,6 +15,21 @@
                         "git_sha": "3ebf7a9865b13d62a08110ade3df946c69d82b76",
                         "installed_by": ["modules"],
                         "patch": "modules/CCBR/cutadapt/cutadapt.diff"
+                    },
+                    "picard/samtofastq": {
+                        "branch": "main",
+                        "git_sha": "25e6e67a4ec172db1bbb0ef995c4a470d847143a",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/flagstat": {
+                        "branch": "main",
+                        "git_sha": "01a9d0f811cc5582f9519d6c2ee62ed6949c77d4",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/sort": {
+                        "branch": "main",
+                        "git_sha": "5b39869abfc740c6243d18a3cd84aa7d78787125",
+                        "installed_by": ["modules"]
                     }
                 }
             }
@@ -22,6 +37,21 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "arriba/arriba": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "arriba/download": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "arriba/visualisation": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
                     "bowtie2/build": {
                         "branch": "master",
                         "git_sha": "a0961c41021561ac7cf139f86bd7812a2f99e994",
@@ -40,6 +70,21 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastqscreen/fastqscreen/fastqscreen-fastqscreen.diff"
                     },
+                    "picard/addorreplacereadgroups": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "picard/collectrnaseqmetrics": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "picard/markduplicates": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
                     "star/align": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
@@ -51,6 +96,12 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/star/genomegenerate/star-genomegenerate.diff"
+                    },
+                    "ucsc/gtftogenepred": {
+                        "branch": "master",
+                        "git_sha": "5488955899b1c02180ca6049d954f7be861b9e74",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/ucsc/gtftogenepred/ucsc-gtftogenepred.diff"
                     }
                 }
             }

@@ -52,6 +52,16 @@
                     "default": false,
                     "description": "Run STAR in per-sample two-pass basic mode (--twopassMode Basic) instead of the default multi-sample two-pass alignment."
                 },
+                "picard_strand_specificity": {
+                    "type": "string",
+                    "default": "SECOND_READ_TRANSCRIPTION_STRAND",
+                    "enum": [
+                        "NONE",
+                        "FIRST_READ_TRANSCRIPTION_STRAND",
+                        "SECOND_READ_TRANSCRIPTION_STRAND"
+                    ],
+                    "description": "Strand specificity passed to Picard CollectRnaSeqMetrics."
+                },
                 "outputDir": {
                     "type": "string",
                     "default": "results",

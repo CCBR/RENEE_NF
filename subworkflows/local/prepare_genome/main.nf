@@ -16,18 +16,18 @@ workflow PREPARE_GENOME {
 
             def g = params.genomes[ params.genome ]
 
-            ch_fasta     = Channel.value( file( g.fasta, checkIfExists: true ) )
-            ch_genes_gtf = Channel.value( file( (params.star_gtf ?: g.genes_gtf), checkIfExists: true ) )
+            ch_fasta     = Channel.value( [[id: params.genome], file( g.fasta, checkIfExists: true )] )
+            ch_genes_gtf = Channel.value( [[id: params.genome], file( (params.star_gtf ?: g.genes_gtf), checkIfExists: true )] )
             ch_gene_info = Channel.value( file( g.gene_info, checkIfExists: true ) )
 
             def star_index_path = params.star_index ?: g.star_index
             if (star_index_path) {
-                ch_star_index = Channel.value( file( star_index_path, checkIfExists: true ) )
+                ch_star_index = Channel.value( [[id: params.genome],file( star_index_path, checkIfExists: true )] )
             } else {
                 ch_star_index = STAR_GENOMEGENERATE(
-                    ch_fasta.map { fa -> [ [:], fa ] },
-                    ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-                ).index.map { meta, idx -> idx }.first()
+                    ch_fasta,
+                    ch_genes_gtf
+                ).index
             }
 
             ch_organism          = Channel.value( g.organism )
@@ -42,14 +42,18 @@ workflow PREPARE_GENOME {
             ch_rrna_list         = Channel.value( file( g.rrna_list,         checkIfExists: true ) )
             ch_tin_ref           = Channel.value( file( g.tin_ref,           checkIfExists: true ) )
 
-            ch_fusion_blacklist  = g.fusion_blacklist  ? Channel.value( file( g.fusion_blacklist,  checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_cytoband   = g.fusion_cytoband   ? Channel.value( file( g.fusion_cytoband,   checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_protdomain = g.fusion_protdomain ? Channel.value( file( g.fusion_protdomain, checkIfExists: true ) ) : Channel.empty()
+            // arriba vars
+            ch_fusion_blacklist     = g.fusion_blacklist     ? Channel.value( file( g.fusion_blacklist,     checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_cytoband      = g.fusion_cytoband      ? Channel.value( file( g.fusion_cytoband,      checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_protdomain    = g.fusion_protdomain    ? Channel.value( file( g.fusion_protdomain,    checkIfExists: true ) ) : Channel.empty()
+
+            // fusion channel will often be empty, but will terminate the process if not a value channel
+            ch_fusion_known_fusions = g.fusion_known_fusions ? Channel.value( file( g.fusion_known_fusions, checkIfExists: true ) ) : Channel.value([])
 
         } else if (params.genome_fasta && params.genes_gtf) {
-
-            fasta_file = Channel.value( file( params.genome_fasta, checkIfExists: true ) )
-            gtf_file   = file( params.genes_gtf, checkIfExists: true )
+            // If no genome config is provided, fall back to user-specified FASTA and GTF files.
+            fasta_file = Channel.value( [[id: 'reference'], file( params.genome_fasta, checkIfExists: true )] )
+            gtf_file   = Channel.value( [[id: 'reference'], file( params.genes_gtf, checkIfExists: true )] )
 
             if (params.rename_contigs) {
 
@@ -68,7 +72,7 @@ workflow PREPARE_GENOME {
             } else {
 
                 ch_fasta = fasta_file
-                ch_gtf = Channel.value( file( params.genes_gtf, checkIfExists: true ) )
+                ch_gtf = gtf_file
             }
 
             ch_genes_gtf = ch_gtf
@@ -82,9 +86,9 @@ workflow PREPARE_GENOME {
              * input signature of your STAR_GENOMEGENERATE module.
              */
             ch_star_index = STAR_GENOMEGENERATE(
-                ch_fasta.map { fa -> [ [:], fa ] },
-                ch_genes_gtf.map { gtf -> [ [:], gtf ] }
-            ).index.map { meta, idx -> idx }.first()
+                ch_fasta,
+                ch_genes_gtf
+            ).index
 
             ch_organism          = Channel.value( params.organism ?: 'custom' )
             ch_annotate          = Channel.empty()
@@ -97,9 +101,10 @@ workflow PREPARE_GENOME {
             ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
             ch_rrna_list         = Channel.empty()
             ch_tin_ref           = Channel.empty()
-            ch_fusion_blacklist  = Channel.empty()
-            ch_fusion_cytoband   = Channel.empty()
-            ch_fusion_protdomain = Channel.empty()
+            ch_fusion_blacklist     = Channel.empty()
+            ch_fusion_cytoband      = Channel.empty()
+            ch_fusion_protdomain    = Channel.empty()
+            ch_fusion_known_fusions = Channel.empty()
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,
@@ -119,7 +124,8 @@ workflow PREPARE_GENOME {
                 ch_tin_ref.ifEmpty([]),
                 ch_fusion_blacklist.ifEmpty([]),
                 ch_fusion_cytoband.ifEmpty([]),
-                ch_fusion_protdomain.ifEmpty([])
+                ch_fusion_protdomain.ifEmpty([]),
+                ch_fusion_known_fusions.ifEmpty([])
             )
 
             ch_genome_conf = WRITE_GENOME_CONFIG.out.conf.mix(
@@ -137,11 +143,11 @@ workflow PREPARE_GENOME {
 
 
     emit:
-
-        fasta            = ch_fasta
-        genes_gtf        = ch_genes_gtf.map  { gtf -> [ [id: params.genome], gtf ] }
+        // emits path unless otherwise specified
+        fasta            = ch_fasta // tuple val(meta), path(fasta)
+        genes_gtf        = ch_genes_gtf // tuple val(meta2), path(genes_gtf)
         gene_info        = ch_gene_info
-        star_index       = ch_star_index.map { idx -> [ [id: params.genome], idx ] }
+        star_index       = ch_star_index // tuple val(meta4), path(star_index)
         organism         = ch_organism
         annotate         = ch_annotate
         annotate_isoforms = ch_annotate_isoforms
@@ -153,8 +159,9 @@ workflow PREPARE_GENOME {
         rsem_ref         = ch_rsem_ref
         rrna_list        = ch_rrna_list
         tin_ref          = ch_tin_ref
-        fusion_blacklist  = ch_fusion_blacklist
-        fusion_cytoband   = ch_fusion_cytoband
-        fusion_protdomain = ch_fusion_protdomain
+        fusion_blacklist     = ch_fusion_blacklist
+        fusion_cytoband      = ch_fusion_cytoband
+        fusion_protdomain    = ch_fusion_protdomain
+        fusion_known_fusions = ch_fusion_known_fusions
         conf             = ch_genome_conf
 }

@@ -1,0 +1,62 @@
+nextflow_workflow {
+
+    name "Test Subworkflow arriba"
+    script "../main.nf"
+    workflow "arriba"
+
+    tag "subworkflows"
+    tag "subworkflows/arriba"
+    tag "star/align"
+    tag "arriba/arriba"
+    tag "samtools/sort"
+    tag "arriba/visualisation"
+
+        test("arriba full") {
+
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                // Paired-end trimmed reads
+                input[0] = Channel.of([
+                    [ id:'test', single_end:false ],
+                    [
+                        file('${projectDir}/tests/test_data/arriba/read.R1.fastq.gz', checkIfExists: true),
+                        file('${projectDir}/tests/test_data/arriba/read.R2.fastq.gz', checkIfExists: true)
+                    ]
+                ])
+                // STAR genome index — tuple [meta, dir]
+                input[1] = Channel.of([
+                    [ id:'genome' ],
+                    file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/STAR/2.7.6a/genome", checkIfExists: true)
+                ])
+                // Annotation GTF — tuple [meta, file]
+                input[2] = Channel.of([
+                    [ id:'genome' ],
+                    file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/gencode.v48.primary_assembly.annotation.gtf.reformat.gtf", checkIfExists: true)
+                ])
+                // Genome FASTA — bare path
+                input[3] = Channel.value(
+                    file("/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_48/GRCh38.d1.vd1.fa", checkIfExists: true)
+                )
+                // Fusion blacklist — use sjdb_placeholder as a stand-in so the blacklist gate fires
+                input[4] = Channel.value(
+                    file("/data/CCBR_Pipeliner/db/PipeDB/arriba/arriba_v2.4.0/database/blacklist_hg38_GRCh38_v2.4.0.tsv.gz", checkIfExists: true)
+                )
+                // known_fusions, cytobands, protein_domains — all optional / absent
+                input[5] = Channel.empty()
+                input[6] = Channel.fromPath("/data/CCBR_Pipeliner/db/PipeDB/arriba/arriba_v2.4.0/database/cytobands_hg38_GRCh38_v2.4.0.tsv")
+                input[7] = Channel.fromPath("/data/CCBR_Pipeliner/db/PipeDB/arriba/arriba_v2.4.0/database/protein_domains_hg38_GRCh38_v2.4.0.gff3")
+                """
+            }
+        }
+
+        then {
+            workflow.out.fusions.each {meta, fusion -> println "fusion: ${fusion}"}
+            assertAll(
+                { assert workflow.success }
+            )
+        }
+    }
+}

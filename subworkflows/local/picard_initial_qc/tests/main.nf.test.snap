@@ -1,0 +1,38 @@
+{
+    "sarscov2 - paired_end - bam - stub": {
+        "content": [
+            [
+                "test.star_rg_added.sorted.dmark.bam"
+            ],
+            [
+                "test.star_rg_added.sorted.dmark.bam.bai"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-09T16:08:40.088551553",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 - paired_end - bam": {
+        "content": [
+            [
+                "test.star_rg_added.sorted.dmark.bam"
+            ],
+            [
+                "test.star_rg_added.sorted.dmark.bai"
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-07-09T16:09:01.391150382",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

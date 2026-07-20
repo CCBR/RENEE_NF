@@ -1,0 +1,81 @@
+{
+    "ARRIBA_VISUALISATION - arriba test": {
+        "content": [
+            {
+                "versions_arriba": [
+                    [
+                        "ARRIBA_VISUALISATION",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-08T12:42:28.812415",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "ARRIBA_VISUALISATION": {
+        "content": [
+            {
+                "versions_arriba": [
+                    [
+                        "ARRIBA_VISUALISATION",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-08T12:05:30.927764",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "ARRIBA_VISUALISATION stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "ARRIBA_VISUALISATION",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ],
+                "pdf": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_arriba": [
+                    [
+                        "ARRIBA_VISUALISATION",
+                        "arriba",
+                        "2.5.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-08T12:42:56.292966",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}
