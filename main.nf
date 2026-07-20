@@ -12,13 +12,13 @@ include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
 include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
 include { RSEM }           from './subworkflows/local/rsem/main'
-
+include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
 
 // Modules
 include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
-include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
-include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+
+
+
 
 
 
