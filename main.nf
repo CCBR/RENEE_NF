@@ -9,8 +9,9 @@ include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
-include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+include { PICARD_INITIAL_QC }          from './subworkflows/local/picard_initial_qc/main'
+include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
+include { arriba as ARRIBA }            from './subworkflows/local/arriba/main'
 
 
 
@@ -70,6 +71,13 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            PICARD_COLLECTRNASEQMETRICS(
+                PICARD_INITIAL_QC.out.bam,
+                PREPARE_GENOME.out.refflat,
+                [],
+                PREPARE_GENOME.out.rrna_list
+            )
+
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
             ARRIBA(
@@ -119,6 +127,7 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        picard_rna_metrics        = params.build_genome ? Channel.empty() : PICARD_COLLECTRNASEQMETRICS.out.metrics
 
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
@@ -149,8 +158,9 @@ output {
     star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
 
-    picard_bam { path { meta, file -> 'bams/' } }
-    picard_bai { path { meta, file -> 'bams/' } }
+    picard_bam         { path { meta, file -> 'bams/' } }
+    picard_bai         { path { meta, file -> 'bams/' } }
+    picard_rna_metrics { path { meta, file -> 'picard/' } }
 
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
