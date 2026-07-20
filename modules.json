@@ -15,6 +15,11 @@
                         "git_sha": "3ebf7a9865b13d62a08110ade3df946c69d82b76",
                         "installed_by": ["modules"],
                         "patch": "modules/CCBR/cutadapt/cutadapt.diff"
+                    },
+                    "samtools/sort": {
+                        "branch": "main",
+                        "git_sha": "5b39869abfc740c6243d18a3cd84aa7d78787125",
+                        "installed_by": ["modules"]
                     }
                 }
             }
@@ -22,17 +27,20 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
-                    "star/align": {
+                    "arriba/arriba": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/star/align/star-align.diff"
+                        "installed_by": ["modules"]
                     },
-                    "star/genomegenerate": {
+                    "arriba/download": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/star/genomegenerate/star-genomegenerate.diff"
+                        "installed_by": ["modules"]
+                    },
+                    "arriba/visualisation": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
                     },
                     "bowtie2/build": {
                         "branch": "master",
@@ -51,6 +59,18 @@
                         "git_sha": "a0961c41021561ac7cf139f86bd7812a2f99e994",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastqscreen/fastqscreen/fastqscreen-fastqscreen.diff"
+                    },
+                    "star/align": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/star/align/star-align.diff"
+                    },
+                    "star/genomegenerate": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/star/genomegenerate/star-genomegenerate.diff"
                     }
                 }
             }
