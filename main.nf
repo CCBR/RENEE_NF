@@ -9,6 +9,7 @@ include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
+include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
 include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
 
 
@@ -66,6 +67,9 @@ workflow {
                 PREPARE_GENOME.out.genes_gtf
             )
 
+            // post-alignment steps ----------------------------------------------------------
+            PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
+
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
             ARRIBA(
@@ -113,6 +117,9 @@ workflow {
         star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
         star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
 
+        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
+        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
@@ -141,6 +148,9 @@ output {
     star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
+
+    picard_bam { path { meta, file -> 'bams/' } }
+    picard_bai { path { meta, file -> 'bams/' } }
 
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }

@@ -1,0 +1,84 @@
+
+nextflow_process {
+
+    name "Test Process PICARD_ADDORREPLACEREADGROUPS"
+    script "../main.nf"
+    process "PICARD_ADDORREPLACEREADGROUPS"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "picard"
+    tag "picard/addorreplacereadgroups"
+
+    test("sarscov2 - bam") {
+        config "./bam.config"
+
+        when {
+            process {
+                """
+                input[0] = [ [ id:'test', single_end:false ], file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true) ]
+                input[1] = [ [id:'test_genome'], file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true), file(params.test_data['sarscov2']['genome'].genome_fasta_fai, checkIfExists: true) ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.bam[0][1]).name,
+                    file(process.out.bai[0][1]).name,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                ).match()}
+            )
+        }
+    }
+
+    test("homo_sapiens - cram") {
+        config "./cram.config"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    [
+                        file(params.test_data['homo_sapiens']['illumina'].test_paired_end_sorted_cram, checkIfExists: true),
+                    ]
+                ]
+                input[1] = [ [:], file(params.test_data['homo_sapiens']['genome'].genome_fasta, checkIfExists: true), file(params.test_data['homo_sapiens']['genome'].genome_fasta_fai, checkIfExists: true) ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.cram[0][1]).name,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                ).match()}
+            )
+        }
+    }
+
+    test("sarscov2 - bam - stub") {
+        config "./bam.config"
+        options "-stub"
+        when {
+            process {
+                """
+                input[0] = [ [:], file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true) ]
+                input[1] = [ [:], [], [] ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+    }
+}
