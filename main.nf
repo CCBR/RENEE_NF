@@ -70,10 +70,10 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
-            // flagstat takes the bam and bai as a single tuple channel
-            piccard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
+            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
 
-            SAMTOOLS_FLAGSTAT(piccard_bam_bai_ch)
+            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
 
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
@@ -162,7 +162,7 @@ output {
     picard_bai { path { meta, file -> 'bams/' } }
 
     flagstat { path { meta, file -> 'log_files/' } }
-    flagstat_versions { path { file -> 'log_files/' } }
+    flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
