@@ -3,11 +3,15 @@
         "content": [
             {
                 "versions_arriba": [
-
+                    [
+                        "ARRIBA_VISUALISATION",
+                        "arriba",
+                        "2.5.0"
+                    ]
                 ]
             }
         ],
-        "timestamp": "2026-07-20T15:58:33.79271191",
+        "timestamp": "2026-07-20T16:26:46.36060452",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
