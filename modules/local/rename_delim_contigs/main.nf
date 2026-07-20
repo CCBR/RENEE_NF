@@ -8,7 +8,7 @@ process RENAME_DELIM_CONTIGS {
     container "nciccbr/ccbr_cvbio_3.0.0:v1.0.1"
 
     input:
-        path(delim)
+        tuple val(meta), path(delim)
         path(map)
 
     output:
