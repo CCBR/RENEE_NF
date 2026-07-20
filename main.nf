@@ -10,6 +10,8 @@ include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
+include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+
 
 
 
@@ -74,6 +76,18 @@ workflow {
             SAMTOOLS_FLAGSTAT(piccard_bam_bai_ch)
 
 
+            // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
+
+            ARRIBA(
+                INITIAL_QC.out.trimmed_reads,
+                PREPARE_GENOME.out.star_index,
+                PREPARE_GENOME.out.genes_gtf,
+                PREPARE_GENOME.out.fasta,
+                PREPARE_GENOME.out.fusion_blacklist,
+                PREPARE_GENOME.out.fusion_known_fusions,
+                PREPARE_GENOME.out.fusion_cytoband,
+                PREPARE_GENOME.out.fusion_protdomain
+            )
 
         }
         workflow.onComplete = {
@@ -115,6 +129,11 @@ workflow {
         flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
         flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
 
+        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
+        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
+        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
+        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
+        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
 }
 
 output {
@@ -144,4 +163,9 @@ output {
 
     flagstat { path { meta, file -> 'log_files/' } }
     flagstat_versions { path { file -> 'log_files/' } }
+    arriba_fusions      { path { meta, file -> 'fusions/' } }
+    arriba_fusions_fail { path { meta, file -> 'fusions/' } }
+    arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
+    arriba_pdf          { path { meta, file -> 'fusions/' } }
+    arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
 }
