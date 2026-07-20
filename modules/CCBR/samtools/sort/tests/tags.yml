@@ -1,0 +1,3 @@
+samtools/sort:
+  - modules/CCBR/samtools/sort/**
+  - modules/CCBR/samtools/sort/tests/**
