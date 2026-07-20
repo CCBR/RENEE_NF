@@ -44,13 +44,7 @@ process FUSION_ARRIBA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args_STAR  = task.ext.args_STAR  != null ? task.ext.args_STAR  : ''
-    def args_arriba = task.ext.args_arriba != null ? task.ext.args_arriba : ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
-    // These are the default STAR parameters recommended by Arriba
-    // Can change them by providing a string of additional parameters to the task.ext.args_STAR_defaults variable in module.config
-    def star_defaults = task.ext.args_STAR_defaults != null ? task.ext.args_STAR_defaults : [
+    def args_STAR  = task.ext.args_STAR  ?: [
         '--outFilterMultimapNmax 50',
         '--peOverlapNbasesMin 10',
         '--alignSplicedMateMapLminOverLmate 0.5',
@@ -64,6 +58,8 @@ process FUSION_ARRIBA {
         '--chimSegmentReadGapMax 3',
         '--chimMultimapNmax 50'
     ].join(' ')
+    def args_arriba = task.ext.args_arriba ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     if (meta.single_end) {
         error "FUSION_ARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
@@ -87,7 +83,6 @@ process FUSION_ARRIBA {
         --outStd BAM_Unsorted \\
         --outSAMtype BAM Unsorted \\
         --outSAMunmapped Within \\
-        ${star_defaults} \\
         ${args_STAR} \\
         --twopassMode Basic \\
         --outFileNamePrefix ${prefix}. \\
@@ -107,8 +102,8 @@ process FUSION_ARRIBA {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def args2 = task.ext.args2 ?: ''
+    def args = task.ext.args_STAR ?: ''
+    def args2 = task.ext.args_arriba ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (meta.single_end) {
         error "FUSION_ARRIBA requires paired-end reads, but single-end data was provided for sample: ${meta.id}"
