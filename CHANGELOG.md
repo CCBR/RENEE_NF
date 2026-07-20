@@ -19,6 +19,7 @@
   - Added nf-test stub tests for `RSEM_CALCULATEEXPRESSION` and the `RSEM` subworkflow using sarscov2 data (both passing).
 - **Agent & hooks**: Added `.github/agents/renee-nf-dev.agent.md` specialist agent for future RENEE_NF porting work; added `.github/hooks/nf-test-runner.json` + companion script that automatically runs `nf-test` with the Singularity profile after editing any `.nf.test` file.
 
+- Added `arriba` gene-fusion subworkflow (`subworkflows/local/arriba/main.nf`) with a dedicated `STAR_ALIGN_ARRIBA` modules.config block carrying all chimeric-detection flags (`--twopassMode Basic`, `--chimSegmentMin`, `--chimOutType WithinBAM HardClip`, etc.) matching the RENEE Snakemake `arriba` rule; updated nf-test module tests for `arriba/arriba` and `arriba/visualisation` to use local `params.test_data` references instead of `params.modules_testdata_base_path`.
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.

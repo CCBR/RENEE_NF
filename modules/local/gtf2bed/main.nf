@@ -5,7 +5,7 @@ process GTF2BED {
     container "${params.containers.base}"
 
     input:
-        path(gtf)
+        tuple val(meta), path(gtf)
 
     output:
         path("${gtf.baseName}.bed"), emit: bed
