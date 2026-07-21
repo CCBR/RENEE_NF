@@ -45,10 +45,14 @@ results/
 /setup-nextflow/
 
 # running nextflow scripts
-run_test_config.sh
-conf/test_invalidchars.config
+run_scripts
 conf/local_singularity.config
+run*.sh
+
 
 # AI summary files
 snakemake_summaries/
-.github/copilot-instructions.md
+.agents
+.github/agents/
+.github/hooks/
+docs/dev/

@@ -1,0 +1,197 @@
+Changes in component 'nf-core/fastqscreen/buildfromindex'
+'modules/nf-core/fastqscreen/buildfromindex/environment.yml' is unchanged
+Changes in 'fastqscreen/buildfromindex/main.nf':
+--- modules/nf-core/fastqscreen/buildfromindex/main.nf
++++ modules/nf-core/fastqscreen/buildfromindex/main.nf
+@@ -12,19 +12,20 @@
+
+     output:
+     path ("FastQ_Screen_Genomes"), emit: database
++    path ("FastQ_Screen_Genomes/fastq_screen.conf"), emit: conf
+     tuple val("${task.process}"), val('fastqscreen'), eval('fastq_screen --version 2>&1 | sed "s/^.*FastQ Screen v//;"'), emit: versions_fastqscreen, topic: versions
+
+     when:
+     task.ext.when == null || task.ext.when
+
+     script:
+-    dir = "FastQ_Screen_Genomes"
+-    folder = indexes.collect { index -> index.toString() }
+-    database = [genome_names, folder].transpose()
+-    copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
++    def dir = "FastQ_Screen_Genomes"
++    def folder = indexes.collect { index -> index.toString() }
++    def database = [genome_names, folder].transpose()
++    def copy_indexes = folder.collect { index -> "cp -r ${index} ${dir}/${index}" }.join(" && ")
+
+     // Folder name and index (within folder) name could be different - use bash to look for index name
+-    config = database
++    def config = database
+         .collect { index -> "########## ${index[0]} \nDATABASE ${index[0]} ${dir}/${index[1]}/${index[1] + '_to_be_replaced'}" }
+         .join("\n\n")
+         .replace("\n", "\\n")
+@@ -51,7 +52,7 @@
+     """
+
+     stub:
+-    dir = "FastQ_Screen_Genomes"
++    def dir = "FastQ_Screen_Genomes"
+     """
+     mkdir ${dir}
+     touch ${dir}/fastq_screen.conf
+
+Changes in 'fastqscreen/buildfromindex/meta.yml':
+--- modules/nf-core/fastqscreen/buildfromindex/meta.yml
++++ modules/nf-core/fastqscreen/buildfromindex/meta.yml
+@@ -7,7 +7,8 @@
+   - reference
+ tools:
+   - "fastqscreen":
+-      description: "FastQ Screen allows you to screen a library of sequences in FastQ
++      description:
++        "FastQ Screen allows you to screen a library of sequences in FastQ
+         format against a set of sequence databases so you can see if the composition
+         of the library matches with what you expect."
+       homepage: "https://www.bioinformatics.babraham.ac.uk/projects/fastq_screen/"
+@@ -28,7 +29,8 @@
+   database:
+     - FastQ_Screen_Genomes:
+         type: directory
+-        description: fastq screen database folder containing config file and index
++        description:
++          fastq screen database folder containing config file and index
+           folders
+         pattern: "FastQ_Screen_Genomes"
+   versions_fastqscreen:
+
+Changes in 'fastqscreen/buildfromindex/tests/main.nf.test':
+--- modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test
++++ modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test
+@@ -18,10 +18,10 @@
+                 """
+                 input[0] = channel.of([
+                     [id: "sarscov2"],
+-                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
++                    file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true)
+                 ], [
+                     [id: "human"],
+-                    file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/chr21/sequence/genome.fasta', checkIfExists: true)
++                    file(params.test_data['homo_sapiens']['genome'].genome_21_fasta, checkIfExists: true)
+                 ])
+                 """
+             }
+@@ -42,7 +42,7 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert snapshot(sanitizeOutput(process.out)).match() }
++                { assert snapshot(process.out).match() }
+             )
+         }
+     }
+@@ -63,7 +63,7 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert snapshot(sanitizeOutput(process.out)).match() }
++                { assert snapshot(process.out).match() }
+             )
+         }
+     }
+
+Changes in 'fastqscreen/buildfromindex/tests/main.nf.test.snap':
+--- modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test.snap
++++ modules/nf-core/fastqscreen/buildfromindex/tests/main.nf.test.snap
+@@ -2,6 +2,40 @@
+     "sarscov2 - human": {
+         "content": [
+             {
++                "0": [
++                    [
++                        [
++                            "genome.1.bt2:md5,cbe3d0bbea55bc57c99b4bfa25b5fbdf",
++                            "genome.2.bt2:md5,47b153cd1319abc88dda532462651fcf",
++                            "genome.3.bt2:md5,4ed93abba181d8dfab2e303e33114777",
++                            "genome.4.bt2:md5,c25be5f8b0378abf7a58c8a880b87626",
++                            "genome.rev.1.bt2:md5,52be6950579598a990570fbcf5372184",
++                            "genome.rev.2.bt2:md5,e3b4ef343dea4dd571642010a7d09597"
++                        ],
++                        [
++                            "genome.1.bt2:md5,2fbc8eeaf480f03b3a2362a782fa5755",
++                            "genome.2.bt2:md5,a5300e3cf590d4cd8bd5521cac6337d6",
++                            "genome.3.bt2:md5,d2a7a0e1c9891e847a15781c0695b84e",
++                            "genome.4.bt2:md5,a55dc4b09e3e00586de6963800c95b9a",
++                            "genome.rev.1.bt2:md5,93c07f7d04e5da6bf1322ad5f46ac806",
++                            "genome.rev.2.bt2:md5,c3fa30132c0c9b9bc7868059e8e23466"
++                        ],
++                        "fastq_screen.conf:md5,ca56e866c7006a46bdfe4e751e787265"
++                    ]
++                ],
++                "1": [
++                    "fastq_screen.conf:md5,ca56e866c7006a46bdfe4e751e787265"
++                ],
++                "2": [
++                    [
++                        "FASTQSCREEN_BUILDFROMINDEX",
++                        "fastqscreen",
++                        "0.16.0"
++                    ]
++                ],
++                "conf": [
++                    "fastq_screen.conf:md5,ca56e866c7006a46bdfe4e751e787265"
++                ],
+                 "database": [
+                     [
+                         [
+@@ -32,15 +66,33 @@
+                 ]
+             }
+         ],
+-        "timestamp": "2026-02-19T14:05:18.270350678",
++        "timestamp": "2026-06-23T17:18:54.159576016",
+         "meta": {
+-            "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.0"
+         }
+     },
+     "sarscov2 - human - stub": {
+         "content": [
+             {
++                "0": [
++                    [
++                        "fastq_screen.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
++                "1": [
++                    "fastq_screen.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
++                ],
++                "2": [
++                    [
++                        "FASTQSCREEN_BUILDFROMINDEX",
++                        "fastqscreen",
++                        "0.16.0"
++                    ]
++                ],
++                "conf": [
++                    "fastq_screen.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
++                ],
+                 "database": [
+                     [
+                         "fastq_screen.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
+@@ -55,10 +107,10 @@
+                 ]
+             }
+         ],
+-        "timestamp": "2026-02-19T14:05:36.667165654",
++        "timestamp": "2026-06-23T17:19:01.703079208",
+         "meta": {
+-            "nf-test": "0.9.4",
+-            "nextflow": "25.10.4"
++            "nf-test": "0.9.5",
++            "nextflow": "25.10.0"
+         }
+     }
+-}+}
+
+************************************************************

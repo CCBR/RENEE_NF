@@ -1,0 +1,72 @@
+Changes in component 'nf-core/star/genomegenerate'
+'modules/nf-core/star/genomegenerate/environment.yml' is unchanged
+'modules/nf-core/star/genomegenerate/main.nf' is unchanged
+'modules/nf-core/star/genomegenerate/meta.yml' is unchanged
+Changes in 'star/genomegenerate/tests/main.nf.test':
+--- modules/nf-core/star/genomegenerate/tests/main.nf.test
++++ modules/nf-core/star/genomegenerate/tests/main.nf.test
+@@ -9,17 +9,17 @@
+     tag "star/genomegenerate"
+
+     test("fasta_gtf") {
+-
++        config "./nextflow.config"
+         when {
+             process {
+                 """
+                 input[0] = Channel.of([
+                     [ id:'test_fasta' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                 ])
+                 input[1] = Channel.of([
+                     [ id:'test_gtf' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.gtf', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                 ])
+                 """
+             }
+@@ -43,7 +43,7 @@
+                 """
+                 input[0] = Channel.of([
+                     [ id:'test_fasta' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                 ])
+                 input[1] = Channel.of([ [], [] ])
+                 """
+@@ -70,11 +70,11 @@
+                 """
+                 input[0] = Channel.of([
+                     [ id:'test_fasta' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                 ])
+                 input[1] = Channel.of([
+                     [ id:'test_gtf' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.gtf', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                 ])
+                 """
+             }
+@@ -97,7 +97,7 @@
+                 """
+                 input[0] = Channel.of([
+                     [ id:'test_fasta' ],
+-                    [ file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true) ]
++                    [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                 ])
+                 input[1] = Channel.of([ [], [] ])
+                 """
+
+Changes in 'star/genomegenerate/tests/main.nf.test.snap':
+--- modules/nf-core/star/genomegenerate/tests/main.nf.test.snap
++++ modules/nf-core/star/genomegenerate/tests/main.nf.test.snap
+@@ -257,4 +257,4 @@
+         },
+         "timestamp": "2026-02-02T14:41:54.327031765"
+     }
+-}+}
+
+'modules/nf-core/star/genomegenerate/tests/nextflow.config' was created
+************************************************************

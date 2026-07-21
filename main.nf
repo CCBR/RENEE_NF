@@ -1,12 +1,17 @@
 nextflow.enable.dsl = 2
 
 // Plugins
+// Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-include {FASTQC as FASTQC_RAW} from './modules/local/fastqc'
-include {FASTQC as FASTQC_TRIMMED} from './modules/local/fastqc'
-include {BBTOOLS_BBMERGE} from './modules/local/bbtools'
-include {CUTADAPT} from './modules/CCBR/cutadapt'
-include {validate_fastqs as VALIDATE_FASTQS} from './subworkflows/local/validate_fastqs/main'
+include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
+// Subworkflows
+include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
+include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
+include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
+include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
+include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
+include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+
 
 
 
@@ -29,62 +34,62 @@ workflow LOG {
     log.info paramsSummaryLog(workflow)
 }
 
-
-process yeet {
-    container "${params.containers.base}"
-
-    output:
-    stdout
-
-    script:
-    """
-    echo ${params.input}
-    """
-}
-
 workflow {
     main:
         LOG()
         validateParameters()
 
-        ch_reads = Channel
-            .fromPath(params.input, checkIfExists: true)
-            .splitCsv(header: true)
-            .map { row ->
-                def has_fastq_2 = row.fastq_2 && row.fastq_2.toString().trim()
-                def meta = [
-                    id       : "${row.sample}_${row.replicate}",
-                    sample   : row.sample,
-                    replicate: row.replicate,
-                    single_end   : !has_fastq_2
-                ]
+        // build genome first, if set to build mode stop after this step
+        PREPARE_GENOME()
 
-                def reads = [file(row.fastq_1)]
-                if (has_fastq_2) {
-                    reads << file(row.fastq_2)
-                }
-
-                tuple(meta, reads)
-            }
-        // Split each sample read list into one fastq per emitted tuple for validation.
-        individual_fastq_ch = ch_reads.transpose()
+        if (params.build_genome) {
+            log.info "Build genome only mode enabled. Stopping workflow after genome preparation."
+            prepare_genome_conf = PREPARE_GENOME.out.conf
 
 
-        // Sample validation gate
-        VALIDATE_FASTQS(individual_fastq_ch, ch_reads)
-        ch_validated_reads = VALIDATE_FASTQS.out.reads
 
-        // ch_validated_reads.view()
+        } else {
+            log.info "Genome preparation complete. Continuing with workflow."
+            prepare_genome_conf = Channel.empty() // dont save genome copy if not in build mode
 
-        // QC and trimming steps
-        FASTQC_RAW(ch_validated_reads)
+            // Read samplesheet and emit channel of reads
+            CHECK_INPUT(params.input)
 
-        CUTADAPT(ch_validated_reads)
+            // Initial QC, trimming, and FastQ Screen steps
+            INITIAL_QC(CHECK_INPUT.out.reads)
 
-        FASTQC_TRIMMED(CUTADAPT.out.reads)
 
-        BBTOOLS_BBMERGE(CUTADAPT.out.reads)
+            // STAR alignment steps ----------------------------------------------------------
 
+            STAR_ALIGN(
+                INITIAL_QC.out.trimmed_reads,
+                PREPARE_GENOME.out.star_index,
+                PREPARE_GENOME.out.genes_gtf
+            )
+
+            // post-alignment steps ----------------------------------------------------------
+            PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
+
+            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
+            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+
+            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
+
+
+            // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
+
+            ARRIBA(
+                INITIAL_QC.out.trimmed_reads,
+                PREPARE_GENOME.out.star_index,
+                PREPARE_GENOME.out.genes_gtf,
+                PREPARE_GENOME.out.fasta,
+                PREPARE_GENOME.out.fusion_blacklist,
+                PREPARE_GENOME.out.fusion_known_fusions,
+                PREPARE_GENOME.out.fusion_cytoband,
+                PREPARE_GENOME.out.fusion_protdomain
+            )
+
+        }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
                 def message = Utils.spooker(workflow)
@@ -95,36 +100,72 @@ workflow {
         }
 
     publish:
-        fastqc_raw = FASTQC_RAW.out.html.mix(FASTQC_RAW.out.zip)
-        fastqvalidator = VALIDATE_FASTQS.out.logs
-        cutadapt_reads = CUTADAPT.out.reads
-        cutadapt_log = CUTADAPT.out.log
-        fastqc_trimmed = FASTQC_TRIMMED.out.html.mix(FASTQC_TRIMMED.out.zip)
-        bbtools_ihist = BBTOOLS_BBMERGE.out.ihist
+        // In build genome mode, only publish the genome conf file, otherwise publish all outputs
+        prepare_genome_conf = params.build_genome ? prepare_genome_conf : Channel.empty()
+
+        fastqc_raw     = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_raw
+        fastqvalidator = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqvalidator
+        cutadapt_reads = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
+        cutadapt_log   = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_log
+        fastqc_trimmed = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
+        bbtools_ihist  = params.build_genome ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
+        fqscreen_1_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
+        fqscreen_1_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
+        fqscreen_2_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
+        fqscreen_2_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
+
+        star_pass1_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_sj
+        star_pass1_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_log
+        star_sjdb                 = params.build_genome ? Channel.empty() : STAR_ALIGN.out.sjdb
+        star_pass2_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_log
+        star_pass2_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_sj
+        star_pass2_reads_per_gene = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
+        star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
+        star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
+
+        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
+        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+
+        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+
+        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
+        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
+        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
+        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
+        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
 }
 
 output {
-    fastqc_raw {
-        path { meta, file -> "fastqc/raw/" }
-    }
+    prepare_genome_conf { path { file -> "genome/" } }
+    fastqc_raw { path { meta, file -> "fastqc/raw/" } }
+    fastqvalidator { path { meta, file -> "fastqvalidator/${meta.id}/" } }
+    cutadapt_reads { path { meta, reads -> "cutadapt/${meta.id}/" } }
+    cutadapt_log { path { meta, log -> "cutadapt/${meta.id}/" } }
+    fastqc_trimmed { path { meta, file -> "fastqc/trimmed/" } }
+    bbtools_ihist { path { meta, ihist -> "bbtools/${meta.id}/" }}
+    fqscreen_1_txt  { path { meta, file  -> "FQscreen/" } }
+    fqscreen_1_png  { path { meta, file  -> "FQscreen/" } }
+    fqscreen_2_txt  { path { meta, file  -> "FQscreen2/" } }
+    fqscreen_2_png  { path { meta, file  -> "FQscreen2/" } }
 
-    fastqvalidator {
-        path { meta, file -> "fastqvalidator/${meta.id}/" }
-    }
+    star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
+    star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }
+    star_sjdb { path { file -> 'STAR_files/pass1/' } }
+    star_pass2_log { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_sj { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_reads_per_gene { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
+    star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
 
-    cutadapt_reads {
-        path { meta, reads -> "cutadapt/${meta.id}/" }
-    }
+    picard_bam { path { meta, file -> 'bams/' } }
+    picard_bai { path { meta, file -> 'bams/' } }
 
-    cutadapt_log {
-        path { meta, log -> "cutadapt/${meta.id}/" }
-    }
-
-    fastqc_trimmed {
-        path { meta, file -> "fastqc/trimmed/" }
-    }
-
-    bbtools_ihist {
-        path { meta, ihist -> "bbtools/${meta.id}/" }
-    }
+    flagstat { path { meta, file -> 'log_files/' } }
+    flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
+    arriba_fusions      { path { meta, file -> 'fusions/' } }
+    arriba_fusions_fail { path { meta, file -> 'fusions/' } }
+    arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
+    arriba_pdf          { path { meta, file -> 'fusions/' } }
+    arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
 }

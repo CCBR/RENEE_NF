@@ -1,0 +1,2 @@
+##gff-version 3
+chr1	stub	protein_domain	100	200	.	+	.	ID=stub_domain;Name=StubDomain

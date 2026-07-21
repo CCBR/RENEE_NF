@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "picardinitialqc"
+description: |
+  Add or replace read groups in a BAM file using Picard AddOrReplaceReadGroups,
+  then mark PCR/optical duplicates using Picard MarkDuplicates.
+keywords:
+  - picard
+  - markduplicates
+  - read groups
+  - bam
+  - duplicate marking
+  - qc
+components:
+  - picard/addorreplacereadgroups
+  - picard/markduplicates
+input:
+  - ch_bam:
+      type: file
+      description: |
+        Channel containing input BAM files.
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.bam"
+output:
+  - bam:
+      type: file
+      description: |
+        Channel containing duplicate-marked BAM files output by PICARD_MARKDUPLICATES.
+        Structure: [ val(meta), path(bam) ]
+      pattern: "*.bam"
+  - bai:
+      type: file
+      description: |
+        Channel containing BAI index files output by PICARD_MARKDUPLICATES.
+        Structure: [ val(meta), path(bai) ]
+      pattern: "*.bai"
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"

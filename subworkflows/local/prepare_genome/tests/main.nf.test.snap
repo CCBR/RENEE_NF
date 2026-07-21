@@ -1,0 +1,216 @@
+{
+    "fasta_gtf": {
+        "content": [
+            "[Genome, Log.out, SA, SAindex, chrLength.txt, chrName.txt, chrNameLength.txt, chrStart.txt, exonGeTrInfo.tab, exonInfo.tab, geneInfo.tab, genomeParameters.txt, sjdbInfo.txt, sjdbList.fromGTF.out.tab, sjdbList.out.tab, transcriptInfo.tab]",
+            {
+
+            }
+        ],
+        "timestamp": "2026-06-25T15:34:25.319331387",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "fasta_gtf_stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                    ]
+                ],
+                "10": [
+
+                ],
+                "11": [
+
+                ],
+                "12": [
+                    ""
+                ],
+                "13": [
+
+                ],
+                "14": [
+
+                ],
+                "15": [
+
+                ],
+                "16": [
+
+                ],
+                "17": [
+
+                ],
+                "18": [
+
+                ],
+                "19": [
+                    [
+                        "genome.fa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    "custom_genome.config:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    "genome.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        [
+                            "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "Log.out:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "SA:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "SAindex:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrLength.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrName.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrNameLength.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrStart.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "genomeParameters.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "4": [
+                    "custom"
+                ],
+                "5": [
+
+                ],
+                "6": [
+
+                ],
+                "7": [
+
+                ],
+                "8": [
+
+                ],
+                "9": [
+
+                ],
+                "annotate": [
+
+                ],
+                "annotate_isoforms": [
+
+                ],
+                "bed_ref": [
+
+                ],
+                "conf": [
+                    [
+                        "genome.fa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ],
+                    "custom_genome.config:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                    ]
+                ],
+                "fusion_blacklist": [
+
+                ],
+                "fusion_cytoband": [
+
+                ],
+                "fusion_known_fusions": [
+
+                ],
+                "fusion_protdomain": [
+
+                ],
+                "gene_info": [
+                    "genome.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "genes_gtf": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                    ]
+                ],
+                "karyobeds": [
+
+                ],
+                "karyoploter": [
+
+                ],
+                "organism": [
+                    "custom"
+                ],
+                "qualimap_info": [
+
+                ],
+                "refflat": [
+
+                ],
+                "rrna_list": [
+
+                ],
+                "rsem_ref": [
+                    ""
+                ],
+                "star_index": [
+                    [
+                        {
+                            "id": "reference"
+                        },
+                        [
+                            "Genome:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "Log.out:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "SA:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "SAindex:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrLength.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrName.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrNameLength.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "chrStart.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonGeTrInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "exonInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "geneInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "genomeParameters.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbInfo.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.fromGTF.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "sjdbList.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "transcriptInfo.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "tin_ref": [
+
+                ]
+            }
+        ],
+        "timestamp": "2026-07-10T13:04:54.345752435",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

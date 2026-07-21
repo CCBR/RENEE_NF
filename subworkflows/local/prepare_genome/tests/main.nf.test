@@ -1,0 +1,51 @@
+nextflow_workflow {
+
+    name "Test Workflow prepare_genome_workflow"
+    script "subworkflows/local/prepare_genome/main.nf"
+    workflow "PREPARE_GENOME"
+
+    test("fasta_gtf") {
+        config "./nextflow.config"
+
+        when {
+            params {
+                genome         = null
+                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                rename_contigs = null
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.star_index[0][1]).listFiles().collect { it.getName() }.sort().toString(),
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+    test("fasta_gtf_stub") {
+        config "./nextflow.config"
+        options '-stub'
+
+        when {
+            params {
+                genome         = null
+                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                rename_contigs = null
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+}

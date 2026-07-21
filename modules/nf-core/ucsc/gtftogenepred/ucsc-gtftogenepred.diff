@@ -1,0 +1,71 @@
+Changes in component 'nf-core/ucsc/gtftogenepred'
+'modules/nf-core/ucsc/gtftogenepred/environment.yml' is unchanged
+Changes in 'ucsc/gtftogenepred/main.nf':
+--- modules/nf-core/ucsc/gtftogenepred/main.nf
++++ modules/nf-core/ucsc/gtftogenepred/main.nf
+@@ -35,10 +35,12 @@
+     """
+
+     stub:
++    def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
++    def gen_refflat = args.contains('-genePredExt') && args.contains('-geneNameAsName2')
+     """
+     touch ${prefix}.genepred
+-    touch ${prefix}.refflat
++    ${ gen_refflat ? "touch ${prefix}.refflat" : "" }
+
+     """
+ }
+
+'modules/nf-core/ucsc/gtftogenepred/meta.yml' is unchanged
+Changes in 'ucsc/gtftogenepred/tests/main.nf.test':
+--- modules/nf-core/ucsc/gtftogenepred/tests/main.nf.test
++++ modules/nf-core/ucsc/gtftogenepred/tests/main.nf.test
+@@ -17,9 +17,9 @@
+             process {
+                 """
+                 input[0] = [
+-				    [ id: 'test' ], // meta map
+-				    [ file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.gtf', checkIfExists: true) ]
+-				]
++                    [ id: 'test' ], // meta map
++                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
++                ]
+
+                 """
+             }
+@@ -38,9 +38,9 @@
+             process {
+                 """
+                 input[0] = [
+-				    [ id: 'test' ], // meta map
+-				    [ file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.gtf', checkIfExists: true) ]
+-				]
++                    [ id: 'test' ], // meta map
++                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
++                ]
+
+                 """
+             }
+
+Changes in 'ucsc/gtftogenepred/tests/main.nf.test.snap':
+--- modules/nf-core/ucsc/gtftogenepred/tests/main.nf.test.snap
++++ modules/nf-core/ucsc/gtftogenepred/tests/main.nf.test.snap
+@@ -113,4 +113,4 @@
+         },
+         "timestamp": "2026-02-25T15:09:32.381357955"
+     }
+-}+}
+
+Changes in 'ucsc/gtftogenepred/tests/nextflow.config':
+--- modules/nf-core/ucsc/gtftogenepred/tests/nextflow.config
++++ modules/nf-core/ucsc/gtftogenepred/tests/nextflow.config
+@@ -1,3 +1,5 @@
++includeConfig '../../../../../tests/test-data.config'
++
+ process {
+     withName: UCSC_GTFTOGENEPRED {
+         ext.args = [
+
+************************************************************
