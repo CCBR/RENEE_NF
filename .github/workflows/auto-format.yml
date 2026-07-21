@@ -29,7 +29,7 @@ jobs:
           git config --global user.name "CCBR-bot"
           git config --global user.email "258092125+ccbr-bot@users.noreply.github.com"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
@@ -38,7 +38,9 @@ jobs:
         with:
           python-version: 3.14
       - name: Install nextflow
-        uses: nf-core/setup-nextflow@v2
+        uses: nf-core/setup-nextflow@v3
+        with:
+          version: 25.10.4
 
       - name: Install dependencies
         run: |
