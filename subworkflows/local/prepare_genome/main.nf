@@ -90,21 +90,25 @@ workflow PREPARE_GENOME {
                 ch_genes_gtf
             ).index
 
+            def optionalPathParam = { param_name ->
+                params.containsKey( param_name ) && params[ param_name ] ? Channel.value( file( params[ param_name ], checkIfExists: true ) ) : Channel.empty()
+            }
+
             ch_organism          = Channel.value( params.organism ?: 'custom' )
-            ch_annotate          = Channel.empty()
-            ch_annotate_isoforms = Channel.empty()
-            ch_refflat           = Channel.empty()
-            ch_bed_ref           = Channel.empty()
-            ch_qualimap_info     = Channel.empty()
-            ch_karyobeds         = Channel.empty()
-            ch_karyoploter       = Channel.empty()
+            ch_annotate          = optionalPathParam( 'annotate' )
+            ch_annotate_isoforms = optionalPathParam( 'annotate_isoforms' )
+            ch_refflat           = optionalPathParam( 'refflat' )
+            ch_bed_ref           = optionalPathParam( 'bed_ref' )
+            ch_qualimap_info     = optionalPathParam( 'qualimap_info' )
+            ch_karyobeds         = optionalPathParam( 'karyobeds' )
+            ch_karyoploter       = optionalPathParam( 'karyoploter' )
             ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
-            ch_rrna_list         = Channel.empty()
-            ch_tin_ref           = Channel.empty()
-            ch_fusion_blacklist     = Channel.empty()
-            ch_fusion_cytoband      = Channel.empty()
-            ch_fusion_protdomain    = Channel.empty()
-            ch_fusion_known_fusions = Channel.empty()
+            ch_rrna_list         = optionalPathParam( 'rrna_list' )
+            ch_tin_ref           = optionalPathParam( 'tin_ref' )
+            ch_fusion_blacklist     = optionalPathParam( 'fusion_blacklist' )
+            ch_fusion_cytoband      = optionalPathParam( 'fusion_cytoband' )
+            ch_fusion_protdomain    = optionalPathParam( 'fusion_protdomain' )
+            ch_fusion_known_fusions = optionalPathParam( 'fusion_known_fusions' )
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,
