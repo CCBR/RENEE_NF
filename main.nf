@@ -4,7 +4,8 @@ nextflow.enable.dsl = 2
 // Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include { PRESEQ_CCURVE }     from './modules/nf-core/preseq/ccurve/main'
-
+include { HANDLE_PRESEQ_ERROR } from './modules/local/preseq/helperfunctions/main'
+include { PARSE_PRESEQ_LOG } from './modules/local/preseq/helperfunctions/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -76,6 +77,21 @@ workflow {
             // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
             PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
 
+            // when preseq fails, write NAs for the stats that are calculated from its log
+            PRESEQ_CCURVE.out.log
+                .join(PICARD_INITIAL_QC.out.bam, remainder: true)
+                .branch { meta, preseq_log, bam_tuple ->
+                failed: preseq_log == null
+                    return (tuple(meta, "nopresqlog"))
+                succeeded: true
+                    return (tuple(meta, preseq_log))
+                }.set{ preseq_logs }
+            preseq_logs.failed | HANDLE_PRESEQ_ERROR
+            preseq_logs.succeeded | PARSE_PRESEQ_LOG
+            PARSE_PRESEQ_LOG.out.nrf
+                .concat(HANDLE_PRESEQ_ERROR.out.nrf)
+                .set{ preseq_nrf }
+
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
             ARRIBA(
@@ -134,6 +150,8 @@ workflow {
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
         arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
         arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
+
+        preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
 }
 
 output {
@@ -169,4 +187,6 @@ output {
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
     arriba_pdf          { path { meta, file -> 'fusions/' } }
     arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
+
+    preseq_nrf          { path { meta, file -> 'preseq/' } }
 }
