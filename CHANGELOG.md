@@ -8,6 +8,7 @@
 
 - Implemented `RSeQC` for post-alignment RNA-seq quality control, including read distribution, infer experiment, and junction annotation analyses.
 - Added a local `BAM2STRANDEDBW` module that converts STAR-aligned, duplicate-marked BAMs into forward and reverse strand BigWig files, porting the `bam2bw_rnaseq` rule from Snakemake RENEE. Handles both paired-end and single-end libraries and supports strand swapping via `--swap_strands` for non-dUTP libraries.
+- Added CCBR `samtools_flagstat` module into pipeline (#60, @AlecSilver)
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
 - **RSEM integration**: Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
   - Installed `rsem/calculateexpression` from nf-core modules; patched container to `nciccbr/ccbr_rsem_1.3.3:v1.0` via `modules/nf-core/rsem/calculateexpression/rsem-calculateexpression.diff`.

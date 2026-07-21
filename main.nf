@@ -3,7 +3,7 @@ nextflow.enable.dsl = 2
 // Plugins
 // Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-
+include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
@@ -104,6 +104,11 @@ workflow {
                     .join(PICARD_INITIAL_QC.out.bai)
                     .join(RSEQC_QC.out.infer_experiment)
             )
+            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
+            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+
+            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
+
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
@@ -174,8 +179,12 @@ workflow {
         rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_rscript
         rseqc_tin_txt                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_txt
         rseqc_tin_xls                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_xls
+
         bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
         bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+
+        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
 
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
@@ -228,8 +237,13 @@ output {
     rseqc_inner_distance_rscript { path { meta, file -> 'RSeQC/' } }
     rseqc_tin_txt                { path { meta, file -> 'RSeQC/' } }
     rseqc_tin_xls                { path { meta, file -> 'RSeQC/' } }
+
     bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
     bam2bw_rev { path { meta, file -> 'bigwigs/' } }
+
+    flagstat { path { meta, file -> 'log_files/' } }
+    flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
+
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
