@@ -6,7 +6,7 @@
 
 ### New features
 
-- STAR align now useses the max read length of samples to calculate --sjdbOverhang, matching snakemake
+- STAR align now uses the max read length of samples to calculate --sjdbOverhang, matching snakemake
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
 - Added `arriba` gene-fusion subworkflow (`subworkflows/local/arriba/main.nf`) with a dedicated `STAR_ALIGN_ARRIBA` modules.config block carrying all chimeric-detection flags (`--twopassMode Basic`, `--chimSegmentMin`, `--chimOutType WithinBAM HardClip`, etc.) matching the RENEE Snakemake `arriba` rule; updated nf-test module tests for `arriba/arriba` and `arriba/visualisation` to use local `params.test_data` references instead of `params.modules_testdata_base_path`.
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
