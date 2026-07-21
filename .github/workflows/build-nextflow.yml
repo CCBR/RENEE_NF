@@ -47,7 +47,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
       - name: Set up Nextflow
-        uses: nf-core/setup-nextflow@v3
+        uses: nf-core/setup-nextflow@main
         with:
           version: "${{ matrix.NXF_VER }}"
       - name: Install Python dependencies
@@ -122,7 +122,7 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v7
       - name: Set up Nextflow
-        uses: nf-core/setup-nextflow@v3
+        uses: nf-core/setup-nextflow@main
         with:
           version: "${{ matrix.NXF_VER }}"
       - name: Set up Apptainer
