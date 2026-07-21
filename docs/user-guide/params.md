@@ -59,15 +59,28 @@ Define where the pipeline should find input data and save output data.
 
 Options for supplying or building a custom reference genome.
 
-| Parameter        | Description                                                                                                                                                                  | Type      | Default | Required | Hidden |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
-| `genome_fasta`   | Path to reference genome FASTA file. Required when building a custom reference with --genes_gtf.                                                                             | `string`  |         |          |        |
-| `genes_gtf`      | Path to gene annotation GTF file. Required when building a custom reference with --genome_fasta.                                                                             | `string`  |         |          |        |
-| `rename_contigs` | Path to a two-column tab-delimited file mapping old contig names (column 1) to new contig names (column 2). Applied to both the FASTA and GTF when building a custom genome. | `string`  |         |          |        |
-| `organism`       | Short organism identifier written into the genome config (e.g. homo_sapiens, mus_musculus). Defaults to 'custom' when not provided.                                          | `string`  |         |          |        |
-| `rsem_ref`       | Path prefix to a pre-built RSEM reference (e.g. /path/to/rsemref/hg38_30). Used when supplying a custom genome via --genome_fasta/--genes_gtf.                               | `string`  |         |          |        |
-| `index_dir`      | Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set.                                          | `string`  |         |          |        |
-| `build_genome`   | When true, the pipeline stops after building the custom genome reference without proceeding to alignment.                                                                    | `boolean` |         |          |        |
+| Parameter              | Description                                                                                                                                                                  | Type      | Default | Required | Hidden |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
+| `genome_fasta`         | Path to reference genome FASTA file. Required when building a custom reference with --genes_gtf.                                                                             | `string`  |         |          |        |
+| `genes_gtf`            | Path to gene annotation GTF file. Required when building a custom reference with --genome_fasta.                                                                             | `string`  |         |          |        |
+| `rename_contigs`       | Path to a two-column tab-delimited file mapping old contig names (column 1) to new contig names (column 2). Applied to both the FASTA and GTF when building a custom genome. | `string`  |         |          |        |
+| `organism`             | Short organism identifier written into the genome config (e.g. homo_sapiens, mus_musculus). Defaults to 'custom' when not provided.                                          | `string`  |         |          |        |
+| `annotate`             | Path to annotate.genes.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf.                                                          | `string`  |         |          |        |
+| `annotate_isoforms`    | Path to annotate.isoforms.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf.                                                       | `string`  |         |          |        |
+| `refflat`              | Path to refFlat.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf.                                                                 | `string`  |         |          |        |
+| `bed_ref`              | Path to genes.ref.bed for RSeQC when using a custom genome.                                                                                                                  | `string`  |         |          |        |
+| `qualimap_info`        | Path to qualimap_info.txt for a custom genome.                                                                                                                               | `string`  |         |          |        |
+| `karyobeds`            | Path to the karyobeds directory for a custom genome.                                                                                                                         | `string`  |         |          |        |
+| `karyoploter`          | Path to karyoplot gene coordinates for a custom genome.                                                                                                                      | `string`  |         |          |        |
+| `rsem_ref`             | Path prefix to a pre-built RSEM reference (e.g. /path/to/rsemref/hg38_30). Used when supplying a custom genome via --genome_fasta/--genes_gtf.                               | `string`  |         |          |        |
+| `rrna_list`            | Path to an rRNA interval list for a custom genome.                                                                                                                           | `string`  |         |          |        |
+| `tin_ref`              | Path to transcripts.protein_coding_only.bed12 for RSeQC TIN when using a custom genome.                                                                                      | `string`  |         |          |        |
+| `fusion_blacklist`     | Path to an Arriba fusion blacklist file for a custom genome.                                                                                                                 | `string`  |         |          |        |
+| `fusion_cytoband`      | Path to an Arriba cytobands file for a custom genome.                                                                                                                        | `string`  |         |          |        |
+| `fusion_protdomain`    | Path to an Arriba protein domains GFF3 file for a custom genome.                                                                                                             | `string`  |         |          |        |
+| `fusion_known_fusions` | Path to an Arriba known fusions file for a custom genome.                                                                                                                    | `string`  |         |          |        |
+| `index_dir`            | Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set.                                          | `string`  |         |          |        |
+| `build_genome`         | When true, the pipeline stops after building the custom genome reference without proceeding to alignment.                                                                    | `boolean` |         |          |        |
 
 ## QC options
 
@@ -86,14 +99,6 @@ Options controlling the two-pass STAR alignment workflow.
 | Parameter              | Description                                                                                                 | Type     | Default                                          | Required | Hidden |
 | ---------------------- | ----------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------ | -------- | ------ |
 | `sjdb_placeholder_tab` | Path to an empty splice-junction placeholder file passed to STAR_ALIGN pass 1 in place of a real SJDB file. | `string` | ${projectDir}/assets/sjdb_placeholder.SJ.out.tab |          |        |
-
-## BAM to BigWig options
-
-Options controlling the BAM to stranded BigWig conversion step.
-
-| Parameter      | Description                                                                                                                                                            | Type      | Default | Required | Hidden |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
-| `swap_strands` | Swap forward and reverse strand BigWig outputs. Enable for non-dUTP libraries where R1 maps in the same direction as the RNA strand (FIRST_READ_TRANSCRIPTION_STRAND). | `boolean` | False   |          |        |
 
 ## Max job request options
 
