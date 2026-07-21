@@ -3,7 +3,7 @@ nextflow.enable.dsl = 2
 // Plugins
 // Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-
+include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
@@ -70,6 +70,12 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
+            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+
+            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
+
+
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
             ARRIBA(
@@ -120,6 +126,9 @@ workflow {
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
 
+        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
@@ -152,6 +161,8 @@ output {
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
 
+    flagstat { path { meta, file -> 'log_files/' } }
+    flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
