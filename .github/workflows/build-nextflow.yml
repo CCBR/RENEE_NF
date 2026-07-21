@@ -14,7 +14,7 @@ on:
 env:
   NFT_DIFF: "pdiff"
   NFT_DIFF_ARGS: "--line-numbers --width 120 --expand-tabs=2"
-  NFT_VER: "0.9.4"
+  NFT_VER: "0.9.5"
   NFT_WORKDIR: "~"
   NXF_ANSI_LOG: false
   NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
@@ -133,9 +133,9 @@ jobs:
           mkdir -p $NXF_SINGULARITY_CACHEDIR
           mkdir -p $NXF_SINGULARITY_LIBRARYDIR
       - name: Install nf-test
-        uses: nf-core/setup-nf-test@v1
+        uses: nf-core/setup-nf-test@v2
         with:
-          version: ${{ matrix.NXF_VER }}
+          version: ${{ env.NFT_VER }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.14"
