@@ -1,0 +1,35 @@
+name: Setup Java and Nextflow
+description: Set up Java and install a pinned Nextflow version.
+
+inputs:
+  java-version:
+    description: Java version to install.
+    required: false
+    default: "17"
+  java-distribution:
+    description: Java distribution for actions/setup-java.
+    required: false
+    default: "temurin"
+  nextflow-version:
+    description: Nextflow version to install.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: ${{ inputs.java-distribution }}
+        java-version: ${{ inputs.java-version }}
+
+    - name: Install Nextflow
+      shell: bash
+      env:
+        NXF_VER: ${{ inputs.nextflow-version }}
+      run: |
+        mkdir -p "$HOME/.local/bin"
+        curl -fsSL "https://github.com/nextflow-io/nextflow/releases/download/v${NXF_VER}/nextflow-${NXF_VER}-dist" -o "$HOME/.local/bin/nextflow"
+        chmod +x "$HOME/.local/bin/nextflow"
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+        "$HOME/.local/bin/nextflow" -version
