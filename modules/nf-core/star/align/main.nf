@@ -44,11 +44,22 @@ process STAR_ALIGN {
     def reads1 = []
     def reads2 = []
     meta.single_end ? [reads].flatten().each{ read -> reads1 << read} : reads.eachWithIndex{ v, ix -> ( ix & 1 ? reads2 : reads1) << v }
-    def sjdb_arg        = star_use_sjdb ? "--sjdbFileChrStartEnd $sjdb" : ''
-    attrRG          = args.contains("--outSAMattrRGline") ? "" : "--outSAMattrRGline 'ID:$prefix' 'SM:$prefix'"
+    def sjdb_arg          = star_use_sjdb ? "--sjdbFileChrStartEnd $sjdb" : ''
+    attrRG            = args.contains("--outSAMattrRGline") ? "" : "--outSAMattrRGline 'ID:$prefix' 'SM:$prefix'"
     def out_sam_type    = (args.contains('--outSAMtype')) ? '' : '--outSAMtype BAM Unsorted'
     mv_unsorted_bam = (args.contains('--outSAMtype BAM Unsorted SortedByCoordinate')) ? "mv ${prefix}.Aligned.out.bam ${prefix}.Aligned.unsort.out.bam" : ''
     """
+    # Determine the read length of the first input file
+    # reads every 2nd line of 4 in the FASTQ (the sequence lines), tracks the maximum read length, and outputs max - 1 as the sjdbOverhang value
+
+    readlength=\$(
+        zcat ${reads1[0]} | \
+        awk -v maxlen=100 'NR%4==2 {if (length(\$1) > maxlen+0) maxlen=length(\$1)}; \
+        END {print maxlen-1}'
+    )
+
+    echo "sjdbOverhang for STAR: \${readlength}"
+
     STAR \\
         --genomeDir $index \\
         --readFilesIn ${reads1.join(",")} ${reads2.join(",")} \\
@@ -58,6 +69,7 @@ process STAR_ALIGN {
         --sjdbGTFfile $gtf \\
         $sjdb_arg \\
         $attrRG \\
+        --sjdbOverhang \$readlength \\
         $args
 
     $mv_unsorted_bam

@@ -1,9 +1,12 @@
 nextflow.enable.dsl = 2
 
 // Plugins
-// Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+
+// Modules
+include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
 include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
+
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
@@ -104,6 +107,11 @@ workflow {
                     .join(PICARD_INITIAL_QC.out.bai)
                     .join(RSEQC_QC.out.infer_experiment)
             )
+            // QualiMap BAM QC ---------------------------------------------------------------
+            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
+            QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
+
+
             // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
             picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
 
@@ -182,6 +190,7 @@ workflow {
 
         bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
         bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+        qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
         flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
         flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
@@ -240,6 +249,8 @@ output {
 
     bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
     bam2bw_rev { path { meta, file -> 'bigwigs/' } }
+    
+    qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
 
     flagstat { path { meta, file -> 'log_files/' } }
     flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
