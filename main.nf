@@ -1,11 +1,14 @@
 nextflow.enable.dsl = 2
 
 // Plugins
-// Modules
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 include { PRESEQ_CCURVE }     from './modules/nf-core/preseq/ccurve/main'
 include { HANDLE_PRESEQ_ERROR } from './modules/local/preseq/helperfunctions/main'
 include { PARSE_PRESEQ_LOG } from './modules/local/preseq/helperfunctions/main'
+
+// Modules
+include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
+include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -91,6 +94,16 @@ workflow {
             PARSE_PRESEQ_LOG.out.nrf
                 .concat(HANDLE_PRESEQ_ERROR.out.nrf)
                 .set{ preseq_nrf }
+            // QualiMap BAM QC ---------------------------------------------------------------
+            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
+            QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
+
+
+            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
+            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
+
+            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
+
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
 
@@ -145,6 +158,11 @@ workflow {
         preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
         preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
 
+        qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
+
+        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
@@ -181,6 +199,11 @@ output {
 
     preseq_ccurve { path { meta, file -> 'preseq/' } }
     preseq_log    { path { meta, file -> 'preseq/' } }
+
+    qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
+
+    flagstat { path { meta, file -> 'log_files/' } }
+    flagstat_versions { path { file -> "log_files/versions/${file.getParent().getFileName()}/" } }
 
     arriba_fusions      { path { meta, file -> 'fusions/' } }
     arriba_fusions_fail { path { meta, file -> 'fusions/' } }
