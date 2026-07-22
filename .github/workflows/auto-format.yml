@@ -6,6 +6,7 @@ on:
 
 env:
   GH_TOKEN: ${{ github.token }}
+  NXF_VER: "25.10.4"
 
 permissions:
   contents: write
@@ -37,15 +38,16 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: 3.14
-      - name: Install nextflow
-        uses: nf-core/setup-nextflow@v3
-        with:
-          version: 25.10.4
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install .[dev]
+
+      - name: Install nextflow
+        uses: nf-core/setup-nextflow@v3
+        with:
+          version: ${{ env.NXF_VER }}
 
       - id: changed-files
         name: Check changed files
