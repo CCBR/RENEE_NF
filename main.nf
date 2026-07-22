@@ -74,11 +74,13 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
+
             PICARD_COLLECTRNASEQMETRICS(
                 PICARD_INITIAL_QC.out.bam,
                 PREPARE_GENOME.out.refflat,
-                [],
-                PREPARE_GENOME.out.rrna_list
+                ch_fasta_path,
+                PREPARE_GENOME.out.rrna_list.ifEmpty([])
             )
             // QualiMap BAM QC ---------------------------------------------------------------
             ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
