@@ -25,8 +25,8 @@ process PRESEQ_CCURVE {
         c_curve \\
         $args \\
         -output ${prefix}.c_curve.txt \\
-        $bam
-    cp .command.err ${prefix}.command.log
+        $bam \\
+        2> ${prefix}.command.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
