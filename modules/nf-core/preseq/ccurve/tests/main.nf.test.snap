@@ -16,14 +16,14 @@
                         "id": "test",
                         "single_end": true
                     },
-                    "test.command.log:md5,579738c48b7838f1feebd4f9aab20222"
+                    "test.command.log:md5,e760459437f6f91cf800136424b93013"
                 ]
             ],
             [
-                "versions.yml:md5,2702c580fbb9fbe70468c50c9948aa29"
+                "versions.yml:md5,174a0b5265cbb6f424196ecc8936763f"
             ]
         ],
-        "timestamp": "2026-07-16T11:59:02.950360728",
+        "timestamp": "2026-07-22T13:45:49.636195981",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -51,7 +51,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,2702c580fbb9fbe70468c50c9948aa29"
+                    "versions.yml:md5,174a0b5265cbb6f424196ecc8936763f"
                 ],
                 "c_curve": [
                     [
@@ -72,11 +72,11 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,2702c580fbb9fbe70468c50c9948aa29"
+                    "versions.yml:md5,174a0b5265cbb6f424196ecc8936763f"
                 ]
             }
         ],
-        "timestamp": "2026-07-16T10:24:21.660118386",
+        "timestamp": "2026-07-22T13:46:06.720626894",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -99,14 +99,14 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test.command.log:md5,579738c48b7838f1feebd4f9aab20222"
+                    "test.command.log:md5,84723e7da87a4b1020c1c8c92187c564"
                 ]
             ],
             [
-                "versions.yml:md5,2702c580fbb9fbe70468c50c9948aa29"
+                "versions.yml:md5,174a0b5265cbb6f424196ecc8936763f"
             ]
         ],
-        "timestamp": "2026-07-16T11:59:10.753210531",
+        "timestamp": "2026-07-22T13:45:58.190500538",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
