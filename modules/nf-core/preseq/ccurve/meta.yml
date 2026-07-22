@@ -37,7 +37,7 @@ output:
       - "*.c_curve.txt":
           type: file
           description: Preseq c_curve output file
-          pattern: "*.{c_curve.txt}"
+          pattern: "*.c_curve.txt"
           ontologies: []
   log:
     - - meta:
@@ -48,7 +48,7 @@ output:
       - "*.log":
           type: file
           description: Log file containing stderr produced by Preseq
-          pattern: "*.{log}"
+          pattern: "*.log"
           ontologies: []
   versions:
     - versions.yml:

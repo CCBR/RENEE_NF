@@ -18,13 +18,13 @@ process HANDLE_PRESEQ_ERROR {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    echo "NA\tNA\tNA\n" > ${prefix}.preseq.nrf.txt
+    printf "NA\tNA\tNA\n" > ${prefix}.preseq.nrf.txt
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    echo "NA\tNA\tNA\n" > ${prefix}.preseq.nrf.txt
+    printf "NA\tNA\tNA\n" > ${prefix}.preseq.nrf.txt
     """
 }
 
@@ -50,7 +50,8 @@ process PARSE_PRESEQ_LOG {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${meta.id}.preseqlog.nrf.txt
+    touch ${prefix}.preseq.nrf.txt
     """
 }

@@ -78,7 +78,7 @@ workflow {
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
             // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
-            PICARD_INITIAL_QC.out.bam.view()
+// PICARD_INITIAL_QC.out.bam.view()
             PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
 
             // when preseq fails, write NAs for the stats that are calculated from its log
