@@ -249,7 +249,7 @@ output {
 
     bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
     bam2bw_rev { path { meta, file -> 'bigwigs/' } }
-    
+
     qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
 
     flagstat { path { meta, file -> 'log_files/' } }
