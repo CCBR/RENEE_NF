@@ -38,7 +38,7 @@ process PARSE_PRESEQ_LOG {
     container "${params.containers.base}"
 
     input:
-        tuple val(meta), path(log)
+        tuple val(meta), path(preseq_log)
 
     output:
         tuple val(meta), path("*nrf.txt"), emit: nrf
@@ -46,7 +46,7 @@ process PARSE_PRESEQ_LOG {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    parse_preseq_log.py ${prefix}.preseq.log > ${prefix}.preseq.nrf.txt
+    parse_preseq_log.py ${preseq_log} > ${prefix}.preseq.nrf.txt
     """
 
     stub:
