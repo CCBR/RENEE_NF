@@ -2,10 +2,8 @@ process KRAKEN2_KRAKEN2 {
     tag "$meta.id"
     label 'process_high'
 
-    conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/0f/0f827dcea51be6b5c32255167caa2dfb65607caecdc8b067abd6b71c267e2e82/data' :
-        'community.wave.seqera.io/library/kraken2_coreutils_pigz:920ecc6b96e2ba71' }"
+    // conda "${moduleDir}/environment.yml"
+    container "nciccbr/ccbr_kraken_v2.1.1:v0.0.1"
 
     input:
     tuple val(meta), path(reads)
@@ -16,8 +14,9 @@ process KRAKEN2_KRAKEN2 {
     output:
     tuple val(meta), path('*.classified{.,_}*')     , optional:true, emit: classified_reads_fastq
     tuple val(meta), path('*.unclassified{.,_}*')   , optional:true, emit: unclassified_reads_fastq
-    tuple val(meta), path('*classifiedreads.txt')   , optional:true, emit: classified_reads_assignment
+    tuple val(meta), path('*classifiedreads.txt')                  , emit: classified_reads_assignment
     tuple val(meta), path('*report.txt')                           , emit: report
+    tuple val(meta), path('*krona.html')                           , emit: krona_html
     tuple val("${task.process}"), val('kraken2'), eval('kraken2 --version 2>&1 | head -1 | sed "s/^.*Kraken version //; s/ .*//"'), topic: versions, emit: versions_kraken2
     tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/pigz //g"'), topic: versions, emit: versions_pigz
 
@@ -32,22 +31,30 @@ process KRAKEN2_KRAKEN2 {
     def unclassified = meta.single_end ? "${prefix}.unclassified.fastq" : "${prefix}.unclassified#.fastq"
     def classified_option = save_output_fastqs ? "--classified-out ${classified}" : ""
     def unclassified_option = save_output_fastqs ? "--unclassified-out ${unclassified}" : ""
-    def readclassification_option = save_reads_assignment ? "--output ${prefix}.kraken2.classifiedreads.txt" : "--output /dev/null"
-    def compress_reads_command = save_output_fastqs ? "pigz -p $task.cpus *.fastq" : ""
+
+    // the original zip method was "pigz -p $task.cpus *.fastq"
+    // This is a parallel compression method that is faster and more efficient than gzip
+    // TODO : Include pigz into our container for faster use. For now, we will use gzip which is slower and less efficient
+    def compress_reads_command = save_output_fastqs ? "gzip *.fastq" : ""
 
     """
     kraken2 \\
         --db $db \\
         --threads $task.cpus \\
         --report ${prefix}.kraken2.report.txt \\
+        --output ${prefix}.kraken2.classifiedreads.txt \\
         --gzip-compressed \\
         $unclassified_option \\
         $classified_option \\
-        $readclassification_option \\
         $paired \\
         $args \\
         $reads
 
+    # extract Read ID and taxonomy ID from the Kraken2 output file
+    cut -f2,3 ${prefix}.kraken2.classifiedreads.txt | \
+        ktImportTaxonomy - -o ${prefix}.kraken2.krona.html
+
+    # Compress the output fastq files if they were generated
     $compress_reads_command
     """
 
@@ -58,13 +65,13 @@ process KRAKEN2_KRAKEN2 {
 
     """
     touch ${prefix}.kraken2.report.txt
+    touch ${prefix}.kraken2.out.txt
+    touch ${prefix}.kraken2.krona.html
     if [ "$save_output_fastqs" == "true" ]; then
         touch $classified
         touch $unclassified
     fi
-    if [ "$save_reads_assignment" == "true" ]; then
-        touch ${prefix}.kraken2.classifiedreads.txt
-    fi
+    touch ${prefix}.kraken2.classifiedreads.txt
     """
 
 }

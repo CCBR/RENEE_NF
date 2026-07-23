@@ -1,10 +1,12 @@
 name: kraken2_kraken2
-description: Classifies metagenomic sequence data
+description: Classifies metagenomic sequence data and generates interactive Krona visualizations
 keywords:
   - classify
   - metagenomics
   - fastq
   - db
+  - krona
+  - visualization
 tools:
   - kraken2:
       description: |
@@ -19,6 +21,15 @@ tools:
         source: "Genome Biology"
       licence: ["MIT"]
       identifier: biotools:kraken2
+  - krona:
+      description: |
+        Krona Tools creates interactive HTML visualizations of taxonomic data.
+        This module uses ktImportTaxonomy to visualize Kraken2 read assignments.
+      homepage: https://github.com/marbl/Krona/wiki
+      documentation: https://github.com/marbl/Krona/wiki/KronaTools
+      doi: 10.1186/1471-2105-12-385
+      licence: ["BSD-3-Clause"]
+      identifier: biotools:krona
 input:
   - - meta:
         type: map
@@ -95,6 +106,19 @@ output:
             Kraken2 report containing stats about classified
             and not classified reads.
           pattern: "*.{report.txt}"
+          ontologies: []
+  krona_html:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*krona.html":
+          type: file
+          description: |
+            Interactive taxonomic visualization generated from the Kraken2
+            read assignments using Krona ktImportTaxonomy.
+          pattern: "*.krona.html"
           ontologies: []
   versions_kraken2:
     - - ${task.process}:

@@ -10,28 +10,37 @@
                     "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.kraken2.krona.html:md5,8231ca7613ac0982b7426803c26b6e48"
+                ]
+            ],
             {
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "kraken2",
-                        "2.1.6"
+                        "2.1.1"
                     ]
                 ],
                 "versions_pigz": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "pigz",
-                        "2.8"
+                        "bash: pigz: command not found"
                     ]
                 ]
             }
         ],
+        "timestamp": "2026-07-23T16:37:36.540895956",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T17:22:36.682041524"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     },
     "paired_end - stub": {
         "content": [
@@ -44,28 +53,37 @@
                     "test.kraken2.report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.kraken2.krona.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
             {
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "kraken2",
-                        "2.1.6"
+                        "2.1.1"
                     ]
                 ],
                 "versions_pigz": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "pigz",
-                        "2.8"
+                        "bash: pigz: command not found"
                     ]
                 ]
             }
         ],
+        "timestamp": "2026-07-23T16:38:07.18718483",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T17:22:59.824433284"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     },
     "sarscov2 illumina paired end [fastq]": {
         "content": [
@@ -78,28 +96,37 @@
                     "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.kraken2.krona.html:md5,78089a37fee198ef2a3b94333d011b77"
+                ]
+            ],
             {
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "kraken2",
-                        "2.1.6"
+                        "2.1.1"
                     ]
                 ],
                 "versions_pigz": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "pigz",
-                        "2.8"
+                        "bash: pigz: command not found"
                     ]
                 ]
             }
         ],
+        "timestamp": "2026-07-23T16:37:45.688874067",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T17:22:42.807626617"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     },
     "sarscov2 illumina single end [fastq] + save_reads_assignment": {
         "content": [
@@ -112,19 +139,28 @@
                     "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.kraken2.krona.html:md5,530246eba8a30c6a99858b1a60b33c10"
+                ]
+            ],
             {
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "kraken2",
-                        "2.1.6"
+                        "2.1.1"
                     ]
                 ],
                 "versions_pigz": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "pigz",
-                        "2.8"
+                        "bash: pigz: command not found"
                     ]
                 ]
             },
@@ -138,11 +174,11 @@
                 ]
             ]
         ],
+        "timestamp": "2026-07-23T16:37:54.855376871",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T17:22:48.87201447"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     },
     "single_end - stub": {
         "content": [
@@ -155,27 +191,36 @@
                     "test.kraken2.report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.kraken2.krona.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
             {
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "kraken2",
-                        "2.1.6"
+                        "2.1.1"
                     ]
                 ],
                 "versions_pigz": [
                     [
                         "KRAKEN2_KRAKEN2",
                         "pigz",
-                        "2.8"
+                        "bash: pigz: command not found"
                     ]
                 ]
             }
         ],
+        "timestamp": "2026-07-23T16:38:00.948565342",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-19T17:22:54.351663948"
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     }
 }

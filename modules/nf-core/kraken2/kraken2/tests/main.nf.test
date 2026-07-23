@@ -49,6 +49,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
+                    process.out.krona_html,
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -92,6 +93,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
+                    process.out.krona_html,
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -134,6 +136,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
+                    process.out.krona_html,
                     process.out.findAll { key, val -> key.startsWith("versions") },
                     process.out.classified_reads_assignment,
                 ).match()
@@ -165,6 +168,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
+                    process.out.krona_html,
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -197,6 +201,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
+                    process.out.krona_html,
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
