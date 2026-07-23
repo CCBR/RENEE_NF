@@ -161,7 +161,7 @@ output {
     fqscreen_2_txt  { path { meta, file  -> "FQscreen2/" } }
     fqscreen_2_png  { path { meta, file  -> "FQscreen2/" } }
     kraken2_report  { path { meta, file  -> "kraken2/" } }
-    kraken2_db_dir  { path { dir -> "kraken2_db/" } }
+    kraken2_db_dir  { path { dir -> "./" } }
 
     star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
     star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }
