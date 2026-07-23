@@ -121,6 +121,8 @@ workflow {
         fqscreen_1_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
         fqscreen_2_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
         fqscreen_2_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
+        kraken2_report = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_report
+        kraken2_db_dir = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
 
         star_pass1_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_sj
         star_pass1_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_log
@@ -158,6 +160,8 @@ output {
     fqscreen_1_png  { path { meta, file  -> "FQscreen/" } }
     fqscreen_2_txt  { path { meta, file  -> "FQscreen2/" } }
     fqscreen_2_png  { path { meta, file  -> "FQscreen2/" } }
+    kraken2_report  { path { meta, file  -> "kraken2/" } }
+    kraken2_db_dir  { path { dir -> "kraken2_db/" } }
 
     star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
     star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }

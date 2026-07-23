@@ -2,9 +2,11 @@ include { FASTQC as FASTQC_RAW }                        from '../../../modules/l
 include { FASTQC as FASTQC_TRIMMED }                    from '../../../modules/local/fastqc'
 include { BBTOOLS_BBMERGE }                             from '../../../modules/local/bbtools'
 include { CUTADAPT }                                    from '../../../modules/CCBR/cutadapt'
-include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_1 }  from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
-include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_2 }  from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
+include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_1 }   from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
+include { FASTQSCREEN_FASTQSCREEN as FASTQ_SCREEN_2 }   from '../../../modules/nf-core/fastqscreen/fastqscreen/main.nf'
 include { VALIDATE_FASTQS }                             from '../validate_fastqs/main'
+include { KRAKEN2_KRAKEN2 }                             from '../../../modules/nf-core/kraken2/kraken2/main'
+include { UNTAR }                                       from '../../../modules/nf-core/untar'
 
 workflow INITIAL_QC {
     take:
@@ -50,6 +52,33 @@ workflow INITIAL_QC {
             }
         }
 
+        // Kraken2 taxonomic classification step
+
+        kraken2_report_ch = Channel.empty()
+
+        // First check if db is present
+        // Then if a link to download the db is provided
+        // finally if no db is provided, log a warning and skip the step
+        if (params.kraken2_db_dir){
+            ch_kraken2_db_dir = Channel.value(file(params.kraken2_db_dir))
+            KRAKEN2_KRAKEN2(ch_validated_reads, ch_kraken2_db_dir, params.kraken_save_output_fastqs, params.kraken_save_reads_assignment)
+            kraken2_report_ch = KRAKEN2_KRAKEN2.out.report
+
+        } else if (params.kraken2_db_url) {
+            // Download the Kraken2 database from the provided URL
+            // and unzip it
+            ch_kraken2_url = Channel.of([[id:'kraken2_db'],  file(params.kraken2_db_url)])
+            UNTAR(ch_kraken2_url)
+
+            ch_kraken2_db_dir = UNTAR.out.untar.map { meta, path -> path }
+            ch_kraken2_db_dir.view { println "Kraken2 database directory: ${it}" }
+
+            KRAKEN2_KRAKEN2(ch_validated_reads, ch_kraken2_db_dir, params.kraken_save_output_fastqs, params.kraken_save_reads_assignment)
+            kraken2_report_ch = KRAKEN2_KRAKEN2.out.report
+        } else {
+            log.warn "No Kraken2 database directory, or download URL provided. Kraken2 will be skipped."
+        }
+
     emit:
         trimmed_reads   = CUTADAPT.out.reads
         fastqvalidator  = VALIDATE_FASTQS.out.logs
@@ -62,4 +91,6 @@ workflow INITIAL_QC {
         fqscreen_1_png  = ch_fqscreen_1_png
         fqscreen_2_txt  = ch_fqscreen_2_txt
         fqscreen_2_png  = ch_fqscreen_2_png
+        kraken2_report  = kraken2_report_ch
+        kraken2_db_dir = ch_kraken2_db_dir
 }

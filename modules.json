@@ -70,6 +70,26 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastqscreen/fastqscreen/fastqscreen-fastqscreen.diff"
                     },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/add": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/build": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/kraken2": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"]
+                    },
                     "picard/addorreplacereadgroups": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
@@ -108,6 +128,11 @@
                         "git_sha": "5488955899b1c02180ca6049d954f7be861b9e74",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/ucsc/gtftogenepred/ucsc-gtftogenepred.diff"
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
                     }
                 }
             }
