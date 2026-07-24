@@ -6,6 +6,7 @@
 
 ### New features
 
+- Added `kraken2` module for taxonomic classification of reads.
 - STAR align now uses the max read length of samples to calculate --sjdbOverhang, matching snakemake
 - Incorporated the nf-core `qualimap/bamqc` module to perform post-alignment BAM quality control. (#61, @AlecSilver)
 - Added CCBR `samtools_flagstat` module into pipeline (#60, @AlecSilver)
