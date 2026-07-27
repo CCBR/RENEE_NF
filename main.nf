@@ -12,8 +12,9 @@ include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC } from './subworkflows/local/picard_initial_qc/main'
-include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+include { PICARD_INITIAL_QC }          from './subworkflows/local/picard_initial_qc/main'
+include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
+include { arriba as ARRIBA }            from './subworkflows/local/arriba/main'
 
 
 
@@ -73,6 +74,14 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
+            ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
+
+            PICARD_COLLECTRNASEQMETRICS(
+                PICARD_INITIAL_QC.out.bam,
+                PREPARE_GENOME.out.refflat,
+                ch_fasta_path,
+                PREPARE_GENOME.out.rrna_list.ifEmpty([])
+            )
             // QualiMap BAM QC ---------------------------------------------------------------
             ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
             QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
@@ -133,6 +142,7 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        picard_rna_metrics        = params.build_genome ? Channel.empty() : PICARD_COLLECTRNASEQMETRICS.out.metrics
 
         qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
@@ -168,8 +178,9 @@ output {
     star_pass2_bam { path { meta, file -> 'STAR_files/pass2/' } }
     star_pass2_transcript_bam { path { meta, file -> 'bams/' } }
 
-    picard_bam { path { meta, file -> 'bams/' } }
-    picard_bai { path { meta, file -> 'bams/' } }
+    picard_bam         { path { meta, file -> 'bams/' } }
+    picard_bai         { path { meta, file -> 'bams/' } }
+    picard_rna_metrics { path { meta, file -> 'picard/' } }
 
     qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
 
