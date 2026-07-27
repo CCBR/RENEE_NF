@@ -33,45 +33,39 @@ workflow INITIAL_QC {
         ch_fqscreen_2_txt = Channel.empty()
         ch_fqscreen_2_png = Channel.empty()
 
+        // default to using db link than shared resources if both are provided
         // FastQ Screen steps
-        if (!params.fastq_screen_db_dir) {
-            log.warn "No FastQ Screen database directory provided. FastQ Screen will be skipped."
-        } else {
+        if (params.fastq_screen_db_dir) {
             ch_fqscreen_db_dir = Channel.value(file(params.fastq_screen_db_dir))
-
-            if (params.fastq_screen_conf) {
-                FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), ch_fqscreen_db_dir)
-                ch_fqscreen_1_txt = FASTQ_SCREEN_1.out.txt
-                ch_fqscreen_1_png = FASTQ_SCREEN_1.out.png
-            }
-
-            if (params.fastq_screen_conf2) {
-                FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), ch_fqscreen_db_dir)
-                ch_fqscreen_2_txt = FASTQ_SCREEN_2.out.txt
-                ch_fqscreen_2_png = FASTQ_SCREEN_2.out.png
-            }
+        } else if (params.shared_resources) {
+            ch_fqscreen_db_dir = Channel.value(file("${params.shared_resources}/fastq_screen_db"))
+        } else  {
+            log.warn "No FastQ Screen database directory provided. FastQ Screen will be skipped."
+            ch_fqscreen_db_dir = Channel.empty()
         }
 
+        if (params.fastq_screen_conf) {
+            FASTQ_SCREEN_1(CUTADAPT.out.reads, file(params.fastq_screen_conf), ch_fqscreen_db_dir)
+            ch_fqscreen_1_txt = FASTQ_SCREEN_1.out.txt
+            ch_fqscreen_1_png = FASTQ_SCREEN_1.out.png
+        }
+
+        if (params.fastq_screen_conf2) {
+            FASTQ_SCREEN_2(CUTADAPT.out.reads, file(params.fastq_screen_conf2), ch_fqscreen_db_dir)
+            ch_fqscreen_2_txt = FASTQ_SCREEN_2.out.txt
+            ch_fqscreen_2_png = FASTQ_SCREEN_2.out.png
+        }
+
+
         // Kraken2 taxonomic classification step
-        ch_kraken2_db_dir = Channel.empty()
 
-        // First check if db is present
-        // Then if a link to download the db is provided
-        // finally if no db is provided, log a warning and skip the step
-        if (params.kraken2_db_dir){
+        if (params.kraken2_db_dir) {
             ch_kraken2_db_dir = Channel.value(file(params.kraken2_db_dir))
-
-        } else if (params.kraken2_db_url) {
-            // Download the Kraken2 database from the provided URL
-            // and unzip it
-            ch_kraken2_url = Channel.of([[id:'kraken2_db'],  file(params.kraken2_db_url)])
-            KRAKEN2_DB_DOWNLOAD(ch_kraken2_url)
-            ch_kraken2_db_dir = KRAKEN2_DB_DOWNLOAD.out.untar
-                .map { meta, path -> path }
-                .first()
-
-        } else {
-            log.warn "No Kraken2 database directory, or download URL provided. Kraken2 will be skipped."
+        } else if (params.shared_resources) {
+            ch_kraken2_db_dir = Channel.value(file("${params.shared_resources}/kraken2_db"))
+        } else  {
+            log.warn "No Kraken2 database directory provided. Kraken2 will be skipped."
+            ch_kraken2_db_dir = Channel.empty()
         }
         // this should skip with an empty channel if no db is provided
         // TODO: test that

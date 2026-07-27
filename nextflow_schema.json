@@ -130,6 +130,18 @@
                 "build_genome": {
                     "type": "boolean",
                     "description": "When true, the pipeline stops after building the custom genome reference without proceeding to alignment."
+                },
+                "build_databases": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Download and unpack all FastQ Screen and Kraken2 databases, publish them under shared_resources, and stop before analysis."
+                },
+                "database_urls": {
+                    "type": "object",
+                    "description": "Map of database names to archive URLs consumed by the DOWNLOAD_DATABASES subworkflow.",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },

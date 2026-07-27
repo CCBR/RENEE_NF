@@ -56,7 +56,7 @@ process UNTAR {
         do
             if [[ \$(echo "\${i}" | grep -E "/\$") == "" ]];
             then
-                touch \${i}
+                mkdir -p \$(dirname \${i}) && touch \${i}
             else
                 mkdir -p \${i}
             fi
@@ -66,7 +66,7 @@ process UNTAR {
         do
             if [[ \$(echo "\${i}" | grep -E "/\$") == "" ]];
             then
-                touch ${prefix}/\${i}
+                mkdir -p \$(dirname ${prefix}/\${i}) && touch ${prefix}/\${i}
             else
                 mkdir -p ${prefix}/\${i}
             fi

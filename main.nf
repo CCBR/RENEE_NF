@@ -8,6 +8,7 @@ include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
 include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
 
 // Subworkflows
+include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME } from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
@@ -45,11 +46,14 @@ workflow {
         // build genome first, if set to build mode stop after this step
         PREPARE_GENOME()
 
-        if (params.build_genome) {
+        if (params.build) {
             log.info "Build genome only mode enabled. Stopping workflow after genome preparation."
             prepare_genome_conf = PREPARE_GENOME.out.conf
 
-
+            if(params.shared_resources) {
+                log.info "Shared resources mode enabled. Downloading FastQ Screen and Kraken2 databases."
+                DOWNLOAD_DATABASES()
+            }
 
         } else {
             log.info "Genome preparation complete. Continuing with workflow."
@@ -109,49 +113,61 @@ workflow {
 
     publish:
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
-        prepare_genome_conf = params.build_genome ? prepare_genome_conf : Channel.empty()
+        prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        fastqc_raw     = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_raw
-        fastqvalidator = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqvalidator
-        cutadapt_reads = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
-        cutadapt_log   = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_log
-        fastqc_trimmed = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
-        bbtools_ihist  = params.build_genome ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
-        fqscreen_1_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
-        fqscreen_1_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
-        fqscreen_2_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
-        fqscreen_2_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
-        kraken2_report                      = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_report
-        kraken2_classified_reads_assignment = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_classified_reads_assignment
-        kraken2_krona_html                  = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_krona_html
-        kraken2_db_dir                      = params.build_genome ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
+        databases = (params.shared_resources && params.build) ? DOWNLOAD_DATABASES.out.databases : Channel.empty()
 
-        star_pass1_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_sj
-        star_pass1_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_log
-        star_sjdb                 = params.build_genome ? Channel.empty() : STAR_ALIGN.out.sjdb
-        star_pass2_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_log
-        star_pass2_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_sj
-        star_pass2_reads_per_gene = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
-        star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
-        star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
+        fastqc_raw     = params.build ? Channel.empty() : INITIAL_QC.out.fastqc_raw
+        fastqvalidator = params.build ? Channel.empty() : INITIAL_QC.out.fastqvalidator
+        cutadapt_reads = params.build ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
+        cutadapt_log   = params.build ? Channel.empty() : INITIAL_QC.out.cutadapt_log
+        fastqc_trimmed = params.build ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
+        bbtools_ihist  = params.build ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
+        fqscreen_1_txt = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
+        fqscreen_1_png = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
+        fqscreen_2_txt = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
+        fqscreen_2_png = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
+        kraken2_report                      = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_report
+        kraken2_classified_reads_assignment = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_classified_reads_assignment
+        kraken2_krona_html                  = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_krona_html
+        kraken2_db_dir                      = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
 
-        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
-        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        star_pass1_sj             = params.build ? Channel.empty() : STAR_ALIGN.out.pass1_sj
+        star_pass1_log            = params.build ? Channel.empty() : STAR_ALIGN.out.pass1_log
+        star_sjdb                 = params.build ? Channel.empty() : STAR_ALIGN.out.sjdb
+        star_pass2_log            = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_log
+        star_pass2_sj             = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_sj
+        star_pass2_reads_per_gene = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
+        star_pass2_bam            = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_bam
+        star_pass2_transcript_bam = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
 
-        qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
+        picard_bam                = params.build ? Channel.empty() : PICARD_INITIAL_QC.out.bam
+        picard_bai                = params.build ? Channel.empty() : PICARD_INITIAL_QC.out.bai
 
-        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
-        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+        qualimap_results          = params.build ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
-        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
-        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
-        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
-        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
-        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
+        flagstat                  = params.build ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = params.build ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+
+        arriba_fusions      = params.build ? Channel.empty() : ARRIBA.out.fusions
+        arriba_fusions_fail = params.build ? Channel.empty() : ARRIBA.out.fusions_fail
+        arriba_bam          = params.build ? Channel.empty() : ARRIBA.out.bam
+        arriba_pdf          = params.build ? Channel.empty() : ARRIBA.out.pdf
+        arriba_star_log     = params.build ? Channel.empty() : ARRIBA.out.star_log
 }
 
 output {
-    prepare_genome_conf { path { file -> "genome/" } }
+    // build outputs
+    prepare_genome_conf {
+        path { file -> "genome/" }
+        mode 'copy'
+        }
+    databases {
+        path { meta, file -> meta.db_group ? "${params.shared_resources}/${meta.db_group}/${meta.id}/" : "${params.shared_resources}/${meta.id}/" }
+        mode 'copy'
+        }
+
+    // analysis outputs
     fastqc_raw { path { meta, file -> "fastqc/raw/" } }
     fastqvalidator { path { meta, file -> "fastqvalidator/${meta.id}/" } }
     cutadapt_reads { path { meta, reads -> "cutadapt/${meta.id}/" } }
