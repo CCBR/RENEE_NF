@@ -75,7 +75,7 @@ workflow INITIAL_QC {
         }
         // this should skip with an empty channel if no db is provided
         // TODO: test that
-        KRAKEN2_KRAKEN2(ch_validated_reads, ch_kraken2_db_dir, params.kraken_save_output_fastqs, params.kraken_save_reads_assignment)
+        KRAKEN2_KRAKEN2(ch_validated_reads, ch_kraken2_db_dir, params.kraken_save_output_fastqs)
 
 
     emit:

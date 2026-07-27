@@ -39,7 +39,6 @@ nextflow_process {
                 ]
                 input[1] = UNTAR.out.untar.map{ it[1] }
                 input[2] = true
-                input[3] = false
                 """
             }
         }
@@ -84,7 +83,6 @@ nextflow_process {
                     ]
                 input[1] = UNTAR.out.untar.map{ it[1] }
                 input[2] = true
-                input[3] = false
                 """
             }
         }
@@ -128,7 +126,6 @@ nextflow_process {
                 ]
                 input[1] = UNTAR.out.untar.map{ it[1] }
                 input[2] = false
-                input[3] = true
                 """
             }
         }
@@ -160,7 +157,6 @@ nextflow_process {
                 ]
                 input[1] = file("dummy2", checkIfExists: false)
                 input[2] = true
-                input[3] = false
                 """
             }
         }
@@ -194,7 +190,6 @@ nextflow_process {
                 ]
                 input[1] = file("dummy2", checkIfExists: false)
                 input[2] = true
-                input[3] = false
                 """
             }
         }

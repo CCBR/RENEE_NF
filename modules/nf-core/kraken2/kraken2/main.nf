@@ -9,7 +9,6 @@ process KRAKEN2_KRAKEN2 {
     tuple val(meta), path(reads)
     path  db
     val save_output_fastqs
-    val save_reads_assignment
 
     output:
     tuple val(meta), path('*.classified{.,_}*')     , optional:true, emit: classified_reads_fastq
