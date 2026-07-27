@@ -49,7 +49,8 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
-                    process.out.krona_html,
+                    process.out.classified_reads_assignment,
+                    file(process.out.krona_html[0][1]).name, // HTML comes out differently on github and should not be compared
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -93,7 +94,8 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
-                    process.out.krona_html,
+                    process.out.classified_reads_assignment,
+                    file(process.out.krona_html[0][1]).name, // HTML comes out differently on github and should not be compared
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -136,9 +138,9 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
-                    process.out.krona_html,
+                    file(process.out.krona_html[0][1]).name, // HTML comes out differently on github and should not be compared
                     process.out.findAll { key, val -> key.startsWith("versions") },
-                    process.out.classified_reads_assignment,
+                    process.out.classified_reads_assignment
                 ).match()
             },
             )
@@ -168,7 +170,8 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
-                    process.out.krona_html,
+                    process.out.classified_reads_assignment,
+                    file(process.out.krona_html[0][1]).name, // HTML comes out differently on github and should not be compared
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
@@ -201,7 +204,7 @@ nextflow_process {
             { assert process.success },
             { assert snapshot(
                     process.out.report,
-                    process.out.krona_html,
+                    file(process.out.krona_html[0][1]).name, // HTML comes out differently on github and should not be compared
                     process.out.findAll { key, val -> key.startsWith("versions") },
                 ).match()
             },
