@@ -1,6 +1,6 @@
 include { RSEM_CALCULATEEXPRESSION } from '../../../modules/nf-core/rsem/calculateexpression/main'
-include { RSEM_MERGE               } from '../../../modules/local/rsem_merge/main'
-include { RSEM_GENERATE_DATA_MATRIX } from '../../../modules/local/rsem_generate_data_matrix/main'
+include { RSEM_MERGE               } from '../../../modules/local/rsem/rsem_merge/main'
+include { RSEM_GENERATE_DATA_MATRIX } from '../../../modules/local/rsem/rsem_generate_data_matrix/main'
 
 workflow RSEM {
     take:
