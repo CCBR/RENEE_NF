@@ -16,10 +16,17 @@
                         "id": "test",
                         "single_end": true
                     },
-                    "test.kraken2.krona.html:md5,8231ca7613ac0982b7426803c26b6e48"
+                    "test.kraken2.krona.html:md5,4cbb851f07c2df7a2566e0c7389717f2"
                 ]
             ],
             {
+                "versions_gzip": [
+                    [
+                        "KRAKEN2_KRAKEN2",
+                        "gzip",
+                        "1.6"
+                    ]
+                ],
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
@@ -27,16 +34,16 @@
                         "2.1.1"
                     ]
                 ],
-                "versions_pigz": [
+                "versions_kronatools": [
                     [
                         "KRAKEN2_KRAKEN2",
-                        "pigz",
-                        "bash: pigz: command not found"
+                        "KronaTools",
+                        "2.7.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:37:36.540895956",
+        "timestamp": "2026-07-27T10:53:15.988301976",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -63,6 +70,13 @@
                 ]
             ],
             {
+                "versions_gzip": [
+                    [
+                        "KRAKEN2_KRAKEN2",
+                        "gzip",
+                        "1.6"
+                    ]
+                ],
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
@@ -70,16 +84,16 @@
                         "2.1.1"
                     ]
                 ],
-                "versions_pigz": [
+                "versions_kronatools": [
                     [
                         "KRAKEN2_KRAKEN2",
-                        "pigz",
-                        "bash: pigz: command not found"
+                        "KronaTools",
+                        "2.7.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:38:07.18718483",
+        "timestamp": "2026-07-27T10:53:53.8186444",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -102,10 +116,17 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test.kraken2.krona.html:md5,78089a37fee198ef2a3b94333d011b77"
+                    "test.kraken2.krona.html:md5,066c4a66367e7b21059b412b2a47bd7f"
                 ]
             ],
             {
+                "versions_gzip": [
+                    [
+                        "KRAKEN2_KRAKEN2",
+                        "gzip",
+                        "1.6"
+                    ]
+                ],
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
@@ -113,16 +134,16 @@
                         "2.1.1"
                     ]
                 ],
-                "versions_pigz": [
+                "versions_kronatools": [
                     [
                         "KRAKEN2_KRAKEN2",
-                        "pigz",
-                        "bash: pigz: command not found"
+                        "KronaTools",
+                        "2.7.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:37:45.688874067",
+        "timestamp": "2026-07-27T10:53:26.745900256",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -145,10 +166,17 @@
                         "id": "test",
                         "single_end": true
                     },
-                    "test.kraken2.krona.html:md5,530246eba8a30c6a99858b1a60b33c10"
+                    "test.kraken2.krona.html:md5,226450d4c341e3564d33ac68142c3077"
                 ]
             ],
             {
+                "versions_gzip": [
+                    [
+                        "KRAKEN2_KRAKEN2",
+                        "gzip",
+                        "1.6"
+                    ]
+                ],
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
@@ -156,11 +184,11 @@
                         "2.1.1"
                     ]
                 ],
-                "versions_pigz": [
+                "versions_kronatools": [
                     [
                         "KRAKEN2_KRAKEN2",
-                        "pigz",
-                        "bash: pigz: command not found"
+                        "KronaTools",
+                        "2.7.1"
                     ]
                 ]
             },
@@ -174,7 +202,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-07-23T16:37:54.855376871",
+        "timestamp": "2026-07-27T10:53:38.041367745",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -201,6 +229,13 @@
                 ]
             ],
             {
+                "versions_gzip": [
+                    [
+                        "KRAKEN2_KRAKEN2",
+                        "gzip",
+                        "1.6"
+                    ]
+                ],
                 "versions_kraken2": [
                     [
                         "KRAKEN2_KRAKEN2",
@@ -208,16 +243,16 @@
                         "2.1.1"
                     ]
                 ],
-                "versions_pigz": [
+                "versions_kronatools": [
                     [
                         "KRAKEN2_KRAKEN2",
-                        "pigz",
-                        "bash: pigz: command not found"
+                        "KronaTools",
+                        "2.7.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-23T16:38:00.948565342",
+        "timestamp": "2026-07-27T10:53:46.244914863",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

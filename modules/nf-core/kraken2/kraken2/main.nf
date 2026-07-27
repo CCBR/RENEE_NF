@@ -18,7 +18,8 @@ process KRAKEN2_KRAKEN2 {
     tuple val(meta), path('*report.txt')                           , emit: report
     tuple val(meta), path('*krona.html')                           , emit: krona_html
     tuple val("${task.process}"), val('kraken2'), eval('kraken2 --version 2>&1 | head -1 | sed "s/^.*Kraken version //; s/ .*//"'), topic: versions, emit: versions_kraken2
-    tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/pigz //g"'), topic: versions, emit: versions_pigz
+    tuple val("${task.process}"), val('KronaTools'), eval('ktImportTaxonomy 2>&1 | sed -nE "s/.*KronaTools ([0-9]+(\\.[0-9]+)*).*/\\1/p"'), topic: versions, emit: versions_kronatools
+    tuple val("${task.process}"), val('gzip'), eval('gzip --version 2>&1 | head -1 | sed "s/gzip //g"'), topic: versions, emit: versions_gzip
 
     when:
     task.ext.when == null || task.ext.when
@@ -67,11 +68,11 @@ process KRAKEN2_KRAKEN2 {
     touch ${prefix}.kraken2.report.txt
     touch ${prefix}.kraken2.out.txt
     touch ${prefix}.kraken2.krona.html
+    touch ${prefix}.kraken2.classifiedreads.txt
     if [ "$save_output_fastqs" == "true" ]; then
         touch $classified
         touch $unclassified
     fi
-    touch ${prefix}.kraken2.classifiedreads.txt
     """
 
 }

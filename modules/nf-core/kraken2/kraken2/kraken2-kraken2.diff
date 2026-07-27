@@ -16,7 +16,7 @@ Changes in 'kraken2/kraken2/main.nf':
 
      input:
      tuple val(meta), path(reads)
-@@ -16,8 +14,9 @@
+@@ -16,10 +14,12 @@
      output:
      tuple val(meta), path('*.classified{.,_}*')     , optional:true, emit: classified_reads_fastq
      tuple val(meta), path('*.unclassified{.,_}*')   , optional:true, emit: unclassified_reads_fastq
@@ -25,9 +25,13 @@ Changes in 'kraken2/kraken2/main.nf':
      tuple val(meta), path('*report.txt')                           , emit: report
 +    tuple val(meta), path('*krona.html')                           , emit: krona_html
      tuple val("${task.process}"), val('kraken2'), eval('kraken2 --version 2>&1 | head -1 | sed "s/^.*Kraken version //; s/ .*//"'), topic: versions, emit: versions_kraken2
-     tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/pigz //g"'), topic: versions, emit: versions_pigz
+-    tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/pigz //g"'), topic: versions, emit: versions_pigz
++    tuple val("${task.process}"), val('KronaTools'), eval('ktImportTaxonomy 2>&1 | sed -nE "s/.*KronaTools ([0-9]+(\\.[0-9]+)*).*/\\1/p"'), topic: versions, emit: versions_kronatools
++    tuple val("${task.process}"), val('gzip'), eval('gzip --version 2>&1 | head -1 | sed "s/gzip //g"'), topic: versions, emit: versions_gzip
 
-@@ -32,22 +31,30 @@
+     when:
+     task.ext.when == null || task.ext.when
+@@ -32,22 +32,30 @@
      def unclassified = meta.single_end ? "${prefix}.unclassified.fastq" : "${prefix}.unclassified#.fastq"
      def classified_option = save_output_fastqs ? "--classified-out ${classified}" : ""
      def unclassified_option = save_output_fastqs ? "--unclassified-out ${unclassified}" : ""
@@ -61,12 +65,13 @@ Changes in 'kraken2/kraken2/main.nf':
      $compress_reads_command
      """
 
-@@ -58,13 +65,13 @@
+@@ -58,13 +66,13 @@
 
      """
      touch ${prefix}.kraken2.report.txt
 +    touch ${prefix}.kraken2.out.txt
 +    touch ${prefix}.kraken2.krona.html
++    touch ${prefix}.kraken2.classifiedreads.txt
      if [ "$save_output_fastqs" == "true" ]; then
          touch $classified
          touch $unclassified
@@ -74,7 +79,6 @@ Changes in 'kraken2/kraken2/main.nf':
 -    if [ "$save_reads_assignment" == "true" ]; then
 -        touch ${prefix}.kraken2.classifiedreads.txt
 -    fi
-+    touch ${prefix}.kraken2.classifiedreads.txt
      """
 
  }
@@ -229,7 +233,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test':
 Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 --- modules/nf-core/kraken2/kraken2/tests/main.nf.test.snap
 +++ modules/nf-core/kraken2/kraken2/tests/main.nf.test.snap
-@@ -10,28 +10,37 @@
+@@ -10,28 +10,44 @@
                      "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                  ]
              ],
@@ -261,10 +265,17 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "id": "test",
 +                        "single_end": true
 +                    },
-+                    "test.kraken2.krona.html:md5,8231ca7613ac0982b7426803c26b6e48"
++                    "test.kraken2.krona.html:md5,4cbb851f07c2df7a2566e0c7389717f2"
 +                ]
 +            ],
 +            {
++                "versions_gzip": [
++                    [
++                        "KRAKEN2_KRAKEN2",
++                        "gzip",
++                        "1.6"
++                    ]
++                ],
 +                "versions_kraken2": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
@@ -272,16 +283,16 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "2.1.1"
 +                    ]
 +                ],
-+                "versions_pigz": [
++                "versions_kronatools": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
-+                        "pigz",
-+                        "bash: pigz: command not found"
++                        "KronaTools",
++                        "2.7.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-23T16:37:36.540895956",
++        "timestamp": "2026-07-27T10:53:15.988301976",
 +        "meta": {
 +            "nf-test": "0.9.5",
 +            "nextflow": "25.10.0"
@@ -289,7 +300,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
      },
      "paired_end - stub": {
          "content": [
-@@ -44,28 +53,37 @@
+@@ -44,28 +60,44 @@
                      "test.kraken2.report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                  ]
              ],
@@ -325,6 +336,13 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                ]
 +            ],
 +            {
++                "versions_gzip": [
++                    [
++                        "KRAKEN2_KRAKEN2",
++                        "gzip",
++                        "1.6"
++                    ]
++                ],
 +                "versions_kraken2": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
@@ -332,16 +350,16 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "2.1.1"
 +                    ]
 +                ],
-+                "versions_pigz": [
++                "versions_kronatools": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
-+                        "pigz",
-+                        "bash: pigz: command not found"
++                        "KronaTools",
++                        "2.7.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-23T16:38:07.18718483",
++        "timestamp": "2026-07-27T10:53:53.8186444",
 +        "meta": {
 +            "nf-test": "0.9.5",
 +            "nextflow": "25.10.0"
@@ -349,7 +367,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
      },
      "sarscov2 illumina paired end [fastq]": {
          "content": [
-@@ -78,28 +96,37 @@
+@@ -78,28 +110,44 @@
                      "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                  ]
              ],
@@ -381,10 +399,17 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "id": "test",
 +                        "single_end": false
 +                    },
-+                    "test.kraken2.krona.html:md5,78089a37fee198ef2a3b94333d011b77"
++                    "test.kraken2.krona.html:md5,066c4a66367e7b21059b412b2a47bd7f"
 +                ]
 +            ],
 +            {
++                "versions_gzip": [
++                    [
++                        "KRAKEN2_KRAKEN2",
++                        "gzip",
++                        "1.6"
++                    ]
++                ],
 +                "versions_kraken2": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
@@ -392,16 +417,16 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "2.1.1"
 +                    ]
 +                ],
-+                "versions_pigz": [
++                "versions_kronatools": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
-+                        "pigz",
-+                        "bash: pigz: command not found"
++                        "KronaTools",
++                        "2.7.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-23T16:37:45.688874067",
++        "timestamp": "2026-07-27T10:53:26.745900256",
 +        "meta": {
 +            "nf-test": "0.9.5",
 +            "nextflow": "25.10.0"
@@ -409,7 +434,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
      },
      "sarscov2 illumina single end [fastq] + save_reads_assignment": {
          "content": [
-@@ -112,19 +139,28 @@
+@@ -112,19 +160,35 @@
                      "test.kraken2.report.txt:md5,4227755fe40478b8d7dc8634b489761e"
                  ]
              ],
@@ -432,10 +457,17 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "id": "test",
 +                        "single_end": true
 +                    },
-+                    "test.kraken2.krona.html:md5,530246eba8a30c6a99858b1a60b33c10"
++                    "test.kraken2.krona.html:md5,226450d4c341e3564d33ac68142c3077"
 +                ]
 +            ],
 +            {
++                "versions_gzip": [
++                    [
++                        "KRAKEN2_KRAKEN2",
++                        "gzip",
++                        "1.6"
++                    ]
++                ],
 +                "versions_kraken2": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
@@ -443,15 +475,15 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "2.1.1"
 +                    ]
 +                ],
-+                "versions_pigz": [
++                "versions_kronatools": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
-+                        "pigz",
-+                        "bash: pigz: command not found"
++                        "KronaTools",
++                        "2.7.1"
                      ]
                  ]
              },
-@@ -138,11 +174,11 @@
+@@ -138,11 +202,11 @@
                  ]
              ]
          ],
@@ -460,7 +492,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 -            "nextflow": "25.10.2"
 -        },
 -        "timestamp": "2026-01-19T17:22:48.87201447"
-+        "timestamp": "2026-07-23T16:37:54.855376871",
++        "timestamp": "2026-07-27T10:53:38.041367745",
 +        "meta": {
 +            "nf-test": "0.9.5",
 +            "nextflow": "25.10.0"
@@ -468,7 +500,7 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
      },
      "single_end - stub": {
          "content": [
-@@ -155,27 +191,36 @@
+@@ -155,27 +219,43 @@
                      "test.kraken2.report.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                  ]
              ],
@@ -504,6 +536,13 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                ]
 +            ],
 +            {
++                "versions_gzip": [
++                    [
++                        "KRAKEN2_KRAKEN2",
++                        "gzip",
++                        "1.6"
++                    ]
++                ],
 +                "versions_kraken2": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
@@ -511,16 +550,16 @@ Changes in 'kraken2/kraken2/tests/main.nf.test.snap':
 +                        "2.1.1"
 +                    ]
 +                ],
-+                "versions_pigz": [
++                "versions_kronatools": [
 +                    [
 +                        "KRAKEN2_KRAKEN2",
-+                        "pigz",
-+                        "bash: pigz: command not found"
++                        "KronaTools",
++                        "2.7.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-23T16:38:00.948565342",
++        "timestamp": "2026-07-27T10:53:46.244914863",
 +        "meta": {
 +            "nf-test": "0.9.5",
 +            "nextflow": "25.10.0"
