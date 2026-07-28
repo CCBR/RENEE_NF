@@ -145,7 +145,43 @@
                         "type": "string"
                     }
                 }
-            }
+            },
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "build": {
+                                "const": false
+                            },
+                            "build_shared_resources_only": {
+                                "const": false
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "input"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "required": [
+                            "build_shared_resources_only"
+                        ],
+                        "properties": {
+                            "build_shared_resources_only": {
+                                "const": true
+                            }
+                        }
+                    },
+                    "then": {
+                        "required": [
+                            "shared_resources"
+                        ]
+                    }
+                }
+            ]
         },
         "qc_options": {
             "title": "QC options",
@@ -228,40 +264,6 @@
         },
         {
             "$ref": "#/$defs/max_job_request_options"
-        },
-        {
-            "if": {
-                "properties": {
-                    "build": {
-                        "const": false
-                    },
-                    "build_shared_resources_only": {
-                        "const": false
-                    }
-                }
-            },
-            "then": {
-                "required": [
-                    "input"
-                ]
-            }
-        },
-        {
-            "if": {
-                "required": [
-                    "build_shared_resources_only"
-                ],
-                "properties": {
-                    "build_shared_resources_only": {
-                        "const": true
-                    }
-                }
-            },
-            "then": {
-                "required": [
-                    "shared_resources"
-                ]
-            }
         }
     ]
 }
