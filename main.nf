@@ -48,6 +48,8 @@ workflow {
             error "Parameters --build and --build_shared_resources_only are mutually exclusive."
         }
 
+        analysis_mode = !params.build && !params.build_shared_resources_only
+
         // Download shared databases in either full build mode or resources-only mode.
         if (params.build_shared_resources_only || (params.build && params.shared_resources)) {
             log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
@@ -65,7 +67,7 @@ workflow {
         if (params.build && !params.build_shared_resources_only) {
             log.info "Build genome only mode enabled. Stopping workflow after genome preparation."
             prepare_genome_conf = PREPARE_GENOME.out.conf
-        } else if (!params.build_shared_resources_only) {
+        } else if (analysis_mode) {
             log.info "Genome preparation complete. Continuing with workflow."
             prepare_genome_conf = Channel.empty() // dont save genome copy if not in build mode
 
@@ -136,43 +138,44 @@ workflow {
         fastq_screen_databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
         kraken_databases       = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
 
-        fastqc_raw     = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqc_raw
-        fastqvalidator = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqvalidator
-        cutadapt_reads = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
-        cutadapt_log   = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.cutadapt_log
-        fastqc_trimmed = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
-        bbtools_ihist  = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
-        fqscreen_1_txt = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
-        fqscreen_1_png = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
-        fqscreen_2_txt = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
-        fqscreen_2_png = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
-        kraken2_report                      = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_report
-        kraken2_classified_reads_assignment = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_classified_reads_assignment
-        kraken2_krona_html                  = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_krona_html
-        kraken2_db_dir                      = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
+        fastqc_raw     = analysis_mode ? INITIAL_QC.out.fastqc_raw : Channel.empty()
+        fastqvalidator = analysis_mode ? INITIAL_QC.out.fastqvalidator : Channel.empty()
+        cutadapt_reads = analysis_mode ? INITIAL_QC.out.cutadapt_reads : Channel.empty()
+        cutadapt_log   = analysis_mode ? INITIAL_QC.out.cutadapt_log : Channel.empty()
+        fastqc_trimmed = analysis_mode ? INITIAL_QC.out.fastqc_trimmed : Channel.empty()
+        bbtools_ihist  = analysis_mode ? INITIAL_QC.out.bbtools_ihist : Channel.empty()
+        fqscreen_1_txt = analysis_mode ? INITIAL_QC.out.fqscreen_1_txt : Channel.empty()
+        fqscreen_1_png = analysis_mode ? INITIAL_QC.out.fqscreen_1_png : Channel.empty()
+        fqscreen_2_txt = analysis_mode ? INITIAL_QC.out.fqscreen_2_txt : Channel.empty()
+        fqscreen_2_png = analysis_mode ? INITIAL_QC.out.fqscreen_2_png : Channel.empty()
+        kraken2_report                      = analysis_mode ? INITIAL_QC.out.kraken2_report : Channel.empty()
+        kraken2_classified_reads_assignment = analysis_mode ? INITIAL_QC.out.kraken2_classified_reads_assignment : Channel.empty()
+        kraken2_krona_html                  = analysis_mode ? INITIAL_QC.out.kraken2_krona_html : Channel.empty()
+        kraken2_db_dir                      = analysis_mode ? INITIAL_QC.out.kraken2_db_dir : Channel.empty()
 
-        star_pass1_sj             = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass1_sj
-        star_pass1_log            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass1_log
-        star_sjdb                 = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.sjdb
-        star_pass2_log            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_log
-        star_pass2_sj             = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_sj
-        star_pass2_reads_per_gene = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
-        star_pass2_bam            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_bam
-        star_pass2_transcript_bam = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
+        star_pass1_sj             = analysis_mode ? STAR_ALIGN.out.pass1_sj : Channel.empty()
+        star_pass1_log            = analysis_mode ? STAR_ALIGN.out.pass1_log : Channel.empty()
+        star_sjdb                 = analysis_mode ? STAR_ALIGN.out.sjdb : Channel.empty()
+        star_pass2_log            = analysis_mode ? STAR_ALIGN.out.pass2_log : Channel.empty()
+        star_pass2_sj             = analysis_mode ? STAR_ALIGN.out.pass2_sj : Channel.empty()
+        star_pass2_reads_per_gene = analysis_mode ? STAR_ALIGN.out.pass2_reads_per_gene : Channel.empty()
+        star_pass2_bam            = analysis_mode ? STAR_ALIGN.out.pass2_bam : Channel.empty()
+        star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN.out.pass2_transcript_bam : Channel.empty()
 
-        picard_bam                = (params.build || params.build_shared_resources_only) ? Channel.empty() : PICARD_INITIAL_QC.out.bam
-        picard_bai                = (params.build || params.build_shared_resources_only) ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        picard_bam         = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
+        picard_bai         = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
+        picard_rna_metrics = analysis_mode ? PICARD_COLLECTRNASEQMETRICS.out.metrics : Channel.empty()
 
-        qualimap_results          = (params.build || params.build_shared_resources_only) ? Channel.empty() : QUALIMAP_BAMQC.out.results
+        qualimap_results = analysis_mode ? QUALIMAP_BAMQC.out.results : Channel.empty()
 
-        flagstat                  = (params.build || params.build_shared_resources_only) ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
-        flagstat_versions         = (params.build || params.build_shared_resources_only) ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+        flagstat          = analysis_mode ? SAMTOOLS_FLAGSTAT.out.flagstat : Channel.empty()
+        flagstat_versions = analysis_mode ? SAMTOOLS_FLAGSTAT.out.versions : Channel.empty()
 
-        arriba_fusions      = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.fusions
-        arriba_fusions_fail = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.fusions_fail
-        arriba_bam          = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.bam
-        arriba_pdf          = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.pdf
-        arriba_star_log     = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.star_log
+        arriba_fusions      = analysis_mode ? ARRIBA.out.fusions : Channel.empty()
+        arriba_fusions_fail = analysis_mode ? ARRIBA.out.fusions_fail : Channel.empty()
+        arriba_bam          = analysis_mode ? ARRIBA.out.bam : Channel.empty()
+        arriba_pdf          = analysis_mode ? ARRIBA.out.pdf : Channel.empty()
+        arriba_star_log     = analysis_mode ? ARRIBA.out.star_log : Channel.empty()
 }
 
 output {
