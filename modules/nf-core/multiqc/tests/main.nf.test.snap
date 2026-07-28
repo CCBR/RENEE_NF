@@ -1,0 +1,290 @@
+{
+    "sarscov2 single-end [fastqc] [multiple configs]": {
+        "content": [
+            {
+                "data": [
+                    [
+                        [
+                            "fastqc-status-check-heatmap.txt",
+                            "fastqc_overrepresented_sequences_plot.txt",
+                            "fastqc_per_base_n_content_plot.txt",
+                            "fastqc_per_base_sequence_quality_plot.txt",
+                            "fastqc_per_sequence_gc_content_plot_Counts.txt",
+                            "fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                            "fastqc_per_sequence_quality_scores_plot.txt",
+                            "fastqc_sequence_counts_plot.txt",
+                            "fastqc_sequence_duplication_levels_plot.txt",
+                            "fastqc_sequence_length_distribution_plot.txt",
+                            "fastqc_top_overrepresented_sequences_table.txt",
+                            "llms-full.txt",
+                            "multiqc.log",
+                            "multiqc.parquet",
+                            "multiqc_citations.txt",
+                            "multiqc_data.json",
+                            "multiqc_fastqc.txt",
+                            "multiqc_general_stats.txt",
+                            "multiqc_sources.txt"
+                        ]
+                    ]
+                ],
+                "plots": [
+                    [
+                        "pdf",
+                        [
+
+                        ],
+                        "png",
+                        [
+
+                        ],
+                        "svg",
+                        [
+
+                        ]
+                    ]
+                ],
+                "report": "multiqc_report.html",
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.35"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T10:31:43.015792066",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 single-end [fastqc]": {
+        "content": [
+            {
+                "data": [
+                    [
+                        [
+                            "fastqc-status-check-heatmap.txt",
+                            "fastqc_overrepresented_sequences_plot.txt",
+                            "fastqc_per_base_n_content_plot.txt",
+                            "fastqc_per_base_sequence_quality_plot.txt",
+                            "fastqc_per_sequence_gc_content_plot_Counts.txt",
+                            "fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                            "fastqc_per_sequence_quality_scores_plot.txt",
+                            "fastqc_sequence_counts_plot.txt",
+                            "fastqc_sequence_duplication_levels_plot.txt",
+                            "fastqc_sequence_length_distribution_plot.txt",
+                            "fastqc_top_overrepresented_sequences_table.txt",
+                            "llms-full.txt",
+                            "multiqc.log",
+                            "multiqc.parquet",
+                            "multiqc_citations.txt",
+                            "multiqc_data.json",
+                            "multiqc_fastqc.txt",
+                            "multiqc_general_stats.txt",
+                            "multiqc_software_versions.txt",
+                            "multiqc_sources.txt"
+                        ]
+                    ]
+                ],
+                "plots": [
+                    [
+                        "pdf",
+                        [
+
+                        ],
+                        "png",
+                        [
+
+                        ],
+                        "svg",
+                        [
+
+                        ]
+                    ]
+                ],
+                "report": "multiqc_report.html",
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.35"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T10:30:50.167440509",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 single-end [fastqc] - stub": {
+        "content": [
+            {
+                "data": [
+                    [
+                        {
+                            "id": "FASTQC"
+                        },
+                        [
+                            ".stub:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "plots": [
+                    [
+                        {
+                            "id": "FASTQC"
+                        },
+                        [
+                            ".stub:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "report": [
+                    [
+                        {
+                            "id": "FASTQC"
+                        },
+                        "multiqc_report.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.35"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-02-26T15:14:39.789193051",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "sarscov2 single-end [fastqc] [config]": {
+        "content": [
+            {
+                "data": [
+                    [
+                        [
+                            "fastqc-status-check-heatmap.txt",
+                            "fastqc_overrepresented_sequences_plot.txt",
+                            "fastqc_per_base_n_content_plot.txt",
+                            "fastqc_per_base_sequence_quality_plot.txt",
+                            "fastqc_per_sequence_gc_content_plot_Counts.txt",
+                            "fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                            "fastqc_per_sequence_quality_scores_plot.txt",
+                            "fastqc_sequence_counts_plot.txt",
+                            "fastqc_sequence_duplication_levels_plot.txt",
+                            "fastqc_sequence_length_distribution_plot.txt",
+                            "fastqc_top_overrepresented_sequences_table.txt",
+                            "llms-full.txt",
+                            "multiqc.log",
+                            "multiqc.parquet",
+                            "multiqc_citations.txt",
+                            "multiqc_data.json",
+                            "multiqc_fastqc.txt",
+                            "multiqc_general_stats.txt",
+                            "multiqc_sources.txt"
+                        ]
+                    ]
+                ],
+                "plots": [
+                    [
+                        "pdf",
+                        [
+
+                        ],
+                        "png",
+                        [
+
+                        ],
+                        "svg",
+                        [
+
+                        ]
+                    ]
+                ],
+                "report": "multiqc_report.html",
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.35"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T10:31:25.272586062",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 single-end [fastqc] - custom prefix": {
+        "content": [
+            {
+                "data": [
+                    [
+                        [
+                            "fastqc-status-check-heatmap.txt",
+                            "fastqc_overrepresented_sequences_plot.txt",
+                            "fastqc_per_base_n_content_plot.txt",
+                            "fastqc_per_base_sequence_quality_plot.txt",
+                            "fastqc_per_sequence_gc_content_plot_Counts.txt",
+                            "fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                            "fastqc_per_sequence_quality_scores_plot.txt",
+                            "fastqc_sequence_counts_plot.txt",
+                            "fastqc_sequence_duplication_levels_plot.txt",
+                            "fastqc_sequence_length_distribution_plot.txt",
+                            "fastqc_top_overrepresented_sequences_table.txt",
+                            "llms-full.txt",
+                            "multiqc.log",
+                            "multiqc.parquet",
+                            "multiqc_citations.txt",
+                            "multiqc_data.json",
+                            "multiqc_fastqc.txt",
+                            "multiqc_general_stats.txt",
+                            "multiqc_software_versions.txt",
+                            "multiqc_sources.txt"
+                        ]
+                    ]
+                ],
+                "plots": [
+                    [
+                        "pdf",
+                        [
+
+                        ],
+                        "png",
+                        [
+
+                        ],
+                        "svg",
+                        [
+
+                        ]
+                    ]
+                ],
+                "report": "custom_prefix.html",
+                "versions": [
+                    [
+                        "MULTIQC",
+                        "multiqc",
+                        "1.35"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T10:31:07.68714448",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

@@ -6,6 +6,7 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 // Modules
 include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
 include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
+include { MULTIQC } from './modules/nf-core/multiqc/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -106,6 +107,31 @@ workflow {
                 PREPARE_GENOME.out.fusion_protdomain
             )
 
+            // MultiQC ------------------------------------------------------------------------
+            ch_multiqc_files = Channel.empty()
+                .mix(INITIAL_QC.out.fastqc_raw.map           { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.cutadapt_log.map         { meta, log   -> log   })
+                .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
+                .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
+                .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
+                .mix(PICARD_COLLECTRNASEQMETRICS.out.metrics.map { meta, file -> file })
+                .mix(QUALIMAP_BAMQC.out.results.map          { meta, dir   -> dir   })
+                .mix(SAMTOOLS_FLAGSTAT.out.flagstat.map      { meta, file  -> file  })
+                .collect()
+
+            // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
+            MULTIQC(
+                ch_multiqc_files.map { files -> [
+                    [id: 'multiqc'], // meta
+                    files, // files
+                    file(params.multiQC_config), // config
+                    [], //logo
+                    [], // replace_names
+                    []] //sample names TSV
+                }
+            )
         }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -154,6 +180,9 @@ workflow {
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
         arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
         arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
+
+        multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
+        multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
 }
 
 output {
@@ -192,4 +221,7 @@ output {
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
     arriba_pdf          { path { meta, file -> 'fusions/' } }
     arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
+
+    multiqc_report { path { meta, file -> 'Reports/' } }
+    multiqc_data   { path { meta, dir  -> 'Reports/' } }
 }
