@@ -10,15 +10,15 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    file("${projectDir}/modules/local/rsem/tests/data/sample1.RSEM.genes.results", checkIfExists: true),
-                    file("${projectDir}/modules/local/rsem/tests/data/sample2.RSEM.genes.results", checkIfExists: true)
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
                 ]
                 input[1] = [
-                    file("${projectDir}/modules/local/rsem/tests/data/sample1.RSEM.isoforms.results", checkIfExists: true),
-                    file("${projectDir}/modules/local/rsem/tests/data/sample2.RSEM.isoforms.results", checkIfExists: true)
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
                 ]
-                input[2] = file("${projectDir}/modules/local/rsem/tests/data/annotate.genes.txt", checkIfExists: true)
-                input[3] = "${projectDir}/modules/local/rsem/tests/data"
+                input[2] = file("${projectDir}/tests/test_data/DEG/annotate.genes.txt", checkIfExists: true)
+                input[3] = "${projectDir}/tests/test_data/DEG"
                 """
             }
         }
@@ -33,21 +33,7 @@ nextflow_process {
                 { assert file(process.out.isoform_fpkm[0]).name == "RSEM.isoforms.FPKM.all_samples.txt" },
                 { assert file(process.out.isoform_tpm[0]).name == "RSEM.isoforms.TPM.all_samples.txt" },
                 { assert file(process.out.reformatted[0]).name == "RSEM.genes.expected_counts.all_samples.reformatted.tsv" },
-                { assert path(process.out.gene_counts[0]).readLines() == [
-                    "gene_id\tGeneName\tsample1\tsample2",
-                    "ENSG1\tALPHA\t10.0\t30.0",
-                    "ENSG2\tBETA\t20.0\t40.0"
-                ] },
-                { assert path(process.out.isoform_tpm[0]).readLines() == [
-                    "gene_id\tGeneName\ttranscript_id\tsample1\tsample2",
-                    "ENSG1\tALPHA\tENST1\t60.0\t70.0",
-                    "ENSG2\tBETA\tENST2\t40.0\t30.0"
-                ] },
-                { assert path(process.out.reformatted[0]).readLines() == [
-                    "symbol\tsample1\tsample2",
-                    "ENSG1|ALPHA\t10.0\t30.0",
-                    "ENSG2|BETA\t20.0\t40.0"
-                ] }
+                { assert snapshot(process.out).match() }
             )
         }
 
@@ -60,15 +46,15 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    file("${projectDir}/modules/local/rsem/tests/data/sample1.RSEM.genes.results", checkIfExists: true),
-                    file("${projectDir}/modules/local/rsem/tests/data/sample2.RSEM.genes.results", checkIfExists: true)
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
                 ]
                 input[1] = [
-                    file("${projectDir}/modules/local/rsem/tests/data/sample1.RSEM.isoforms.results", checkIfExists: true),
-                    file("${projectDir}/modules/local/rsem/tests/data/sample2.RSEM.isoforms.results", checkIfExists: true)
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
                 ]
-                input[2] = file("${projectDir}/modules/local/rsem/tests/data/annotate.genes.txt", checkIfExists: true)
-                input[3] = "${projectDir}/modules/local/rsem/tests/data"
+                input[2] = file("${projectDir}/tests/test_data/DEG/annotate.genes.txt", checkIfExists: true)
+                input[3] = "${projectDir}/tests/test_data/DEG"
                 """
             }
         }
@@ -82,7 +68,8 @@ nextflow_process {
                 { assert file(process.out.isoform_counts[0]).name == "RSEM.isoforms.expected_count.cohort.txt" },
                 { assert file(process.out.isoform_fpkm[0]).name == "RSEM.isoforms.FPKM.cohort.txt" },
                 { assert file(process.out.isoform_tpm[0]).name == "RSEM.isoforms.TPM.cohort.txt" },
-                { assert file(process.out.reformatted[0]).name == "RSEM.genes.expected_counts.cohort.reformatted.tsv" }
+                { assert file(process.out.reformatted[0]).name == "RSEM.genes.expected_counts.cohort.reformatted.tsv" },
+                { assert snapshot(process.out).match() }
             )
         }
     }
