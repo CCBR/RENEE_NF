@@ -62,7 +62,7 @@ workflow INITIAL_QC {
         if (params.kraken2_db_dir) {
             ch_kraken2_db_dir = Channel.value(file(params.kraken2_db_dir))
         } else if (params.shared_resources) {
-            ch_kraken2_db_dir = Channel.value(file("${params.shared_resources}/kraken2_db"))
+            ch_kraken2_db_dir = Channel.value(file("${params.shared_resources}/20180907_standard_kraken2"))
         } else  {
             log.warn "No Kraken2 database directory provided. Kraken2 will be skipped."
             ch_kraken2_db_dir = Channel.empty()
