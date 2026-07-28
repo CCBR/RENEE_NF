@@ -6,6 +6,8 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 // Modules
 include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
 include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
+include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
+include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -16,19 +18,6 @@ include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main
 include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
 include { RSEM }           from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
-include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC }          from './subworkflows/local/picard_initial_qc/main'
-include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
-include { arriba as ARRIBA }            from './subworkflows/local/arriba/main'
-
-// Modules
-include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
-
-
-
-
-
-
 
 
 workflow version {
@@ -110,6 +99,7 @@ workflow {
                 PICARD_INITIAL_QC.out.bam
                     .join(PICARD_INITIAL_QC.out.bai)
                     .join(RSEQC_QC.out.infer_experiment)
+            )
             ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
 
             PICARD_COLLECTRNASEQMETRICS(
@@ -248,8 +238,6 @@ output {
     rsem_gene_matrix      { path { file -> 'DEG_ALL/' } }
     rsem_isoform_matrix   { path { file -> 'DEG_ALL/' } }
 
-    picard_bam { path { meta, file -> 'bams/' } }
-    picard_bai { path { meta, file -> 'bams/' } }
     picard_bam         { path { meta, file -> 'bams/' } }
     picard_bai         { path { meta, file -> 'bams/' } }
     picard_rna_metrics { path { meta, file -> 'picard/' } }
