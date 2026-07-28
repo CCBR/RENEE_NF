@@ -124,7 +124,8 @@ workflow {
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
         prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.databases : Channel.empty()
+        fastq_screen_databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
+        kraken_databases       = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
 
         fastqc_raw     = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqc_raw
         fastqvalidator = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqvalidator
@@ -171,8 +172,12 @@ output {
         path { file -> "genome/" }
         mode 'copy'
         }
-    databases {
-        path { meta, file -> meta.db_group ? "${params.shared_resources}/${meta.db_group}/${meta.id}/" : "${params.shared_resources}/${meta.id}/" }
+    fastq_screen_databases {
+        path { meta, dir -> "${params.shared_resources}/fastq_screen_db/" }
+        mode 'copy'
+        }
+    kraken_databases {
+        path { meta, dir -> "${params.shared_resources}/" }
         mode 'copy'
         }
 
