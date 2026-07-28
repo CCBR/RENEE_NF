@@ -16,6 +16,10 @@ include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main
 include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
 include { RSEM }           from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+include { CHECK_INPUT }     from './subworkflows/local/read_samples/main'
+include { PICARD_INITIAL_QC }          from './subworkflows/local/picard_initial_qc/main'
+include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
+include { arriba as ARRIBA }            from './subworkflows/local/arriba/main'
 
 // Modules
 include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
@@ -106,6 +110,13 @@ workflow {
                 PICARD_INITIAL_QC.out.bam
                     .join(PICARD_INITIAL_QC.out.bai)
                     .join(RSEQC_QC.out.infer_experiment)
+            ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
+
+            PICARD_COLLECTRNASEQMETRICS(
+                PICARD_INITIAL_QC.out.bam,
+                PREPARE_GENOME.out.refflat,
+                ch_fasta_path,
+                PREPARE_GENOME.out.rrna_list.ifEmpty([])
             )
             // QualiMap BAM QC ---------------------------------------------------------------
             ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
@@ -179,6 +190,7 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        picard_rna_metrics        = params.build_genome ? Channel.empty() : PICARD_COLLECTRNASEQMETRICS.out.metrics
 
         rseqc_infer_experiment       = params.build_genome ? Channel.empty() : RSEQC_QC.out.infer_experiment
         rseqc_read_distribution      = params.build_genome ? Channel.empty() : RSEQC_QC.out.read_distribution
@@ -238,6 +250,9 @@ output {
 
     picard_bam { path { meta, file -> 'bams/' } }
     picard_bai { path { meta, file -> 'bams/' } }
+    picard_bam         { path { meta, file -> 'bams/' } }
+    picard_bai         { path { meta, file -> 'bams/' } }
+    picard_rna_metrics { path { meta, file -> 'picard/' } }
 
     rseqc_infer_experiment       { path { meta, file -> 'RSeQC/' } }
     rseqc_read_distribution      { path { meta, file -> 'RSeQC/' } }
