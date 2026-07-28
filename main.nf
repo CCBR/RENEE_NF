@@ -43,19 +43,28 @@ workflow {
         LOG()
         validateParameters()
 
-        // build genome first, if set to build mode stop after this step
-        PREPARE_GENOME()
+        if (params.build && params.build_shared_resources_only) {
+            error "Parameters --build and --build_shared_resources_only are mutually exclusive."
+        }
 
-        if (params.build) {
+        // Download shared databases in either full build mode or resources-only mode.
+        if (params.build_shared_resources_only || (params.build && params.shared_resources)) {
+            log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
+            DOWNLOAD_DATABASES()
+        }
+
+        if (params.build_shared_resources_only) {
+            log.info "Shared resources only mode enabled. Skipping genome preparation and sample analysis."
+            prepare_genome_conf = Channel.empty()
+        } else {
+            // Prepare the genome for both genome-build and sample-analysis modes.
+            PREPARE_GENOME()
+        }
+
+        if (params.build && !params.build_shared_resources_only) {
             log.info "Build genome only mode enabled. Stopping workflow after genome preparation."
             prepare_genome_conf = PREPARE_GENOME.out.conf
-
-            if(params.shared_resources) {
-                log.info "Shared resources mode enabled. Downloading FastQ Screen and Kraken2 databases."
-                DOWNLOAD_DATABASES()
-            }
-
-        } else {
+        } else if (!params.build_shared_resources_only) {
             log.info "Genome preparation complete. Continuing with workflow."
             prepare_genome_conf = Channel.empty() // dont save genome copy if not in build mode
 
@@ -115,45 +124,45 @@ workflow {
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
         prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        databases = (params.shared_resources && params.build) ? DOWNLOAD_DATABASES.out.databases : Channel.empty()
+        databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.databases : Channel.empty()
 
-        fastqc_raw     = params.build ? Channel.empty() : INITIAL_QC.out.fastqc_raw
-        fastqvalidator = params.build ? Channel.empty() : INITIAL_QC.out.fastqvalidator
-        cutadapt_reads = params.build ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
-        cutadapt_log   = params.build ? Channel.empty() : INITIAL_QC.out.cutadapt_log
-        fastqc_trimmed = params.build ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
-        bbtools_ihist  = params.build ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
-        fqscreen_1_txt = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
-        fqscreen_1_png = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
-        fqscreen_2_txt = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
-        fqscreen_2_png = params.build ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
-        kraken2_report                      = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_report
-        kraken2_classified_reads_assignment = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_classified_reads_assignment
-        kraken2_krona_html                  = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_krona_html
-        kraken2_db_dir                      = params.build ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
+        fastqc_raw     = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqc_raw
+        fastqvalidator = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqvalidator
+        cutadapt_reads = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
+        cutadapt_log   = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.cutadapt_log
+        fastqc_trimmed = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
+        bbtools_ihist  = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
+        fqscreen_1_txt = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
+        fqscreen_1_png = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
+        fqscreen_2_txt = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
+        fqscreen_2_png = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
+        kraken2_report                      = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_report
+        kraken2_classified_reads_assignment = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_classified_reads_assignment
+        kraken2_krona_html                  = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_krona_html
+        kraken2_db_dir                      = (params.build || params.build_shared_resources_only) ? Channel.empty() : INITIAL_QC.out.kraken2_db_dir
 
-        star_pass1_sj             = params.build ? Channel.empty() : STAR_ALIGN.out.pass1_sj
-        star_pass1_log            = params.build ? Channel.empty() : STAR_ALIGN.out.pass1_log
-        star_sjdb                 = params.build ? Channel.empty() : STAR_ALIGN.out.sjdb
-        star_pass2_log            = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_log
-        star_pass2_sj             = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_sj
-        star_pass2_reads_per_gene = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
-        star_pass2_bam            = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_bam
-        star_pass2_transcript_bam = params.build ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
+        star_pass1_sj             = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass1_sj
+        star_pass1_log            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass1_log
+        star_sjdb                 = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.sjdb
+        star_pass2_log            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_log
+        star_pass2_sj             = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_sj
+        star_pass2_reads_per_gene = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
+        star_pass2_bam            = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_bam
+        star_pass2_transcript_bam = (params.build || params.build_shared_resources_only) ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
 
-        picard_bam                = params.build ? Channel.empty() : PICARD_INITIAL_QC.out.bam
-        picard_bai                = params.build ? Channel.empty() : PICARD_INITIAL_QC.out.bai
+        picard_bam                = (params.build || params.build_shared_resources_only) ? Channel.empty() : PICARD_INITIAL_QC.out.bam
+        picard_bai                = (params.build || params.build_shared_resources_only) ? Channel.empty() : PICARD_INITIAL_QC.out.bai
 
-        qualimap_results          = params.build ? Channel.empty() : QUALIMAP_BAMQC.out.results
+        qualimap_results          = (params.build || params.build_shared_resources_only) ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
-        flagstat                  = params.build ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
-        flagstat_versions         = params.build ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+        flagstat                  = (params.build || params.build_shared_resources_only) ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
+        flagstat_versions         = (params.build || params.build_shared_resources_only) ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
 
-        arriba_fusions      = params.build ? Channel.empty() : ARRIBA.out.fusions
-        arriba_fusions_fail = params.build ? Channel.empty() : ARRIBA.out.fusions_fail
-        arriba_bam          = params.build ? Channel.empty() : ARRIBA.out.bam
-        arriba_pdf          = params.build ? Channel.empty() : ARRIBA.out.pdf
-        arriba_star_log     = params.build ? Channel.empty() : ARRIBA.out.star_log
+        arriba_fusions      = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.fusions
+        arriba_fusions_fail = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.fusions_fail
+        arriba_bam          = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.bam
+        arriba_pdf          = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.pdf
+        arriba_star_log     = (params.build || params.build_shared_resources_only) ? Channel.empty() : ARRIBA.out.star_log
 }
 
 output {

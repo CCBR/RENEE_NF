@@ -10,9 +10,6 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input"
-            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -127,14 +124,19 @@
                     "format": "directory-path",
                     "description": "Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set."
                 },
-                "build_genome": {
-                    "type": "boolean",
-                    "description": "When true, the pipeline stops after building the custom genome reference without proceeding to alignment."
-                },
-                "build_databases": {
+                "build": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Download and unpack all FastQ Screen and Kraken2 databases, publish them under shared_resources, and stop before analysis."
+                    "description": "When true, the pipeline stops after building the custom genome reference without proceeding to alignment."
+                },
+                "build_shared_resources_only": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "When true, download and publish only the shared FastQ Screen and Kraken2 databases without preparing a genome or analyzing samples."
+                },
+                "shared_resources": {
+                    "type": "string",
+                    "description": "Shared FastQ Screen and Kraken2 database directory. With --build or --build_shared_resources_only, downloaded databases are published beneath this directory."
                 },
                 "database_urls": {
                     "type": "object",
@@ -226,6 +228,40 @@
         },
         {
             "$ref": "#/$defs/max_job_request_options"
+        },
+        {
+            "if": {
+                "properties": {
+                    "build": {
+                        "const": false
+                    },
+                    "build_shared_resources_only": {
+                        "const": false
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "input"
+                ]
+            }
+        },
+        {
+            "if": {
+                "required": [
+                    "build_shared_resources_only"
+                ],
+                "properties": {
+                    "build_shared_resources_only": {
+                        "const": true
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "shared_resources"
+                ]
+            }
         }
     ]
 }
