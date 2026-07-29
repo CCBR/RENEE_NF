@@ -58,7 +58,7 @@ Define where the pipeline should find input data and save output data.
 ## Reference genome options
 
 Options for supplying or building a custom reference genome.
-                                                                                  
+
 | Parameter                     | Description                                                                                                                                                                  | Type      | Default | Required | Hidden |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- | -------- | ------ |
 | `genome_fasta`                | Path to reference genome FASTA file. Required when building a custom reference with --genes_gtf.                                                                             | `string`  |         |          |        |
@@ -83,7 +83,7 @@ Options for supplying or building a custom reference genome.
 | `build`                       | When true, the pipeline stops after building the custom genome reference without proceeding to alignment.                                                                    | `boolean` | False   |          |        |
 | `build_shared_resources_only` | When true, download and publish only the shared FastQ Screen and Kraken2 databases without preparing a genome or analyzing samples.                                          | `boolean` | False   |          |        |
 | `shared_resources`            | Shared FastQ Screen and Kraken2 database directory. With --build or --build_shared_resources_only, downloaded databases are published beneath this directory.                | `string`  |         |          |        |
-| `database_urls`               | Map of database names to archive URLs consumed by the DOWNLOAD_DATABASES subworkflow.                                                             | `boolean` |         |          |        |
+| `database_urls`               | Map of database names to archive URLs consumed by the DOWNLOAD_DATABASES subworkflow.                                                                                        | `object`  |         |          |        |
 
 ## QC options
 
