@@ -64,7 +64,7 @@ output:
       - "*.html":
           type: file
           description: MultiQC report file
-          pattern: ".html"
+          pattern: "*.html"
           ontologies: []
   data:
     - - meta:
@@ -83,9 +83,9 @@ output:
             Groovy Map containing sample information
             e.g. [ id:'sample1', single_end:false ]
       - "*_plots":
-          type: file
+          type: directory
           description: Plots created by MultiQC
-          pattern: "*_plots"
+          pattern: "multiqc_plots"
           ontologies: []
   versions:
     - - ${task.process}:
