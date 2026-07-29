@@ -1,0 +1,107 @@
+nextflow_process {
+
+    name "Test Process MULTIQCPARSER"
+    script "../main.nf"
+    process "MULTIQCPARSER"
+
+    tag "modules"
+    tag "modules_local"
+    tag "multiqcparser"
+
+    test("RENEE QC files - paired-end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    [
+                        file("${moduleDir}/tests/data/sample_b.inner_distance_freq.txt", checkIfExists: true),
+                        file("${moduleDir}/tests/data/sample_a.inner_distance_freq.txt", checkIfExists: true)
+                    ],
+                    [
+                        file("${moduleDir}/tests/data/sample_b.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true),
+                        file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)
+                    ],
+                    [
+                        file("${moduleDir}/tests/data/sample_b.fastq.info.txt", checkIfExists: true),
+                        file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.inner_distances[0][1]).text == path("${moduleDir}/tests/data/expected/rseqc_inner_distances.txt").text },
+                { assert path(process.out.median_tin[0][1]).text == path("${moduleDir}/tests/data/expected/rseqc_median_tin.txt").text },
+                { assert path(process.out.flowcell_lanes[0][1]).text == path("${moduleDir}/tests/data/expected/fastq_flowcell_lanes.txt").text },
+                { assert path(process.out.matrix[0][1]).text == path("${moduleDir}/tests/data/expected/multiqc_matrix.tsv").text },
+                { assert process.out.versions_python[0][2] ==~ /\d+\.\d+\.\d+/ },
+                { assert snapshot(
+                    process.out.matrix,
+                    process.out.inner_distances,
+                    process.out.median_tin,
+                    process.out.flowcell_lanes
+                ).match() }
+            )
+        }
+    }
+
+    test("RENEE QC files - single-end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    [],
+                    [file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.inner_distances[0][1]).text == "Sample\tInner_Dist_Maxima\n" },
+                { assert path(process.out.matrix[0][1]).text.contains("sample_a") }
+            )
+        }
+    }
+
+    test("RENEE QC files - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    [],
+                    [],
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.matrix[0][1]).exists() },
+                { assert path(process.out.inner_distances[0][1]).text == "Sample\tInner_Dist_Maxima\n" },
+                { assert path(process.out.median_tin[0][1]).text == "Sample\tmedian_tin\n" },
+                { assert path(process.out.flowcell_lanes[0][1]).text == "Sample\tflowcell_lanes\n" }
+            )
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "RENEE QC files - paired-end": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "multiqc"
+                    },
+                    "multiqc_matrix.tsv:md5,9384b7d521bbd31eed0466a0feb0a3ea"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "multiqc"
+                    },
+                    "rseqc_inner_distances.txt:md5,98a165b50ecee58cf9e2c0b654b3da9f"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "multiqc"
+                    },
+                    "rseqc_median_tin.txt:md5,446599c92f6b654c0d69063928c3cc3a"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "multiqc"
+                    },
+                    "fastq_flowcell_lanes.txt:md5,c7ade2bacf834ef5813f3641fb1cd938"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-29T10:04:54.24323966",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
