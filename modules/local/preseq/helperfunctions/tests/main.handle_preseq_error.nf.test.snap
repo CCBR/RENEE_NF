@@ -1,0 +1,31 @@
+{
+    "Should run without failures": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.preseq.nrf.txt:md5,955e193027966747c03a531e647056e1"
+                    ]
+                ],
+                "nrf": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.preseq.nrf.txt:md5,955e193027966747c03a531e647056e1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T15:05:27.53412409",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

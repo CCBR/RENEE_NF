@@ -3,7 +3,7 @@
 
 # Log file
 *.log
-
+!tests/test_data/preseq/test.command.log
 # BlueJ files
 *.ctxt
 

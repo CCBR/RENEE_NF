@@ -2,6 +2,9 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
+include { PRESEQ_CCURVE }     from './modules/nf-core/preseq/ccurve/main'
+include { HANDLE_PRESEQ_ERROR } from './modules/local/preseq/helperfunctions/main'
+include { PARSE_PRESEQ_LOG } from './modules/local/preseq/helperfunctions/main'
 
 // Modules
 include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
@@ -18,6 +21,7 @@ include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main
 include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
 include { RSEM }           from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+
 
 
 workflow version {
@@ -100,6 +104,24 @@ workflow {
                     .join(PICARD_INITIAL_QC.out.bai)
                     .join(RSEQC_QC.out.infer_experiment)
             )
+            // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
+            // PICARD_INITIAL_QC.out.bam.view()
+            PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
+
+            // when preseq fails, write NAs for the stats that are calculated from its log
+            PRESEQ_CCURVE.out.log
+                .join(PICARD_INITIAL_QC.out.bam, remainder: true)
+                .branch { meta, preseq_log, bam_tuple ->
+                failed: preseq_log == null
+                    return (tuple(meta, "nopresqlog"))
+                succeeded: true
+                    return (tuple(meta, preseq_log))
+                }.set{ preseq_logs }
+            preseq_logs.failed | HANDLE_PRESEQ_ERROR
+            preseq_logs.succeeded | PARSE_PRESEQ_LOG
+            PARSE_PRESEQ_LOG.out.nrf
+                .concat(HANDLE_PRESEQ_ERROR.out.nrf)
+                .set{ preseq_nrf }
             ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
 
             PICARD_COLLECTRNASEQMETRICS(
@@ -192,6 +214,10 @@ workflow {
 
         bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
         bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+
+        preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
+        preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
+
         qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
 
         flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
@@ -202,6 +228,8 @@ workflow {
         arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
         arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
         arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
+
+        preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
 }
 
 output {
@@ -253,6 +281,9 @@ output {
     bam2bw_fwd { path { meta, file -> 'bigwigs/' } }
     bam2bw_rev { path { meta, file -> 'bigwigs/' } }
 
+    preseq_ccurve { path { meta, file -> 'preseq/' } }
+    preseq_log    { path { meta, file -> 'preseq/' } }
+
     qualimap_results { path { meta, dir -> "QualiMap/${meta.id}/" } }
 
     flagstat { path { meta, file -> 'log_files/' } }
@@ -263,4 +294,6 @@ output {
     arriba_bam          { path { meta, bam, bai -> 'fusions/' } }
     arriba_pdf          { path { meta, file -> 'fusions/' } }
     arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
+
+    preseq_nrf          { path { meta, file -> 'preseq/' } }
 }
