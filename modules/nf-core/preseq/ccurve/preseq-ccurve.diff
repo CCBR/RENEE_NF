@@ -1,0 +1,124 @@
+Changes in component 'nf-core/preseq/ccurve'
+'modules/nf-core/preseq/ccurve/environment.yml' is unchanged
+Changes in 'preseq/ccurve/main.nf':
+--- modules/nf-core/preseq/ccurve/main.nf
++++ modules/nf-core/preseq/ccurve/main.nf
+@@ -22,8 +22,6 @@
+     script:
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def paired_end = meta.single_end ? '' : '-pe'
+     """
+     preseq \\
+         c_curve \\
+         $args \\
+-        $paired_end \\
+         -output ${prefix}.c_curve.txt \\
+'modules/nf-core/preseq/ccurve/meta.yml' is unchanged
+Changes in 'preseq/ccurve/tests/main.nf.test':
+--- modules/nf-core/preseq/ccurve/tests/main.nf.test
++++ modules/nf-core/preseq/ccurve/tests/main.nf.test
+@@ -4,22 +4,22 @@
+     name "Test Process PRESEQ_CCURVE"
+     script "../main.nf"
+     process "PRESEQ_CCURVE"
++    config "./nextflow.config"
+
+     tag "modules"
+     tag "modules_nfcore"
+     tag "preseq"
+     tag "preseq/ccurve"
+
+-    test("test-preseq-ccurve-single-end") {
++    test("sarscov2 - single_end") {
+
+         when {
+             process {
+                 """
+-                input[0] = [
+-				    [ id:'test', single_end:false ], // meta map
+-				    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
+-				]
+-
++                input[0] = Channel.of([
++                    [ id:'test', single_end:true ],
++                    file(params.test_data['sarscov2']['illumina'].test_single_end_bam, checkIfExists: true)
++                ])
+                 """
+             }
+         }
+@@ -28,25 +28,23 @@
+             assertAll(
+                 { assert process.success },
+                 { assert snapshot(
+-					process.out.c_curve,
+-					file(process.out.log[0][1]).name,
+-					process.out.versions
+-					).match()
+-				}
++                    process.out.c_curve,
++                    file(process.out.log[0][1]).name,
++                    process.out.versions
++                ).match() }
+             )
+         }
+     }
+
+-    test("test-preseq-ccurve-paired-end") {
++    test("sarscov2 - paired_end") {
+
+         when {
+             process {
+                 """
+-                input[0] = [
+-				    [ id:'test', single_end:false ], // meta map
+-				    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
+-				]
+-
++                input[0] = Channel.of([
++                    [ id:'test', single_end:false ],
++                    file(params.test_data['sarscov2']['illumina'].test_paired_end_bam, checkIfExists: true)
++                ])
+                 """
+             }
+         }
+@@ -55,26 +53,24 @@
+             assertAll(
+                 { assert process.success },
+                 { assert snapshot(
+-					process.out.c_curve,
+-					file(process.out.log[0][1]).name,
+-					process.out.versions
+-					).match()
+-				}
++                    process.out.c_curve,
++                    file(process.out.log[0][1]).name,
++                    process.out.versions
++                ).match() }
+             )
+         }
+     }
+
+-    test("test-preseq-ccurve-paired-end-stub") {
++    test("sarscov2 - paired_end - stub") {
+         options '-stub'
+
+         when {
+             process {
+                 """
+-                input[0] = [
+-				    [ id:'test', single_end:false ], // meta map
+-				    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
+-				]
+-
++                input[0] = Channel.of([
++                    [ id:'test', single_end:false ],
++                    file(params.test_data['sarscov2']['illumina'].test_paired_end_bam, checkIfExists: true)
++                ])
+                 """
+             }
+         }
+
+'modules/nf-core/preseq/ccurve/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/preseq/ccurve/tests/nextflow.config' was created
+************************************************************
