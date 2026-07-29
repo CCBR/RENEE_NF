@@ -2,15 +2,17 @@ nextflow.enable.dsl = 2
 
 // Plugins
 include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
-include { PRESEQ_CCURVE }     from './modules/nf-core/preseq/ccurve/main'
-include { HANDLE_PRESEQ_ERROR } from './modules/local/preseq/helperfunctions/main'
-include { PARSE_PRESEQ_LOG } from './modules/local/preseq/helperfunctions/main'
+
 
 // Modules
-include { QUALIMAP_BAMQC } from './modules/nf-core/qualimap/bamqc/main'
-include { SAMTOOLS_FLAGSTAT } from './modules/CCBR/samtools/flagstat/main.nf'
+include { QUALIMAP_BAMQC }              from './modules/nf-core/qualimap/bamqc/main'
+include { SAMTOOLS_FLAGSTAT }           from './modules/CCBR/samtools/flagstat/main.nf'
+include { MULTIQC }                     from './modules/nf-core/multiqc/main'
 include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
-include { BAM2STRANDEDBW } from './modules/local/bam2strandedbw/main'
+include { BAM2STRANDEDBW }              from './modules/local/bam2strandedbw/main'
+include { PRESEQ_CCURVE }               from './modules/nf-core/preseq/ccurve/main'
+include { HANDLE_PRESEQ_ERROR }         from './modules/local/preseq/helperfunctions/main'
+include { PARSE_PRESEQ_LOG }            from './modules/local/preseq/helperfunctions/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -19,8 +21,8 @@ include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
 include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
-include { RSEM }           from './subworkflows/local/rsem/main'
-include { arriba as ARRIBA } from './subworkflows/local/arriba/main'
+include { RSEM }               from './subworkflows/local/rsem/main'
+include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
 
 
 
@@ -154,6 +156,36 @@ workflow {
                 PREPARE_GENOME.out.fusion_protdomain
             )
 
+            // MultiQC ------------------------------------------------------------------------
+            ch_multiqc_files = Channel.empty()
+                .mix(INITIAL_QC.out.fastqc_raw.map           { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.cutadapt_log.map         { meta, log   -> log   })
+                .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
+                .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
+                .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
+                .mix(PICARD_COLLECTRNASEQMETRICS.out.metrics.map { meta, file -> file })
+                .mix(QUALIMAP_BAMQC.out.results.map          { meta, dir   -> dir   })
+                .mix(SAMTOOLS_FLAGSTAT.out.flagstat.map      { meta, file  -> file  })
+                .mix(RSEQC_QC.out.read_distribution.map      { meta, file  -> file  })
+                .mix(RSEQC_QC.out.inner_distance_freq.map    { meta, file  -> file  })
+                .mix(RSEQC_QC.out.tin_txt.map                { meta, file  -> file  })
+                .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
+                .mix(PRESEQ_CCURVE.out.c_curve.map           { meta, file  -> file  })
+                .collect()
+
+            // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
+            MULTIQC(
+                ch_multiqc_files.map { files -> [
+                    [id: 'multiqc'], // meta
+                    files, // files
+                    file(params.multiQC_config), // config
+                    file(params.multiQC_logo), //logo
+                    [], // replace_names
+                    []] //sample names TSV
+                }
+            )
         }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -229,6 +261,8 @@ workflow {
         arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
         arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
 
+        multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
+        multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
         preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
 }
 
@@ -295,5 +329,7 @@ output {
     arriba_pdf          { path { meta, file -> 'fusions/' } }
     arriba_star_log     { path { meta, file -> 'STAR_files/arriba/' } }
 
+    multiqc_report { path { meta, file -> 'Reports/' } }
+    multiqc_data   { path { meta, dir  -> 'Reports/' } }
     preseq_nrf          { path { meta, file -> 'preseq/' } }
 }
