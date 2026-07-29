@@ -178,6 +178,7 @@ workflow {
                 .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
                 .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
                 .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
                 .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
                 .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
                 .mix(PICARD_COLLECTRNASEQMETRICS.out.metrics.map { meta, file -> file })
@@ -257,35 +258,35 @@ workflow {
         arriba_pdf          = analysis_mode ? ARRIBA.out.pdf : Channel.empty()
         arriba_star_log     = analysis_mode ? ARRIBA.out.star_log : Channel.empty()
 
-        rsem_genes_results    = params.build_genome ? Channel.empty() : RSEM.out.genes_results
-        rsem_isoforms_results = params.build_genome ? Channel.empty() : RSEM.out.isoforms_results
-        rsem_gene_counts      = params.build_genome ? Channel.empty() : RSEM.out.gene_counts
-        rsem_gene_fpkm        = params.build_genome ? Channel.empty() : RSEM.out.gene_fpkm
-        rsem_gene_tpm         = params.build_genome ? Channel.empty() : RSEM.out.gene_tpm
-        rsem_isoform_counts   = params.build_genome ? Channel.empty() : RSEM.out.isoform_counts
-        rsem_isoform_fpkm     = params.build_genome ? Channel.empty() : RSEM.out.isoform_fpkm
-        rsem_isoform_tpm      = params.build_genome ? Channel.empty() : RSEM.out.isoform_tpm
-        rsem_reformatted      = params.build_genome ? Channel.empty() : RSEM.out.reformatted
-        rsem_gene_matrix      = params.build_genome ? Channel.empty() : RSEM.out.gene_matrix
-        rsem_isoform_matrix   = params.build_genome ? Channel.empty() : RSEM.out.isoform_matrix
+        rsem_genes_results    = analysis_mode ? RSEM.out.genes_results    : Channel.empty()
+        rsem_isoforms_results = analysis_mode ? RSEM.out.isoforms_results : Channel.empty()
+        rsem_gene_counts      = analysis_mode ? RSEM.out.gene_counts      : Channel.empty()
+        rsem_gene_fpkm        = analysis_mode ? RSEM.out.gene_fpkm        : Channel.empty()
+        rsem_gene_tpm         = analysis_mode ? RSEM.out.gene_tpm         : Channel.empty()
+        rsem_isoform_counts   = analysis_mode ? RSEM.out.isoform_counts   : Channel.empty()
+        rsem_isoform_fpkm     = analysis_mode ? RSEM.out.isoform_fpkm     : Channel.empty()
+        rsem_isoform_tpm      = analysis_mode ? RSEM.out.isoform_tpm      : Channel.empty()
+        rsem_reformatted      = analysis_mode ? RSEM.out.reformatted      : Channel.empty()
+        rsem_gene_matrix      = analysis_mode ? RSEM.out.gene_matrix      : Channel.empty()
+        rsem_isoform_matrix   = analysis_mode ? RSEM.out.isoform_matrix   : Channel.empty()
 
-        rseqc_infer_experiment       = params.build_genome ? Channel.empty() : RSEQC_QC.out.infer_experiment
-        rseqc_read_distribution      = params.build_genome ? Channel.empty() : RSEQC_QC.out.read_distribution
-        rseqc_inner_distance_freq    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_freq
-        rseqc_inner_distance_dist    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_dist
-        rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_rscript
-        rseqc_tin_txt                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_txt
-        rseqc_tin_xls                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_xls
+        rseqc_infer_experiment       = analysis_mode ? RSEQC_QC.out.infer_experiment       : Channel.empty()
+        rseqc_read_distribution      = analysis_mode ? RSEQC_QC.out.read_distribution      : Channel.empty()
+        rseqc_inner_distance_freq    = analysis_mode ? RSEQC_QC.out.inner_distance_freq    : Channel.empty()
+        rseqc_inner_distance_dist    = analysis_mode ? RSEQC_QC.out.inner_distance_dist    : Channel.empty()
+        rseqc_inner_distance_rscript = analysis_mode ? RSEQC_QC.out.inner_distance_rscript : Channel.empty()
+        rseqc_tin_txt                = analysis_mode ? RSEQC_QC.out.tin_txt                : Channel.empty()
+        rseqc_tin_xls                = analysis_mode ? RSEQC_QC.out.tin_xls                : Channel.empty()
 
-        bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
-        bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+        bam2bw_fwd = analysis_mode ? BAM2STRANDEDBW.out.fwd_bw : Channel.empty()
+        bam2bw_rev = analysis_mode ? BAM2STRANDEDBW.out.rev_bw : Channel.empty()
 
-        preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
-        preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
-        preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
-        
-        multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
-        multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
+        preseq_ccurve = analysis_mode ? PRESEQ_CCURVE.out.c_curve : Channel.empty()
+        preseq_log    = analysis_mode ? PRESEQ_CCURVE.out.log      : Channel.empty()
+        preseq_nrf    = analysis_mode ? preseq_nrf                  : Channel.empty()
+
+        multiqc_report = analysis_mode ? MULTIQC.out.report : Channel.empty()
+        multiqc_data   = analysis_mode ? MULTIQC.out.data   : Channel.empty()
 
 }
 
