@@ -1,0 +1,94 @@
+nextflow_process {
+
+    name "Test Process BAM2STRANDEDBW"
+    script "modules/local/bam2strandedbw/main.nf"
+    process "BAM2STRANDEDBW"
+
+    test("sarscov2 paired-end sorted bam") {
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true),
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam_bai, checkIfExists: true),
+                    file("${projectDir}/modules/local/bam2strandedbw/tests/test_infer_experiment_pe.txt", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.fwd_bw[0][0].id == 'test' },
+                { assert process.out.fwd_bw[0][1] ==~ '.*/test.fwd.bw' },
+                { assert process.out.rev_bw[0][1] ==~ '.*/test.rev.bw' },
+                { assert path(process.out.fwd_bw[0][1]).exists() },
+                { assert path(process.out.rev_bw[0][1]).exists() },
+                { assert process.out.versions_samtools[0][1] == 'samtools' },
+                { assert process.out.versions_samtools[0][2].toString().trim().size() > 0 },
+                { assert process.out.versions_bedtools[0][1] == 'bedtools' },
+                { assert process.out.versions_bedtools[0][2].toString().trim().size() > 0 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("sarscov2 single-end sorted bam") {
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: true ],
+                    file(params.test_data['sarscov2']['illumina'].test_single_end_sorted_bam, checkIfExists: true),
+                    file(params.test_data['sarscov2']['illumina'].test_single_end_sorted_bam_bai, checkIfExists: true),
+                    file("${projectDir}/modules/local/bam2strandedbw/tests/test_infer_experiment_se.txt", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.fwd_bw[0][0].id == 'test' },
+                { assert process.out.fwd_bw[0][1] ==~ '.*/test.fwd.bw' },
+                { assert process.out.rev_bw[0][1] ==~ '.*/test.rev.bw' },
+                { assert path(process.out.fwd_bw[0][1]).exists() },
+                { assert path(process.out.rev_bw[0][1]).exists() },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("sarscov2 paired-end sorted bam - stub") {
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: false ],
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam, checkIfExists: true),
+                    file(params.test_data['sarscov2']['illumina'].test_paired_end_sorted_bam_bai, checkIfExists: true),
+                    file("${projectDir}/modules/local/bam2strandedbw/tests/test_infer_experiment_pe.txt", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+    }
+
+}

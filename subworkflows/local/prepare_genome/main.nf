@@ -31,21 +31,21 @@ workflow PREPARE_GENOME {
             }
 
             ch_organism          = Channel.value( g.organism )
-            ch_annotate          = Channel.value( file( g.annotate,          checkIfExists: true ) )
-            ch_annotate_isoforms = Channel.value( file( g.annotate_isoforms, checkIfExists: true ) )
-            ch_refflat           = Channel.value( file( g.refflat,           checkIfExists: true ) )
-            ch_bed_ref           = Channel.value( file( g.bed_ref,           checkIfExists: true ) )
-            ch_qualimap_info     = Channel.value( file( g.qualimap_info,     checkIfExists: true ) )
-            ch_karyobeds         = Channel.value( file( g.karyobeds,         checkIfExists: true ) )
-            ch_karyoploter       = Channel.value( file( g.karyoploter,       checkIfExists: true ) )
+            ch_annotate          = Utils.optionalPathParam( g, 'annotate' )
+            ch_annotate_isoforms = Utils.optionalPathParam( g, 'annotate_isoforms' )
+            ch_refflat           = Utils.optionalPathParam( g, 'refflat' )
+            ch_bed_ref           = Utils.optionalPathParam( g, 'bed_ref' )
+            ch_qualimap_info     = Utils.optionalPathParam( g, 'qualimap_info' )
+            ch_karyobeds         = Utils.optionalPathParam( g, 'karyobeds' )
+            ch_karyoploter       = Utils.optionalPathParam( g, 'karyoploter' )
             ch_rsem_ref          = Channel.value( g.rsem_ref )
-            ch_rrna_list         = Channel.value( file( g.rrna_list,         checkIfExists: true ) )
-            ch_tin_ref           = Channel.value( file( g.tin_ref,           checkIfExists: true ) )
+            ch_rrna_list         = Utils.optionalPathParam( g, 'rrna_list' )
+            ch_tin_ref           = Utils.optionalPathParam( g, 'tin_ref' )
 
             // arriba vars
-            ch_fusion_blacklist     = g.fusion_blacklist     ? Channel.value( file( g.fusion_blacklist,     checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_cytoband      = g.fusion_cytoband      ? Channel.value( file( g.fusion_cytoband,      checkIfExists: true ) ) : Channel.empty()
-            ch_fusion_protdomain    = g.fusion_protdomain    ? Channel.value( file( g.fusion_protdomain,    checkIfExists: true ) ) : Channel.empty()
+            ch_fusion_blacklist  = Utils.optionalPathParam( g, 'fusion_blacklist' )
+            ch_fusion_cytoband   = Utils.optionalPathParam( g, 'fusion_cytoband' )
+            ch_fusion_protdomain = Utils.optionalPathParam( g, 'fusion_protdomain' )
 
             // fusion channel will often be empty, but will terminate the process if not a value channel
             ch_fusion_known_fusions = g.fusion_known_fusions ? Channel.value( file( g.fusion_known_fusions, checkIfExists: true ) ) : Channel.value([])
@@ -91,20 +91,20 @@ workflow PREPARE_GENOME {
             ).index
 
             ch_organism          = Channel.value( params.organism ?: 'custom' )
-            ch_annotate          = Channel.empty()
-            ch_annotate_isoforms = Channel.empty()
-            ch_refflat           = Channel.empty()
-            ch_bed_ref           = Channel.empty()
-            ch_qualimap_info     = Channel.empty()
-            ch_karyobeds         = Channel.empty()
-            ch_karyoploter       = Channel.empty()
+            ch_annotate          = Utils.optionalPathParam( params, 'annotate' )
+            ch_annotate_isoforms = Utils.optionalPathParam( params, 'annotate_isoforms' )
+            ch_refflat           = Utils.optionalPathParam( params, 'refflat' )
+            ch_bed_ref           = Utils.optionalPathParam( params, 'bed_ref' )
+            ch_qualimap_info     = Utils.optionalPathParam( params, 'qualimap_info' )
+            ch_karyobeds         = Utils.optionalPathParam( params, 'karyobeds' )
+            ch_karyoploter       = Utils.optionalPathParam( params, 'karyoploter' )
             ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
-            ch_rrna_list         = Channel.empty()
-            ch_tin_ref           = Channel.empty()
-            ch_fusion_blacklist     = Channel.empty()
-            ch_fusion_cytoband      = Channel.empty()
-            ch_fusion_protdomain    = Channel.empty()
-            ch_fusion_known_fusions = Channel.empty()
+            ch_rrna_list         = Utils.optionalPathParam( params, 'rrna_list' )
+            ch_tin_ref           = Utils.optionalPathParam( params, 'tin_ref' )
+            ch_fusion_blacklist     = Utils.optionalPathParam( params, 'fusion_blacklist' )
+            ch_fusion_cytoband      = Utils.optionalPathParam( params, 'fusion_cytoband' )
+            ch_fusion_protdomain    = Utils.optionalPathParam( params, 'fusion_protdomain' )
+            ch_fusion_known_fusions = Utils.optionalPathParam( params, 'fusion_known_fusions' )
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,
