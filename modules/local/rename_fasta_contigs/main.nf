@@ -1,7 +1,5 @@
 process RENAME_FASTA_CONTIGS {
-    """
-    Convert ensembl to UCSC contig names in a fasta file
-    """
+    // Convert Ensembl to UCSC contig names in a FASTA file.
     tag { fasta }
 
     container "${params.containers.base}"
