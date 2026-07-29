@@ -255,12 +255,12 @@ workflow {
 
         picard_bam         = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
         picard_bai         = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
-        picard_rna_metrics = analysis_mode ? PICARD_COLLECTRNASEQMETRICS.out.metrics : Channel.empty()
+        picard_rna_metrics = analysis_mode ? POST_ALIGNMENT_QC.out.picard_rna_metrics : Channel.empty()
 
-        qualimap_results = analysis_mode ? QUALIMAP_BAMQC.out.results : Channel.empty()
+        qualimap_results = analysis_mode ? POST_ALIGNMENT_QC.out.qualimap_results : Channel.empty()
 
-        flagstat          = analysis_mode ? SAMTOOLS_FLAGSTAT.out.flagstat : Channel.empty()
-        flagstat_versions = analysis_mode ? SAMTOOLS_FLAGSTAT.out.versions : Channel.empty()
+        flagstat          = analysis_mode ? POST_ALIGNMENT_QC.out.flagstat          : Channel.empty()
+        flagstat_versions = analysis_mode ? POST_ALIGNMENT_QC.out.flagstat_versions : Channel.empty()
 
         arriba_fusions      = analysis_mode ? ARRIBA.out.fusions : Channel.empty()
         arriba_fusions_fail = analysis_mode ? ARRIBA.out.fusions_fail : Channel.empty()
@@ -280,23 +280,24 @@ workflow {
         rsem_gene_matrix      = analysis_mode ? RSEM.out.gene_matrix      : Channel.empty()
         rsem_isoform_matrix   = analysis_mode ? RSEM.out.isoform_matrix   : Channel.empty()
 
-        rseqc_infer_experiment       = analysis_mode ? RSEQC_QC.out.infer_experiment       : Channel.empty()
-        rseqc_read_distribution      = analysis_mode ? RSEQC_QC.out.read_distribution      : Channel.empty()
-        rseqc_inner_distance_freq    = analysis_mode ? RSEQC_QC.out.inner_distance_freq    : Channel.empty()
-        rseqc_inner_distance_dist    = analysis_mode ? RSEQC_QC.out.inner_distance_dist    : Channel.empty()
-        rseqc_inner_distance_rscript = analysis_mode ? RSEQC_QC.out.inner_distance_rscript : Channel.empty()
-        rseqc_tin_txt                = analysis_mode ? RSEQC_QC.out.tin_txt                : Channel.empty()
-        rseqc_tin_xls                = analysis_mode ? RSEQC_QC.out.tin_xls                : Channel.empty()
+        rseqc_infer_experiment       = analysis_mode ? POST_ALIGNMENT_QC.out.infer_experiment       : Channel.empty()
+        rseqc_read_distribution      = analysis_mode ? POST_ALIGNMENT_QC.out.read_distribution      : Channel.empty()
+        rseqc_inner_distance_freq    = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_freq    : Channel.empty()
+        rseqc_inner_distance_dist    = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_dist    : Channel.empty()
+        rseqc_inner_distance_rscript = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_rscript : Channel.empty()
+        rseqc_tin_txt                = analysis_mode ? POST_ALIGNMENT_QC.out.tin_txt                : Channel.empty()
+        rseqc_tin_xls                = analysis_mode ? POST_ALIGNMENT_QC.out.tin_xls                : Channel.empty()
 
         bam2bw_fwd = analysis_mode ? BAM2STRANDEDBW.out.fwd_bw : Channel.empty()
         bam2bw_rev = analysis_mode ? BAM2STRANDEDBW.out.rev_bw : Channel.empty()
 
-        preseq_ccurve = analysis_mode ? PRESEQ_CCURVE.out.c_curve : Channel.empty()
-        preseq_log    = analysis_mode ? PRESEQ_CCURVE.out.log      : Channel.empty()
-        preseq_nrf    = analysis_mode ? preseq_nrf                  : Channel.empty()
+        preseq_ccurve = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_ccurve : Channel.empty()
+        preseq_log    = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_log    : Channel.empty()
+        preseq_nrf    = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_nrf    : Channel.empty()
 
         multiqc_report = analysis_mode ? MULTIQC.out.report : Channel.empty()
         multiqc_data   = analysis_mode ? MULTIQC.out.data   : Channel.empty()
+        fastq_info     = analysis_mode ? FC_LANE.out.fqinfo  : Channel.empty()
 
         multiqc_matrix       = analysis_mode ? MULTIQCPARSER.out.matrix          : Channel.empty()
         rseqc_inner_distances = analysis_mode ? MULTIQCPARSER.out.inner_distances : Channel.empty()

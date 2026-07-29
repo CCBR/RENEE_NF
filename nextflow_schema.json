@@ -203,6 +203,10 @@
                     "type": "string",
                     "description": "Shared FastQ Screen and Kraken2 database directory. With --build or --build_shared_resources_only, downloaded databases are published beneath this directory."
                 },
+                "kraken2_db_dir": {
+                    "type": "string",
+                    "description": "Path to an existing Kraken2 database directory. Takes precedence over shared_resources for Kraken2 classification."
+                },
                 "database_urls": {
                     "type": "object",
                     "description": "Map of database names to archive URLs consumed by the DOWNLOAD_DATABASES subworkflow.",
