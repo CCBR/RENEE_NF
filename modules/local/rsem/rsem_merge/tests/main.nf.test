@@ -1,0 +1,77 @@
+nextflow_process {
+
+    name "Test Process RSEM_MERGE"
+    script "modules/local/rsem/rsem_merge/main.nf"
+    process "RSEM_MERGE"
+
+    test("merges gene and isoform results from multiple samples") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
+                ]
+                input[1] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
+                ]
+                input[2] = file("${projectDir}/tests/test_data/DEG/annotate.genes.txt", checkIfExists: true)
+                input[3] = "${projectDir}/tests/test_data/DEG"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.gene_counts[0]).name == "RSEM.genes.expected_count.all_samples.txt" },
+                { assert file(process.out.gene_fpkm[0]).name == "RSEM.genes.FPKM.all_samples.txt" },
+                { assert file(process.out.gene_tpm[0]).name == "RSEM.genes.TPM.all_samples.txt" },
+                { assert file(process.out.isoform_counts[0]).name == "RSEM.isoforms.expected_count.all_samples.txt" },
+                { assert file(process.out.isoform_fpkm[0]).name == "RSEM.isoforms.FPKM.all_samples.txt" },
+                { assert file(process.out.isoform_tpm[0]).name == "RSEM.isoforms.TPM.all_samples.txt" },
+                { assert file(process.out.reformatted[0]).name == "RSEM.genes.expected_counts.all_samples.reformatted.tsv" },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("uses task.ext.suffix for every output") {
+        config "./custom_suffix.config"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
+                ]
+                input[1] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
+                ]
+                input[2] = file("${projectDir}/tests/test_data/DEG/annotate.genes.txt", checkIfExists: true)
+                input[3] = "${projectDir}/tests/test_data/DEG"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.gene_counts[0]).name == "RSEM.genes.expected_count.cohort.txt" },
+                { assert file(process.out.gene_fpkm[0]).name == "RSEM.genes.FPKM.cohort.txt" },
+                { assert file(process.out.gene_tpm[0]).name == "RSEM.genes.TPM.cohort.txt" },
+                { assert file(process.out.isoform_counts[0]).name == "RSEM.isoforms.expected_count.cohort.txt" },
+                { assert file(process.out.isoform_fpkm[0]).name == "RSEM.isoforms.FPKM.cohort.txt" },
+                { assert file(process.out.isoform_tpm[0]).name == "RSEM.isoforms.TPM.cohort.txt" },
+                { assert file(process.out.reformatted[0]).name == "RSEM.genes.expected_counts.cohort.reformatted.tsv" },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}

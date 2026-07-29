@@ -3,7 +3,7 @@
 
 # Log file
 *.log
-
+!tests/test_data/preseq/test.command.log
 # BlueJ files
 *.ctxt
 
@@ -53,6 +53,6 @@ run*.sh
 # AI summary files
 snakemake_summaries/
 .agents
+docs/dev
 .github/agents/
 .github/hooks/
-docs/dev/

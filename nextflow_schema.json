@@ -115,9 +115,74 @@
                     "pattern": "^[a-zA-Z0-9_]+$",
                     "description": "Short organism identifier written into the genome config (e.g. homo_sapiens, mus_musculus). Defaults to 'custom' when not provided."
                 },
+                "annotate": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to annotate.genes.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf."
+                },
+                "annotate_isoforms": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to annotate.isoforms.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf."
+                },
+                "refflat": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to refFlat.txt for a custom genome. Used when supplying a custom genome via --genome_fasta/--genes_gtf."
+                },
+                "bed_ref": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to genes.ref.bed for RSeQC when using a custom genome."
+                },
+                "qualimap_info": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to qualimap_info.txt for a custom genome."
+                },
+                "karyobeds": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to the karyobeds directory for a custom genome."
+                },
+                "karyoploter": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to karyoplot gene coordinates for a custom genome."
+                },
                 "rsem_ref": {
                     "type": "string",
                     "description": "Path prefix to a pre-built RSEM reference (e.g. /path/to/rsemref/hg38_30). Used when supplying a custom genome via --genome_fasta/--genes_gtf."
+                },
+                "rrna_list": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to an rRNA interval list for a custom genome."
+                },
+                "tin_ref": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to transcripts.protein_coding_only.bed12 for RSeQC TIN when using a custom genome."
+                },
+                "fusion_blacklist": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to an Arriba fusion blacklist file for a custom genome."
+                },
+                "fusion_cytoband": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to an Arriba cytobands file for a custom genome."
+                },
+                "fusion_protdomain": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to an Arriba protein domains GFF3 file for a custom genome."
+                },
+                "fusion_known_fusions": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to an Arriba known fusions file for a custom genome."
                 },
                 "index_dir": {
                     "type": "string",
