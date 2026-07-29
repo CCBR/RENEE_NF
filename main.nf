@@ -13,6 +13,9 @@ include { BAM2STRANDEDBW }              from './modules/local/bam2strandedbw/mai
 include { PRESEQ_CCURVE }               from './modules/nf-core/preseq/ccurve/main'
 include { HANDLE_PRESEQ_ERROR }         from './modules/local/preseq/helperfunctions/main'
 include { PARSE_PRESEQ_LOG }            from './modules/local/preseq/helperfunctions/main'
+include { FC_LANE }                     from './modules/local/fc_lane/main'
+include { MULTIQCPARSER }               from './modules/local/multiqcparser/main'
+include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
@@ -186,6 +189,56 @@ workflow {
                     []] //sample names TSV
                 }
             )
+
+            // Parse MultiQC outputs and render the RNA QC report ----------------------------
+            FC_LANE(
+                CHECK_INPUT.out.reads.map { meta, reads -> tuple(meta, reads[0]) }
+            )
+
+            ch_inner_distance_files = RSEQC_QC.out.inner_distance_freq
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_tin_summary_files = RSEQC_QC.out.tin_txt
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_fastq_info_files = FC_LANE.out.fqinfo
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_multiqcparser_input = MULTIQC.out.data
+                .combine(ch_inner_distance_files)
+                .combine(ch_tin_summary_files)
+                .combine(ch_fastq_info_files)
+                .map { meta, data, inner_distance, tin_summary, fastq_info ->
+                    tuple(meta, data, inner_distance, tin_summary, fastq_info)
+                }
+
+            MULTIQCPARSER(ch_multiqcparser_input)
+
+            ch_tin_matrix_files = RSEQC_QC.out.tin_xls
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_rna_report_input = MULTIQCPARSER.out.matrix
+                .combine(RSEM.out.reformatted.map { counts -> [counts] })
+                .combine(ch_tin_matrix_files)
+                .map { meta, qc, counts, tins ->
+                    tuple(
+                        [id: 'rna_report'],
+                        counts,
+                        tins,
+                        qc,
+                        file("${projectDir}/assets/rNA_flowcells.Rmd")
+                    )
+                }
+
+            RNA_REPORT(ch_rna_report_input)
         }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -263,6 +316,12 @@ workflow {
 
         multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
         multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
+        fastq_info          = params.build_genome ? Channel.empty() : FC_LANE.out.fqinfo
+        multiqc_matrix      = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.matrix
+        rseqc_inner_distances = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.inner_distances
+        rseqc_median_tin    = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.median_tin
+        fastq_flowcell_lanes = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.flowcell_lanes
+        rna_report          = params.build_genome ? Channel.empty() : RNA_REPORT.out.html
         preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
 }
 
@@ -331,5 +390,11 @@ output {
 
     multiqc_report { path { meta, file -> 'Reports/' } }
     multiqc_data   { path { meta, dir  -> 'Reports/' } }
+    fastq_info { path { meta, file -> 'rawQC/' } }
+    multiqc_matrix { path { meta, file -> 'Reports/' } }
+    rseqc_inner_distances { path { meta, file -> 'Reports/' } }
+    rseqc_median_tin { path { meta, file -> 'Reports/' } }
+    fastq_flowcell_lanes { path { meta, file -> 'Reports/' } }
+    rna_report { path { meta, file -> 'Reports/' } }
     preseq_nrf          { path { meta, file -> 'preseq/' } }
 }
