@@ -12,6 +12,7 @@ include { MULTIQCPARSER }               from './modules/local/multiqcparser/main
 include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
+include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
 include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
@@ -46,16 +47,30 @@ workflow {
         LOG()
         validateParameters()
 
-        // build genome first, if set to build mode stop after this step
-        PREPARE_GENOME()
+        if (params.build && params.build_shared_resources_only) {
+            error "Parameters --build and --build_shared_resources_only are mutually exclusive."
+        }
 
-        if (params.build_genome) {
+        analysis_mode = !params.build && !params.build_shared_resources_only
+
+        // Download shared databases in either full build mode or resources-only mode.
+        if (params.build_shared_resources_only || (params.build && params.shared_resources)) {
+            log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
+            DOWNLOAD_DATABASES()
+        }
+
+        if (params.build_shared_resources_only) {
+            log.info "Shared resources only mode enabled. Skipping genome preparation and sample analysis."
+            prepare_genome_conf = Channel.empty()
+        } else {
+            // Prepare the genome for both genome-build and sample-analysis modes.
+            PREPARE_GENOME()
+        }
+
+        if (params.build && !params.build_shared_resources_only) {
             log.info "Build genome only mode enabled. Stopping workflow after genome preparation."
             prepare_genome_conf = PREPARE_GENOME.out.conf
-
-
-
-        } else {
+        } else if (analysis_mode) {
             log.info "Genome preparation complete. Continuing with workflow."
             prepare_genome_conf = Channel.empty() // dont save genome copy if not in build mode
 
@@ -123,6 +138,7 @@ workflow {
                 .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
                 .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
                 .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
                 .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
                 .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
                 .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
@@ -208,82 +224,104 @@ workflow {
 
     publish:
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
-        prepare_genome_conf = params.build_genome ? prepare_genome_conf : Channel.empty()
+        prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        fastqc_raw     = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_raw
-        fastqvalidator = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqvalidator
-        cutadapt_reads = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_reads
-        cutadapt_log   = params.build_genome ? Channel.empty() : INITIAL_QC.out.cutadapt_log
-        fastqc_trimmed = params.build_genome ? Channel.empty() : INITIAL_QC.out.fastqc_trimmed
-        bbtools_ihist  = params.build_genome ? Channel.empty() : INITIAL_QC.out.bbtools_ihist
-        fqscreen_1_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_txt
-        fqscreen_1_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_1_png
-        fqscreen_2_txt = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_txt
-        fqscreen_2_png = params.build_genome ? Channel.empty() : INITIAL_QC.out.fqscreen_2_png
+        fastq_screen_databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
+        kraken_databases       = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
 
-        star_pass1_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_sj
-        star_pass1_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass1_log
-        star_sjdb                 = params.build_genome ? Channel.empty() : STAR_ALIGN.out.sjdb
-        star_pass2_log            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_log
-        star_pass2_sj             = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_sj
-        star_pass2_reads_per_gene = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_reads_per_gene
-        star_pass2_bam            = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_bam
-        star_pass2_transcript_bam = params.build_genome ? Channel.empty() : STAR_ALIGN.out.pass2_transcript_bam
+        fastqc_raw     = analysis_mode ? INITIAL_QC.out.fastqc_raw : Channel.empty()
+        fastqvalidator = analysis_mode ? INITIAL_QC.out.fastqvalidator : Channel.empty()
+        cutadapt_reads = analysis_mode ? INITIAL_QC.out.cutadapt_reads : Channel.empty()
+        cutadapt_log   = analysis_mode ? INITIAL_QC.out.cutadapt_log : Channel.empty()
+        fastqc_trimmed = analysis_mode ? INITIAL_QC.out.fastqc_trimmed : Channel.empty()
+        bbtools_ihist  = analysis_mode ? INITIAL_QC.out.bbtools_ihist : Channel.empty()
+        fqscreen_1_txt = analysis_mode ? INITIAL_QC.out.fqscreen_1_txt : Channel.empty()
+        fqscreen_1_png = analysis_mode ? INITIAL_QC.out.fqscreen_1_png : Channel.empty()
+        fqscreen_2_txt = analysis_mode ? INITIAL_QC.out.fqscreen_2_txt : Channel.empty()
+        fqscreen_2_png = analysis_mode ? INITIAL_QC.out.fqscreen_2_png : Channel.empty()
+        kraken2_report                      = analysis_mode ? INITIAL_QC.out.kraken2_report : Channel.empty()
+        kraken2_classified_reads_assignment = analysis_mode ? INITIAL_QC.out.kraken2_classified_reads_assignment : Channel.empty()
+        kraken2_krona_html                  = analysis_mode ? INITIAL_QC.out.kraken2_krona_html : Channel.empty()
+        kraken2_db_dir                      = analysis_mode ? INITIAL_QC.out.kraken2_db_dir : Channel.empty()
 
-        rsem_genes_results    = params.build_genome ? Channel.empty() : RSEM.out.genes_results
-        rsem_isoforms_results = params.build_genome ? Channel.empty() : RSEM.out.isoforms_results
-        rsem_gene_counts      = params.build_genome ? Channel.empty() : RSEM.out.gene_counts
-        rsem_gene_fpkm        = params.build_genome ? Channel.empty() : RSEM.out.gene_fpkm
-        rsem_gene_tpm         = params.build_genome ? Channel.empty() : RSEM.out.gene_tpm
-        rsem_isoform_counts   = params.build_genome ? Channel.empty() : RSEM.out.isoform_counts
-        rsem_isoform_fpkm     = params.build_genome ? Channel.empty() : RSEM.out.isoform_fpkm
-        rsem_isoform_tpm      = params.build_genome ? Channel.empty() : RSEM.out.isoform_tpm
-        rsem_reformatted      = params.build_genome ? Channel.empty() : RSEM.out.reformatted
-        rsem_gene_matrix      = params.build_genome ? Channel.empty() : RSEM.out.gene_matrix
-        rsem_isoform_matrix   = params.build_genome ? Channel.empty() : RSEM.out.isoform_matrix
+        star_pass1_sj             = analysis_mode ? STAR_ALIGN.out.pass1_sj : Channel.empty()
+        star_pass1_log            = analysis_mode ? STAR_ALIGN.out.pass1_log : Channel.empty()
+        star_sjdb                 = analysis_mode ? STAR_ALIGN.out.sjdb : Channel.empty()
+        star_pass2_log            = analysis_mode ? STAR_ALIGN.out.pass2_log : Channel.empty()
+        star_pass2_sj             = analysis_mode ? STAR_ALIGN.out.pass2_sj : Channel.empty()
+        star_pass2_reads_per_gene = analysis_mode ? STAR_ALIGN.out.pass2_reads_per_gene : Channel.empty()
+        star_pass2_bam            = analysis_mode ? STAR_ALIGN.out.pass2_bam : Channel.empty()
+        star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN.out.pass2_transcript_bam : Channel.empty()
 
-        picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
-        picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
-        picard_rna_metrics        = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.picard_rna_metrics
+        picard_bam         = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
+        picard_bai         = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
+        picard_rna_metrics = analysis_mode ? PICARD_COLLECTRNASEQMETRICS.out.metrics : Channel.empty()
 
-        rseqc_infer_experiment       = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.infer_experiment
-        rseqc_read_distribution      = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.read_distribution
-        rseqc_inner_distance_freq    = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_freq
-        rseqc_inner_distance_dist    = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_dist
-        rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_rscript
-        rseqc_tin_txt                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.tin_txt
-        rseqc_tin_xls                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.tin_xls
+        qualimap_results = analysis_mode ? QUALIMAP_BAMQC.out.results : Channel.empty()
 
-        bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
-        bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
+        flagstat          = analysis_mode ? SAMTOOLS_FLAGSTAT.out.flagstat : Channel.empty()
+        flagstat_versions = analysis_mode ? SAMTOOLS_FLAGSTAT.out.versions : Channel.empty()
 
-        preseq_ccurve             = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_ccurve
-        preseq_log                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_log
+        arriba_fusions      = analysis_mode ? ARRIBA.out.fusions : Channel.empty()
+        arriba_fusions_fail = analysis_mode ? ARRIBA.out.fusions_fail : Channel.empty()
+        arriba_bam          = analysis_mode ? ARRIBA.out.bam : Channel.empty()
+        arriba_pdf          = analysis_mode ? ARRIBA.out.pdf : Channel.empty()
+        arriba_star_log     = analysis_mode ? ARRIBA.out.star_log : Channel.empty()
 
-        qualimap_results          = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.qualimap_results
+        rsem_genes_results    = analysis_mode ? RSEM.out.genes_results    : Channel.empty()
+        rsem_isoforms_results = analysis_mode ? RSEM.out.isoforms_results : Channel.empty()
+        rsem_gene_counts      = analysis_mode ? RSEM.out.gene_counts      : Channel.empty()
+        rsem_gene_fpkm        = analysis_mode ? RSEM.out.gene_fpkm        : Channel.empty()
+        rsem_gene_tpm         = analysis_mode ? RSEM.out.gene_tpm         : Channel.empty()
+        rsem_isoform_counts   = analysis_mode ? RSEM.out.isoform_counts   : Channel.empty()
+        rsem_isoform_fpkm     = analysis_mode ? RSEM.out.isoform_fpkm     : Channel.empty()
+        rsem_isoform_tpm      = analysis_mode ? RSEM.out.isoform_tpm      : Channel.empty()
+        rsem_reformatted      = analysis_mode ? RSEM.out.reformatted      : Channel.empty()
+        rsem_gene_matrix      = analysis_mode ? RSEM.out.gene_matrix      : Channel.empty()
+        rsem_isoform_matrix   = analysis_mode ? RSEM.out.isoform_matrix   : Channel.empty()
 
-        flagstat                  = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.flagstat
-        flagstat_versions         = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.flagstat_versions
+        rseqc_infer_experiment       = analysis_mode ? RSEQC_QC.out.infer_experiment       : Channel.empty()
+        rseqc_read_distribution      = analysis_mode ? RSEQC_QC.out.read_distribution      : Channel.empty()
+        rseqc_inner_distance_freq    = analysis_mode ? RSEQC_QC.out.inner_distance_freq    : Channel.empty()
+        rseqc_inner_distance_dist    = analysis_mode ? RSEQC_QC.out.inner_distance_dist    : Channel.empty()
+        rseqc_inner_distance_rscript = analysis_mode ? RSEQC_QC.out.inner_distance_rscript : Channel.empty()
+        rseqc_tin_txt                = analysis_mode ? RSEQC_QC.out.tin_txt                : Channel.empty()
+        rseqc_tin_xls                = analysis_mode ? RSEQC_QC.out.tin_xls                : Channel.empty()
 
-        arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
-        arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
-        arriba_bam          = params.build_genome ? Channel.empty() : ARRIBA.out.bam
-        arriba_pdf          = params.build_genome ? Channel.empty() : ARRIBA.out.pdf
-        arriba_star_log     = params.build_genome ? Channel.empty() : ARRIBA.out.star_log
+        bam2bw_fwd = analysis_mode ? BAM2STRANDEDBW.out.fwd_bw : Channel.empty()
+        bam2bw_rev = analysis_mode ? BAM2STRANDEDBW.out.rev_bw : Channel.empty()
 
-        multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
-        multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
-        fastq_info          = params.build_genome ? Channel.empty() : FC_LANE.out.fqinfo
-        multiqc_matrix      = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.matrix
-        rseqc_inner_distances = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.inner_distances
-        rseqc_median_tin    = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.median_tin
-        fastq_flowcell_lanes = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.flowcell_lanes
-        rna_report          = params.build_genome ? Channel.empty() : RNA_REPORT.out.html
-        preseq_nrf          = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_nrf
+        preseq_ccurve = analysis_mode ? PRESEQ_CCURVE.out.c_curve : Channel.empty()
+        preseq_log    = analysis_mode ? PRESEQ_CCURVE.out.log      : Channel.empty()
+        preseq_nrf    = analysis_mode ? preseq_nrf                  : Channel.empty()
+
+        multiqc_report = analysis_mode ? MULTIQC.out.report : Channel.empty()
+        multiqc_data   = analysis_mode ? MULTIQC.out.data   : Channel.empty()
+
+        multiqc_matrix       = analysis_mode ? MULTIQCPARSER.out.matrix          : Channel.empty()
+        rseqc_inner_distances = analysis_mode ? MULTIQCPARSER.out.inner_distances : Channel.empty()
+        rseqc_median_tin     = analysis_mode ? MULTIQCPARSER.out.median_tin       : Channel.empty()
+        fastq_flowcell_lanes = analysis_mode ? MULTIQCPARSER.out.flowcell_lanes   : Channel.empty()
+        rna_report           = analysis_mode ? RNA_REPORT.out.html                : Channel.empty()
+
 }
 
 output {
-    prepare_genome_conf { path { file -> "genome/" } }
+    // build outputs
+    prepare_genome_conf {
+        path { file -> "genome/" }
+        mode 'copy'
+        }
+    fastq_screen_databases {
+        path { meta, dir -> "${params.shared_resources}/fastq_screen_db/" }
+        mode 'copy'
+        }
+    kraken_databases {
+        path { meta, dir -> "${params.shared_resources}/" }
+        mode 'copy'
+        }
+
+    // analysis outputs
     fastqc_raw { path { meta, file -> "fastqc/raw/" } }
     fastqvalidator { path { meta, file -> "fastqvalidator/${meta.id}/" } }
     cutadapt_reads { path { meta, reads -> "cutadapt/${meta.id}/" } }
@@ -294,6 +332,10 @@ output {
     fqscreen_1_png  { path { meta, file  -> "FQscreen/" } }
     fqscreen_2_txt  { path { meta, file  -> "FQscreen2/" } }
     fqscreen_2_png  { path { meta, file  -> "FQscreen2/" } }
+    kraken2_report                      { path { meta, file -> "kraken2/" } }
+    kraken2_classified_reads_assignment { path { meta, file -> "kraken2/" } }
+    kraken2_krona_html                  { path { meta, file -> "kraken2/" } }
+    kraken2_db_dir                      { path { dir -> "./" } }
 
     star_pass1_sj { path { meta, file -> 'STAR_files/pass1/' } }
     star_pass1_log { path { meta, file -> 'STAR_files/pass1/' } }

@@ -1,8 +1,6 @@
 process RENAME_DELIM_CONTIGS {
-    """
-    Convert ensembl to UCSC contig names in a delimited file (e.g. GTF, BED)
-    using cvbio https://github.com/clintval/cvbio#updatecontignames
-    """
+    // Convert Ensembl to UCSC contig names in a delimited file (e.g. GTF, BED)
+    // using cvbio: https://github.com/clintval/cvbio#updatecontignames
     tag { delim }
 
     container "nciccbr/ccbr_cvbio_3.0.0:v1.0.1"
