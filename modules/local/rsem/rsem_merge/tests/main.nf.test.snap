@@ -1,0 +1,108 @@
+{
+    "uses task.ext.suffix for every output": {
+        "content": [
+            {
+                "0": [
+                    "RSEM.genes.expected_count.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "1": [
+                    "RSEM.genes.FPKM.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "2": [
+                    "RSEM.genes.TPM.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "3": [
+                    "RSEM.isoforms.expected_count.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "4": [
+                    "RSEM.isoforms.FPKM.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "5": [
+                    "RSEM.isoforms.TPM.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "6": [
+                    "RSEM.genes.expected_counts.cohort.reformatted.tsv:md5,47db9bceba1d0268df06881bbfa6975f"
+                ],
+                "gene_counts": [
+                    "RSEM.genes.expected_count.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "gene_fpkm": [
+                    "RSEM.genes.FPKM.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "gene_tpm": [
+                    "RSEM.genes.TPM.cohort.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "isoform_counts": [
+                    "RSEM.isoforms.expected_count.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "isoform_fpkm": [
+                    "RSEM.isoforms.FPKM.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "isoform_tpm": [
+                    "RSEM.isoforms.TPM.cohort.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "reformatted": [
+                    "RSEM.genes.expected_counts.cohort.reformatted.tsv:md5,47db9bceba1d0268df06881bbfa6975f"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T16:54:48.995926144",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "merges gene and isoform results from multiple samples": {
+        "content": [
+            {
+                "0": [
+                    "RSEM.genes.expected_count.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "1": [
+                    "RSEM.genes.FPKM.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "2": [
+                    "RSEM.genes.TPM.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "3": [
+                    "RSEM.isoforms.expected_count.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "4": [
+                    "RSEM.isoforms.FPKM.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "5": [
+                    "RSEM.isoforms.TPM.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "6": [
+                    "RSEM.genes.expected_counts.all_samples.reformatted.tsv:md5,47db9bceba1d0268df06881bbfa6975f"
+                ],
+                "gene_counts": [
+                    "RSEM.genes.expected_count.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "gene_fpkm": [
+                    "RSEM.genes.FPKM.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "gene_tpm": [
+                    "RSEM.genes.TPM.all_samples.txt:md5,82bf5b8e117bc7274f4ee582abe747a4"
+                ],
+                "isoform_counts": [
+                    "RSEM.isoforms.expected_count.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "isoform_fpkm": [
+                    "RSEM.isoforms.FPKM.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "isoform_tpm": [
+                    "RSEM.isoforms.TPM.all_samples.txt:md5,133ab69e99f6f60f8d7ff2f100632f01"
+                ],
+                "reformatted": [
+                    "RSEM.genes.expected_counts.all_samples.reformatted.tsv:md5,47db9bceba1d0268df06881bbfa6975f"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T16:54:38.961027989",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

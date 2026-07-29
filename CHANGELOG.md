@@ -6,11 +6,15 @@
 
 ### New features
 
-- Added MultiQC report (#68, @AlecSilver)
+- Added `MultiQC` report (#68, @AlecSilver)
+- Implemented `RSeQC` for post-alignment RNA-seq quality control, including read distribution, infer experiment, and junction annotation analyses.
+- Added a local `BAM2STRANDEDBW` module that converts STAR-aligned, duplicate-marked BAMs into forward and reverse strand BigWig files, porting the `bam2bw_rnaseq` rule from Snakemake RENEE. Handles both paired-end and single-end libraries and supports strand swapping via `--swap_strands` for non-dUTP libraries.
+- Added `preseq` module from nf-core and incorporated into QC (#62, @AlecSilver)
 - STAR align now uses the max read length of samples to calculate --sjdbOverhang, matching snakemake
 - Incorporated the nf-core `qualimap/bamqc` module to perform post-alignment BAM quality control. (#61, @AlecSilver)
 - Added CCBR `samtools_flagstat` module into pipeline (#60, @AlecSilver)
 - Added first steps of `picard` (add-or-replace-groups, and mark-duplicates) (#56, @AlecSilver)
+- Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
 - Added `PICARD_COLLECTRNASEQMETRICS` to the main workflow to collect RNA-seq alignment metrics (strand specificity, 5'/3' bias, UTR/intronic/coding distributions) from the duplicate-marked BAM, matching the RENEE Snakemake `stats` rule. (#65, @AlecSilver)
 - Added `arriba` gene-fusion subworkflow (`subworkflows/local/arriba/main.nf`) with a dedicated `STAR_ALIGN_ARRIBA` modules.config block carrying all chimeric-detection flags (`--twopassMode Basic`, `--chimSegmentMin`, `--chimOutType WithinBAM HardClip`, etc.) matching the RENEE Snakemake `arriba` rule; updated nf-test module tests for `arriba/arriba` and `arriba/visualisation` to use local `params.test_data` references instead of `params.modules_testdata_base_path`.
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
