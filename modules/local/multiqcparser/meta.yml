@@ -43,34 +43,34 @@ output:
     - - meta:
           type: map
           description: Groovy Map containing aggregate report information
-      - "multiqc_matrix.tsv":
+      - "*multiqc_matrix.tsv":
           type: file
           description: Aggregated per-sample QC matrix
-          pattern: "multiqc_matrix.tsv"
+          pattern: "*multiqc_matrix.tsv"
   inner_distances:
     - - meta:
           type: map
           description: Groovy Map containing aggregate report information
-      - "rseqc_inner_distances.txt":
+      - "*rseqc_inner_distances.txt":
           type: file
           description: Maximum-frequency RSeQC inner distance for each sample
-          pattern: "rseqc_inner_distances.txt"
+          pattern: "*rseqc_inner_distances.txt"
   median_tin:
     - - meta:
           type: map
           description: Groovy Map containing aggregate report information
-      - "rseqc_median_tin.txt":
+      - "*rseqc_median_tin.txt":
           type: file
           description: Median RSeQC TIN for each sample
-          pattern: "rseqc_median_tin.txt"
+          pattern: "*rseqc_median_tin.txt"
   flowcell_lanes:
     - - meta:
           type: map
           description: Groovy Map containing aggregate report information
-      - "fastq_flowcell_lanes.txt":
+      - "*fastq_flowcell_lanes.txt":
           type: file
           description: Flowcell and lane identifiers for each sample
-          pattern: "fastq_flowcell_lanes.txt"
+          pattern: "*fastq_flowcell_lanes.txt"
   versions_python:
     - - "${task.process}":
           type: string

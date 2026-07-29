@@ -2,6 +2,7 @@ process MULTIQCPARSER {
     tag "$meta.id"
     label 'process_low'
 
+    // If moved to CCBR modules, could use a more lightweight container
     conda "${moduleDir}/environment.yml"
     container "nciccbr/ccbr_multiqc_1.15:v2"
 
@@ -9,16 +10,17 @@ process MULTIQCPARSER {
     tuple val(meta), path(multiqc_data, stageAs: "multiqc_data"), path(inner_distance_freq, stageAs: "inner_distance/*"), path(tin_summary, stageAs: "tin/*"), path(fastq_info, stageAs: "fastq_info/*")
 
     output:
-    tuple val(meta), path("multiqc_matrix.tsv")        , emit: matrix
-    tuple val(meta), path("rseqc_inner_distances.txt"), emit: inner_distances
-    tuple val(meta), path("rseqc_median_tin.txt")     , emit: median_tin
-    tuple val(meta), path("fastq_flowcell_lanes.txt") , emit: flowcell_lanes
+    tuple val(meta), path("${prefix}multiqc_matrix.tsv")        , emit: matrix
+    tuple val(meta), path("${prefix}rseqc_inner_distances.txt"), emit: inner_distances
+    tuple val(meta), path("${prefix}rseqc_median_tin.txt")     , emit: median_tin
+    tuple val(meta), path("${prefix}fastq_flowcell_lanes.txt") , emit: flowcell_lanes
     tuple val("${task.process}"), val('python'), eval('python3 --version 2>&1 | cut -d " " -f 2'), topic: versions, emit: versions_python
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    prefix = task.ext.prefix ? "${task.ext.prefix}." : ""
     """
     mkdir -p inner_distance tin fastq_info
 
@@ -44,19 +46,26 @@ process MULTIQCPARSER {
         | LC_ALL=C sort -t \$'\\t' -k1,1 \\
         >> fastq_flowcell_lanes.txt
 
-    python3 ${moduleDir}/resources/usr/bin/pyparser.py \\
+    pyparser.py \\
         multiqc_data/*.txt \\
         rseqc_inner_distances.txt \\
         rseqc_median_tin.txt \\
         fastq_flowcell_lanes.txt \\
         .
+
+    if [[ -n "${prefix}" ]]; then
+        for output in multiqc_matrix.tsv rseqc_inner_distances.txt rseqc_median_tin.txt fastq_flowcell_lanes.txt; do
+            mv "\$output" "${prefix}\$output"
+        done
+    fi
     """
 
     stub:
+    prefix = task.ext.prefix ? "${task.ext.prefix}." : ""
     """
-    touch multiqc_matrix.tsv
-    printf 'Sample\\tInner_Dist_Maxima\\n' > rseqc_inner_distances.txt
-    printf 'Sample\\tmedian_tin\\n' > rseqc_median_tin.txt
-    printf 'Sample\\tflowcell_lanes\\n' > fastq_flowcell_lanes.txt
+    touch ${prefix}multiqc_matrix.tsv
+    printf 'Sample\\tInner_Dist_Maxima\\n' > ${prefix}rseqc_inner_distances.txt
+    printf 'Sample\\tmedian_tin\\n' > ${prefix}rseqc_median_tin.txt
+    printf 'Sample\\tflowcell_lanes\\n' > ${prefix}fastq_flowcell_lanes.txt
     """
 }

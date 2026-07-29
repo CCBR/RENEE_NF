@@ -104,4 +104,34 @@ nextflow_process {
             )
         }
     }
+
+    test("RENEE QC files - custom prefix") {
+
+        config "./custom_prefix.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    [],
+                    [file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.matrix[0][1]).fileName.toString() == "project.multiqc_matrix.tsv" },
+                { assert path(process.out.inner_distances[0][1]).fileName.toString() == "project.rseqc_inner_distances.txt" },
+                { assert path(process.out.median_tin[0][1]).fileName.toString() == "project.rseqc_median_tin.txt" },
+                { assert path(process.out.flowcell_lanes[0][1]).fileName.toString() == "project.fastq_flowcell_lanes.txt" },
+                { assert path(process.out.matrix[0][1]).text.contains("sample_a") }
+            )
+        }
+    }
 }
