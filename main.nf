@@ -5,14 +5,8 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
 
 // Modules
-include { QUALIMAP_BAMQC }              from './modules/nf-core/qualimap/bamqc/main'
-include { SAMTOOLS_FLAGSTAT }           from './modules/CCBR/samtools/flagstat/main.nf'
 include { MULTIQC }                     from './modules/nf-core/multiqc/main'
-include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
 include { BAM2STRANDEDBW }              from './modules/local/bam2strandedbw/main'
-include { PRESEQ_CCURVE }               from './modules/nf-core/preseq/ccurve/main'
-include { HANDLE_PRESEQ_ERROR }         from './modules/local/preseq/helperfunctions/main'
-include { PARSE_PRESEQ_LOG }            from './modules/local/preseq/helperfunctions/main'
 include { FC_LANE }                     from './modules/local/fc_lane/main'
 include { MULTIQCPARSER }               from './modules/local/multiqcparser/main'
 include { RNA_REPORT }                  from './modules/local/rna_report/main'
@@ -23,7 +17,7 @@ include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
-include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
+include { POST_ALIGNMENT_QC }  from './subworkflows/local/post_alignment_qc/main'
 include { RSEM }               from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
 
@@ -83,23 +77,21 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
-            // RSeQC QC: strandedness, read distribution, inner distance, TIN
-            ch_bam_bai = PICARD_INITIAL_QC.out.bam
-                .join(PICARD_INITIAL_QC.out.bai)
-
-
-            RSEQC_QC(
-                ch_bam_bai,
+            POST_ALIGNMENT_QC(
+                PICARD_INITIAL_QC.out.bam,
+                PICARD_INITIAL_QC.out.bai,
                 PREPARE_GENOME.out.bed_ref,
-                PREPARE_GENOME.out.tin_ref
+                PREPARE_GENOME.out.tin_ref,
+                PREPARE_GENOME.out.refflat,
+                PREPARE_GENOME.out.fasta,
+                PREPARE_GENOME.out.rrna_list,
+                PREPARE_GENOME.out.genes_gtf
             )
 
             // RSEM quantification -----------------------------------------------
-            // strand_info is emitted as empty channel until RSeQC is integrated;
-            // strandedness defaults to unstranded (--forward-prob 0.5)
             RSEM(
                 STAR_ALIGN.out.pass2_transcript_bam,
-                RSEQC_QC.out.infer_experiment,
+                POST_ALIGNMENT_QC.out.infer_experiment,
                 PREPARE_GENOME.out.rsem_ref,
                 PREPARE_GENOME.out.annotate
             )
@@ -107,43 +99,8 @@ workflow {
             BAM2STRANDEDBW(
                 PICARD_INITIAL_QC.out.bam
                     .join(PICARD_INITIAL_QC.out.bai)
-                    .join(RSEQC_QC.out.infer_experiment)
+                    .join(POST_ALIGNMENT_QC.out.infer_experiment)
             )
-            // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
-            // PICARD_INITIAL_QC.out.bam.view()
-            PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
-
-            // when preseq fails, write NAs for the stats that are calculated from its log
-            PRESEQ_CCURVE.out.log
-                .join(PICARD_INITIAL_QC.out.bam, remainder: true)
-                .branch { meta, preseq_log, bam_tuple ->
-                failed: preseq_log == null
-                    return (tuple(meta, "nopresqlog"))
-                succeeded: true
-                    return (tuple(meta, preseq_log))
-                }.set{ preseq_logs }
-            preseq_logs.failed | HANDLE_PRESEQ_ERROR
-            preseq_logs.succeeded | PARSE_PRESEQ_LOG
-            PARSE_PRESEQ_LOG.out.nrf
-                .concat(HANDLE_PRESEQ_ERROR.out.nrf)
-                .set{ preseq_nrf }
-            ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
-
-            PICARD_COLLECTRNASEQMETRICS(
-                PICARD_INITIAL_QC.out.bam,
-                PREPARE_GENOME.out.refflat,
-                ch_fasta_path,
-                PREPARE_GENOME.out.rrna_list.ifEmpty([])
-            )
-            // QualiMap BAM QC ---------------------------------------------------------------
-            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
-            QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
-
-
-            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
-            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
-
-            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
 
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
@@ -168,14 +125,14 @@ workflow {
                 .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
                 .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
                 .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
-                .mix(PICARD_COLLECTRNASEQMETRICS.out.metrics.map { meta, file -> file })
-                .mix(QUALIMAP_BAMQC.out.results.map          { meta, dir   -> dir   })
-                .mix(SAMTOOLS_FLAGSTAT.out.flagstat.map      { meta, file  -> file  })
-                .mix(RSEQC_QC.out.read_distribution.map      { meta, file  -> file  })
-                .mix(RSEQC_QC.out.inner_distance_freq.map    { meta, file  -> file  })
-                .mix(RSEQC_QC.out.tin_txt.map                { meta, file  -> file  })
+                .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.qualimap_results.map    { meta, dir  -> dir  })
+                .mix(POST_ALIGNMENT_QC.out.flagstat.map            { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.read_distribution.map   { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.inner_distance_freq.map { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.tin_txt.map             { meta, file -> file })
                 .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
-                .mix(PRESEQ_CCURVE.out.c_curve.map           { meta, file  -> file  })
+                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map { meta, file  -> file  })
                 .collect()
 
             // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
@@ -195,12 +152,12 @@ workflow {
                 CHECK_INPUT.out.reads.map { meta, reads -> tuple(meta, reads[0]) }
             )
 
-            ch_inner_distance_files = RSEQC_QC.out.inner_distance_freq
+            ch_inner_distance_files = POST_ALIGNMENT_QC.out.inner_distance_freq
                 .map { meta, file -> file }
                 .collect()
                 .map { files -> [files] }
 
-            ch_tin_summary_files = RSEQC_QC.out.tin_txt
+            ch_tin_summary_files = POST_ALIGNMENT_QC.out.tin_txt
                 .map { meta, file -> file }
                 .collect()
                 .map { files -> [files] }
@@ -220,7 +177,7 @@ workflow {
 
             MULTIQCPARSER(ch_multiqcparser_input)
 
-            ch_tin_matrix_files = RSEQC_QC.out.tin_xls
+            ch_tin_matrix_files = POST_ALIGNMENT_QC.out.tin_xls
                 .map { meta, file -> file }
                 .collect()
                 .map { files -> [files] }
@@ -287,26 +244,26 @@ workflow {
 
         picard_bam                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bam
         picard_bai                = params.build_genome ? Channel.empty() : PICARD_INITIAL_QC.out.bai
-        picard_rna_metrics        = params.build_genome ? Channel.empty() : PICARD_COLLECTRNASEQMETRICS.out.metrics
+        picard_rna_metrics        = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.picard_rna_metrics
 
-        rseqc_infer_experiment       = params.build_genome ? Channel.empty() : RSEQC_QC.out.infer_experiment
-        rseqc_read_distribution      = params.build_genome ? Channel.empty() : RSEQC_QC.out.read_distribution
-        rseqc_inner_distance_freq    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_freq
-        rseqc_inner_distance_dist    = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_dist
-        rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : RSEQC_QC.out.inner_distance_rscript
-        rseqc_tin_txt                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_txt
-        rseqc_tin_xls                = params.build_genome ? Channel.empty() : RSEQC_QC.out.tin_xls
+        rseqc_infer_experiment       = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.infer_experiment
+        rseqc_read_distribution      = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.read_distribution
+        rseqc_inner_distance_freq    = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_freq
+        rseqc_inner_distance_dist    = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_dist
+        rseqc_inner_distance_rscript = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.inner_distance_rscript
+        rseqc_tin_txt                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.tin_txt
+        rseqc_tin_xls                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.tin_xls
 
         bam2bw_fwd = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.fwd_bw
         bam2bw_rev = params.build_genome ? Channel.empty() : BAM2STRANDEDBW.out.rev_bw
 
-        preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
-        preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
+        preseq_ccurve             = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_ccurve
+        preseq_log                = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_log
 
-        qualimap_results          = params.build_genome ? Channel.empty() : QUALIMAP_BAMQC.out.results
+        qualimap_results          = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.qualimap_results
 
-        flagstat                  = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.flagstat
-        flagstat_versions         = params.build_genome ? Channel.empty() : SAMTOOLS_FLAGSTAT.out.versions
+        flagstat                  = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.flagstat
+        flagstat_versions         = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.flagstat_versions
 
         arriba_fusions      = params.build_genome ? Channel.empty() : ARRIBA.out.fusions
         arriba_fusions_fail = params.build_genome ? Channel.empty() : ARRIBA.out.fusions_fail
@@ -322,7 +279,7 @@ workflow {
         rseqc_median_tin    = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.median_tin
         fastq_flowcell_lanes = params.build_genome ? Channel.empty() : MULTIQCPARSER.out.flowcell_lanes
         rna_report          = params.build_genome ? Channel.empty() : RNA_REPORT.out.html
-        preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
+        preseq_nrf          = params.build_genome ? Channel.empty() : POST_ALIGNMENT_QC.out.preseq_nrf
 }
 
 output {
