@@ -1,0 +1,29 @@
+---
+title: "RNA report module smoke test"
+params:
+  raw: null
+  tin: null
+  qc: null
+  annot: false
+output:
+  html_document:
+    self_contained: true
+---
+
+```{r verify-inputs, echo=FALSE}
+raw <- read.delim(params$raw, check.names = FALSE)
+tin <- read.delim(params$tin, check.names = FALSE)
+qc <- read.delim(params$qc, check.names = FALSE)
+
+stopifnot(nrow(raw) == 4)
+stopifnot(nrow(tin) == 4)
+stopifnot(nrow(qc) == 4)
+```
+
+Raw rows: `r nrow(raw)`
+
+TIN rows: `r nrow(tin)`
+
+QC rows: `r nrow(qc)`
+
+Annotation enabled: `r toupper(as.character(params$annot))`
