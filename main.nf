@@ -127,7 +127,7 @@ workflow {
                     [id: 'multiqc'], // meta
                     files, // files
                     file(params.multiQC_config), // config
-                    [], //logo
+                    file(params.multiQC_logo), //logo
                     [], // replace_names
                     []] //sample names TSV
                 }
