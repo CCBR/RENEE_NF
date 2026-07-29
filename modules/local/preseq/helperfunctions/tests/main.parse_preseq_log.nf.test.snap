@@ -1,0 +1,31 @@
+{
+    "Single End Test": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.preseq.nrf.txt:md5,b6946e4e7e4828aa5f8239ac430c8173"
+                    ]
+                ],
+                "nrf": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.preseq.nrf.txt:md5,b6946e4e7e4828aa5f8239ac430c8173"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T15:50:09.584978258",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
