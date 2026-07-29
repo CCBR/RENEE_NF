@@ -1,4 +1,14 @@
+import nextflow.Channel
+import nextflow.Nextflow
+
 class Utils {
+    // Create a value channel for a configured path, or an empty channel when unset.
+    public static optionalPathParam(params, String paramName) {
+        return params.containsKey(paramName) && params[paramName]
+            ? Channel.value(Nextflow.file(params[paramName], checkIfExists: true))
+            : Channel.empty()
+    }
+
     // run spooker for the workflow
     public static String spooker(workflow) {
         def pipeline_name = "${workflow.manifest.name.tokenize('/')[-1]}"

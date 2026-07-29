@@ -1,0 +1,195 @@
+{
+    "sarscov2 single-end sorted bam": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.fwd.bw:md5,3a4cb71d135827163664476ada020a40"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.rev.bw:md5,4a62dae4536e7f7b23073ed39ad556bf"
+                    ]
+                ],
+                "2": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "3": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "bedtools",
+                        "v2.26.0"
+                    ]
+                ],
+                "fwd_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.fwd.bw:md5,3a4cb71d135827163664476ada020a40"
+                    ]
+                ],
+                "rev_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": true
+                        },
+                        "test.rev.bw:md5,4a62dae4536e7f7b23073ed39ad556bf"
+                    ]
+                ],
+                "versions_bedtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "bedtools",
+                        "v2.26.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "samtools",
+                        "1.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-17T16:14:01.848915548",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 paired-end sorted bam": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fwd.bw:md5,6e617a1f515fb548700a7c91f042c6ef"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.rev.bw:md5,717b0ee501e7b7dc6e5df1273e0e3d04"
+                    ]
+                ],
+                "2": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "samtools",
+                        "1.7"
+                    ]
+                ],
+                "3": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "bedtools",
+                        "v2.26.0"
+                    ]
+                ],
+                "fwd_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fwd.bw:md5,6e617a1f515fb548700a7c91f042c6ef"
+                    ]
+                ],
+                "rev_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.rev.bw:md5,717b0ee501e7b7dc6e5df1273e0e3d04"
+                    ]
+                ],
+                "versions_bedtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "bedtools",
+                        "v2.26.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "samtools",
+                        "1.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-17T16:13:51.165463583",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "sarscov2 paired-end sorted bam - stub": {
+        "content": [
+            {
+                "fwd_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.fwd.bw:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "rev_bw": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.rev.bw:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_bedtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "bedtools",
+                        "v2.26.0"
+                    ]
+                ],
+                "versions_samtools": [
+                    [
+                        "BAM2STRANDEDBW",
+                        "samtools",
+                        "1.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-17T16:14:11.747876991",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
