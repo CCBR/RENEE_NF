@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process RSEM_CALCULATEEXPRESSION"
+    script "../main.nf"
+    process "RSEM_CALCULATEEXPRESSION"
+    tag "rsem"
+    tag "rsem/calculateexpression"
+
+    test("sarscov2 - paired-end - stub") {
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test', single_end: false, strandedness: 'none' ],
+                    [
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true),
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                ])
+                input[1] = file("${projectDir}/tests/test_data/hg38_stub/star_index")
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts_gene[0][1]       ==~ '.*/test\\.RSEM\\.genes\\.results' },
+                { assert process.out.counts_transcript[0][1] ==~ '.*/test\\.RSEM\\.isoforms\\.results' },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}
