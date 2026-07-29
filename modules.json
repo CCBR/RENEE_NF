@@ -70,6 +70,32 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/fastqscreen/fastqscreen/fastqscreen-fastqscreen.diff"
                     },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/add": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/build": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"]
+                    },
+                    "kraken2/kraken2": {
+                        "branch": "master",
+                        "git_sha": "d67d33d5925fcec4691b499670fa2bd926fd2be5",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/kraken2/kraken2/kraken2-kraken2.diff"
+                    },
+                    "multiqc": {
+                        "branch": "master",
+                        "git_sha": "98403d15b0e50edae1f3fec5eae5e24982f1fade",
+                        "installed_by": ["modules"]
+                    },
                     "picard/addorreplacereadgroups": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
@@ -84,6 +110,45 @@
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
+                    },
+                    "rsem/calculateexpression": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/rsem/calculateexpression/rsem-calculateexpression.diff"
+                    },
+                    "rseqc/inferexperiment": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "rseqc/innerdistance": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "rseqc/readdistribution": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "rseqc/tin": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/rseqc/tin/rseqc-tin.diff"
+                    },
+                    "preseq/ccurve": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/preseq/ccurve/preseq-ccurve.diff"
+                    },
+                    "qualimap/bamqc": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/qualimap/bamqc/qualimap-bamqc.diff"
                     },
                     "star/align": {
                         "branch": "master",
@@ -102,6 +167,11 @@
                         "git_sha": "5488955899b1c02180ca6049d954f7be861b9e74",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/ucsc/gtftogenepred/ucsc-gtftogenepred.diff"
+                    },
+                    "untar": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
                     }
                 }
             }

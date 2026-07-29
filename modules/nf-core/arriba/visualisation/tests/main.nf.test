@@ -10,7 +10,7 @@ nextflow_process {
     tag "star/align"
     tag "star/genomegenerate"
     tag "arriba/arriba"
-    tag "arriba/download"
+
 
     test("ARRIBA_VISUALISATION") {
 
@@ -111,14 +111,9 @@ nextflow_process {
                     """
                 }
             }
-            run("ARRIBA_DOWNLOAD") {
-                script '../../download/main.nf'
-                process {
-                """
-                input[0] = 'GRCh38'
-                """
-                }
-            }
+            // ARRIBA_DOWNLOAD was previously used here to supply protein_domains and cytobands,
+            // but it runs wget against GitHub which fails on Biowulf compute nodes (no outbound internet).
+            // The same reference files are available via static URLs from nf-core/test-datasets instead.
         }
 
         when {
@@ -129,8 +124,8 @@ nextflow_process {
                     [ id:'test_gtf' ],
                     file(params.test_data['homo_sapiens']['genome'].genome_gtf, checkIfExists: true)
                 ]
-                input[2] = ARRIBA_DOWNLOAD.out.protein_domains.map { protein_domains -> [[ id:'test_protein_domains' ], protein_domains] }
-                input[3] = ARRIBA_DOWNLOAD.out.cytobands.map { cytobands -> [[ id:'test_cytobands' ], cytobands] }
+                input[2] = Channel.of([[ id:'test_protein_domains' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/rnafusion/testdata/reference/arriba/protein_domains_hg38_GRCh38_v2.5.0.gff3", checkIfExists: true)])
+                input[3] = Channel.of([[ id:'test_cytobands' ], file("https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/rnafusion/testdata/reference/arriba/cytobands_hg38_GRCh38_v2.5.0.tsv", checkIfExists: true)])
                 """
             }
         }

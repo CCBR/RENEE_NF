@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "preseq_helperfunctions"
+description: |
+  Parse preseq output logs into NRF/PBC quality-control metrics and create
+  placeholder metrics when preseq fails for a sample.
+keywords:
+  - preseq
+  - library complexity
+  - qc
+  - nrf
+  - pbc
+  - log parsing
+tools:
+  - preseq:
+      description: |
+        Preseq estimates library complexity and genome coverage in
+        high-throughput sequencing data.
+      homepage: https://preseq.readthedocs.io/
+      documentation: https://preseq.readthedocs.io/
+      tool_dev_url: https://github.com/smithlabcode/preseq
+      doi: "10.1038/nmeth.2375"
+      licence: ["GPL v3-or-later"]
+      identifier: biotools:preseq
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - log:
+        type: file
+        description: |
+          Preseq log file emitted for a successfully completed sample and
+          parsed by PARSE_PRESEQ_LOG.
+        pattern: "*.preseq.log"
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - log:
+        type: string
+        description: |
+          Failed preseq log marker consumed by HANDLE_PRESEQ_ERROR to emit
+          placeholder NRF/PBC metrics.
+
+output:
+  nrf:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*nrf.txt":
+          type: file
+          description: |
+            Tab-delimited preseq complexity metrics containing NRF, PBC1,
+            and PBC2 values. Failed preseq samples contain NA placeholders.
+          pattern: "*nrf.txt"
+          ontologies:
+            - edam: http://edamontology.org/format_3475 # TSV
+
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"

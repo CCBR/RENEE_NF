@@ -1,0 +1,48 @@
+{
+    "creates matrices with the default suffix": {
+        "content": [
+            {
+                "0": [
+                    "RSEM.genes.expected_counts.all_samples.matrix:md5,e204d4f0ffd11833fed06bcd87ea12c7"
+                ],
+                "1": [
+                    "RSEM.isoforms.expected_counts.all_samples.matrix:md5,b241a9da34ff0989aeeaa887b125d673"
+                ],
+                "gene_matrix": [
+                    "RSEM.genes.expected_counts.all_samples.matrix:md5,e204d4f0ffd11833fed06bcd87ea12c7"
+                ],
+                "isoform_matrix": [
+                    "RSEM.isoforms.expected_counts.all_samples.matrix:md5,b241a9da34ff0989aeeaa887b125d673"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T16:54:19.882665608",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "creates matrices with a custom suffix - stub": {
+        "content": [
+            {
+                "0": [
+                    "RSEM.genes.expected_counts.cohort.matrix:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "RSEM.isoforms.expected_counts.cohort.matrix:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "gene_matrix": [
+                    "RSEM.genes.expected_counts.cohort.matrix:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "isoform_matrix": [
+                    "RSEM.isoforms.expected_counts.cohort.matrix:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T16:54:28.759098155",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
