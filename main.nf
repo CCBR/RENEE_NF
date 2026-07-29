@@ -283,7 +283,7 @@ workflow {
         preseq_ccurve             = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.c_curve
         preseq_log                = params.build_genome ? Channel.empty() : PRESEQ_CCURVE.out.log
         preseq_nrf          = params.build_genome ? Channel.empty() : preseq_nrf
-        
+
         multiqc_report      = params.build_genome ? Channel.empty() : MULTIQC.out.report
         multiqc_data        = params.build_genome ? Channel.empty() : MULTIQC.out.data
 
