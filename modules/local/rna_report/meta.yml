@@ -19,6 +19,15 @@ tools:
       documentation: https://rmarkdown.rstudio.com/docs/
       licence:
         - "GPL-3.0-only"
+  - pandas:
+      description: |
+        Used by bin/create_tin_matrix.py to combine per-sample RSeQC TIN (*.tin.xls)
+        files into a single matrix, keyed by transcript ID (last value wins on
+        duplicate IDs, matching the RENEE Snakemake pipeline's behavior)
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence:
+        - "BSD-3-clause"
 
 input:
   - - meta:

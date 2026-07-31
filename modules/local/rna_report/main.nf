@@ -21,35 +21,13 @@ process RNA_REPORT {
     """
     export R_LIBS_SITE=/usr/local/lib/R/site-library
 
+    # Skip TIN matrix creation if only one TIN file is provided and it has the correct header
+
     TIN_FILES=( ${tin_files.join(' ')} )
     if [[ \${#TIN_FILES[@]} -eq 1 ]] && [[ "\$(head -n 1 "\${TIN_FILES[0]}")" != \$'geneID\\tchrom\\ttx_start\\ttx_end\\tTIN' ]]; then
         cp "\${TIN_FILES[0]}" combined_TIN.tsv
     else
-        Rscript - "\${TIN_FILES[@]}" <<'RSCRIPT'
-    inputs <- commandArgs(trailingOnly = TRUE)
-    tin_tables <- lapply(inputs, function(input) {
-        tin <- read.delim(input, check.names = FALSE)
-        sample_name <- sub("\\\\.tin\\\\.xls\$", "", basename(input))
-        sample_tin <- data.frame(
-            transcript_id = tin[["geneID"]],
-            tin = tin[["TIN"]],
-            check.names = FALSE
-        )
-        names(sample_tin)[2] <- sample_name
-        sample_tin
-    })
-    combined_tin <- Reduce(
-        function(left, right) merge(left, right, by = "transcript_id", all = TRUE),
-        tin_tables
-    )
-    write.table(
-        combined_tin,
-        "combined_TIN.tsv",
-        sep = "\\t",
-        quote = FALSE,
-        row.names = FALSE
-    )
-    RSCRIPT
+        create_tin_matrix.py "\${TIN_FILES[@]}" > combined_TIN.tsv
     fi
 
     rna_report.R \

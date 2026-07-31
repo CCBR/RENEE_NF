@@ -58,7 +58,15 @@ config = {
     },
     "multiqc_fastqc.txt": {
         "delimiter": "\t",
-        "clean_sample_name": ["^QC \\| ", "^rawQC \\| ", "\.trim$", "\.R1$", "\.R2$"],
+        "clean_sample_name": [
+            "^QC \\| ",
+            "^rawQC \\| ",
+            "_1\\.trim$",
+            "_2\\.trim$",
+            "\.trim$",
+            "\.R1$",
+            "\.R2$",
+        ],
         "collapse": True,
         "parse_column": [
             "Sample",
@@ -81,6 +89,8 @@ config = {
             "^FQscreen \\| ",
             "^FQscreen2 \\| ",
             "_screen$",
+            "_1\\.trim$",
+            "_2\\.trim$",
             "\.trim$",
             "\.R1$",
             "\.R2$",
@@ -168,6 +178,7 @@ config = {
             "^RSeQC \\| ",
             "\.strand\.info$",
             "\.info\.strand$",
+            "\.strand\.infer_experiment$",
             "^output\.",
             "\.p2$",
         ],

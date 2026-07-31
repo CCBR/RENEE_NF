@@ -33,6 +33,13 @@ output:
         Channel containing BAI index files output by PICARD_MARKDUPLICATES.
         Structure: [ val(meta), path(bai) ]
       pattern: "*.bai"
+  - metrics:
+      type: file
+      description: |
+        Channel containing duplication metrics files output by PICARD_MARKDUPLICATES,
+        consumed by MultiQC.
+        Structure: [ val(meta), path(metrics) ]
+      pattern: "*.metrics.txt"
 authors:
   - "@AlecSilver"
 maintainers:

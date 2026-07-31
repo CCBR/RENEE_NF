@@ -141,10 +141,12 @@ workflow {
                 .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
                 .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
                 .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
+                .mix(PICARD_INITIAL_QC.out.metrics.map              { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.qualimap_results.map    { meta, dir  -> dir  })
                 .mix(POST_ALIGNMENT_QC.out.flagstat.map            { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.read_distribution.map   { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.infer_experiment.map    { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.inner_distance_freq.map { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.tin_txt.map             { meta, file -> file })
                 .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
@@ -253,9 +255,10 @@ workflow {
         star_pass2_bam            = analysis_mode ? STAR_ALIGN.out.pass2_bam : Channel.empty()
         star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN.out.pass2_transcript_bam : Channel.empty()
 
-        picard_bam         = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
-        picard_bai         = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
-        picard_rna_metrics = analysis_mode ? POST_ALIGNMENT_QC.out.picard_rna_metrics : Channel.empty()
+        picard_bam             = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
+        picard_bai             = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
+        picard_markdup_metrics = analysis_mode ? PICARD_INITIAL_QC.out.metrics : Channel.empty()
+        picard_rna_metrics     = analysis_mode ? POST_ALIGNMENT_QC.out.picard_rna_metrics : Channel.empty()
 
         qualimap_results = analysis_mode ? POST_ALIGNMENT_QC.out.qualimap_results : Channel.empty()
 
@@ -359,9 +362,10 @@ output {
     rsem_gene_matrix      { path { file -> 'DEG_ALL/' } }
     rsem_isoform_matrix   { path { file -> 'DEG_ALL/' } }
 
-    picard_bam         { path { meta, file -> 'bams/' } }
-    picard_bai         { path { meta, file -> 'bams/' } }
-    picard_rna_metrics { path { meta, file -> 'picard/' } }
+    picard_bam             { path { meta, file -> 'bams/' } }
+    picard_bai             { path { meta, file -> 'bams/' } }
+    picard_markdup_metrics { path { meta, file -> 'picard/' } }
+    picard_rna_metrics     { path { meta, file -> 'picard/' } }
 
     rseqc_infer_experiment       { path { meta, file -> 'RSeQC/' } }
     rseqc_read_distribution      { path { meta, file -> 'RSeQC/' } }
