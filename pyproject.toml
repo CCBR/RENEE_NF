@@ -13,7 +13,7 @@ keywords = ["bioinformatics", "nextflow"]
 authors = [
     {name = "Kelly Sovacool", email = "kelly.sovacool@nih.gov"},
     {name = "Vishal Koparde", email = "vishal.koparde@nih.gov"},
-    {name = "Alec Silver",    email = "alec.silver@nih.gov"}
+    {name = "Alec Silver",    email = "alecs@bu.edu"}
 ]
 maintainers = [
     {name = "CCR Collaborative Bioinformatics Resource", email = "ccbr@mail.nih.gov"},

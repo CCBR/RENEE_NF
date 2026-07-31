@@ -31,7 +31,27 @@ renee_nf init
 Run the example
 
 ```sh
-renee_nf run --input "Hello world"
+nextflow run -profile singularity,biowulf,slurm main.nf \
+ --input assets/samplesheet.csv \
+ --genome GRCh38_v36 
+```
+
+If running outside of biowulf use build option first
+```sh
+nextflow run -profile singularity main.nf \
+ --build \
+ --shared_resources <dir to save shared resources> \ # optional
+ --genome_fasta /projectnb/wax-es/alecs/renee/GRCh38_GENCODE_v36/GRCh38.p13.genome.fa \
+ --genes_gtf /projectnb/wax-es/alecs/renee/GRCh38_GENCODE_v36/gencode.v36.annotation.gtf \
+ ```
+And then run
+
+```sh
+nextflow -c custom_genome.config \ #config created from build mode
+ run -profile singularity main.nf \
+ --input assets/samplesheet.csv \
+ --genome GRCh38_v36 \
+ --shared_resources <Shared rescources dir>
 ```
 
 ![dag](assets/dag.png)
