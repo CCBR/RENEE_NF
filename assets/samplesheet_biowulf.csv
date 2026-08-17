@@ -1,0 +1,5 @@
+replicate,sample,fastq_1,fastq_2
+S1,WT,/data/CCBR_Pipeliner/testdata/RENEE/WT_S1.R1.fastq.gz,/data/CCBR_Pipeliner/testdata/RENEE/WT_S1.R2.fastq.gz
+S2,WT,/data/CCBR_Pipeliner/testdata/RENEE/WT_S2.R1.fastq.gz,/data/CCBR_Pipeliner/testdata/RENEE/WT_S2.R2.fastq.gz
+S3,KO,/data/CCBR_Pipeliner/testdata/RENEE/KO_S3.R1.fastq.gz,/data/CCBR_Pipeliner/testdata/RENEE/KO_S3.R2.fastq.gz
+S4,KO,/data/CCBR_Pipeliner/testdata/RENEE/KO_S4.R1.fastq.gz,/data/CCBR_Pipeliner/testdata/RENEE/KO_S4.R2.fastq.gz
