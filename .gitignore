@@ -56,3 +56,6 @@ snakemake_summaries/
 .github/agents/
 .github/hooks/
 docs/dev/
+# pixi environments
+.pixi/*
+!.pixi/config.toml
