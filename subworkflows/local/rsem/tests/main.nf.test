@@ -1,0 +1,47 @@
+nextflow_workflow {
+
+    name "Test Workflow RSEM"
+    script "subworkflows/local/rsem/main.nf"
+    workflow "RSEM"
+
+    test("sarscov2 - paired-end - stub") {
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id: 'sample1', single_end: false ],
+                        file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'sample2', single_end: false ],
+                        file(params.test_data['sarscov2']['illumina'].test_2_fastq_gz, checkIfExists: true)
+                    ]
+                )
+                input[1] = Channel.empty()
+                input[2] = Channel.value('/data/CCBR_Pipeliner/db/PipeDB/GDC_refs/hg38_36/rsemref/hg38_36')
+                input[3] = Channel.value(file("${projectDir}/tests/test_data/hg38_stub/annotate.genes.txt", checkIfExists: true))
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.genes_results.size()    == 2 },
+                { assert workflow.out.isoforms_results.size() == 2 },
+                { assert workflow.out.gene_matrix[0]   ==~ '.*RSEM\\.genes\\.expected_counts\\.all_samples\\.matrix' },
+                { assert workflow.out.isoform_matrix[0] ==~ '.*RSEM\\.isoforms\\.expected_counts\\.all_samples\\.matrix' },
+                { assert snapshot(
+                    workflow.out.genes_results.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.isoforms_results.collect { meta, f -> file(f).name }.sort(),
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+    }
+
+}

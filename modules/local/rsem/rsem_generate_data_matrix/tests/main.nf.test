@@ -1,0 +1,63 @@
+nextflow_process {
+
+    name "Test Process RSEM_GENERATE_DATA_MATRIX"
+    script "modules/local/rsem/rsem_generate_data_matrix/main.nf"
+    process "RSEM_GENERATE_DATA_MATRIX"
+
+    test("creates matrices with the default suffix") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
+                ]
+                input[1] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.gene_matrix[0]).name == "RSEM.genes.expected_counts.all_samples.matrix" },
+                { assert file(process.out.isoform_matrix[0]).name == "RSEM.isoforms.expected_counts.all_samples.matrix" },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("creates matrices with a custom suffix - stub") {
+        config "./custom_suffix.config"
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.genes.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.genes.results", checkIfExists: true)
+                ]
+                input[1] = [
+                    file("${projectDir}/tests/test_data/DEG/WT_S1.RSEM.isoforms.results", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/DEG/WT_S2.RSEM.isoforms.results", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.gene_matrix[0]).name == "RSEM.genes.expected_counts.cohort.matrix" },
+                { assert file(process.out.isoform_matrix[0]).name == "RSEM.isoforms.expected_counts.cohort.matrix" },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+}

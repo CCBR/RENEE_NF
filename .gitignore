@@ -3,7 +3,7 @@
 
 # Log file
 *.log
-
+!tests/test_data/preseq/test.command.log
 # BlueJ files
 *.ctxt
 
@@ -42,20 +42,15 @@ data/
 results/
 /params.yaml
 .nf-test
-/setup-nextflow/
-
-# running nextflow scripts
-run_scripts
-conf/local_singularity.config
-run*.sh
-
 
 # AI summary files
 snakemake_summaries/
 .agents
+docs/dev
 .github/agents/
 .github/hooks/
-docs/dev/
+
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+

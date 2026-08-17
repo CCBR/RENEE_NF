@@ -31,6 +31,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 requires-python = ">=3.11"
+
 dependencies = [
     "ccbr_tools@git+https://github.com/CCBR/Tools",
     "cffconvert@git+https://github.com/citation-file-format/cffconvert@b6045d78aac9e02b039703b030588d54d53262ac",
