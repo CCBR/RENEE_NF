@@ -148,7 +148,7 @@ def run(main_path, output, _mode, force_all, **kwargs):
             mode=_mode,
             force_all=force_all,
             pipeline_name="RENEE_NF",
-            hpc_memory="4GB",
+            hpc_memory="16GB",
             **kwargs,
         )
     finally:
