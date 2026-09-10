@@ -101,10 +101,18 @@ workflow PREPARE_GENOME {
             ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
             ch_rrna_list         = Utils.optionalPathParam( params, 'rrna_list' )
             ch_tin_ref           = Utils.optionalPathParam( params, 'tin_ref' )
-            ch_fusion_blacklist     = Utils.optionalPathParam( params, 'fusion_blacklist' )
-            ch_fusion_cytoband      = Utils.optionalPathParam( params, 'fusion_cytoband' )
-            ch_fusion_protdomain    = Utils.optionalPathParam( params, 'fusion_protdomain' )
-            ch_fusion_known_fusions = Utils.optionalPathParam( params, 'fusion_known_fusions' )
+            // Arriba fusion-calling references. If not explicitly set, fall back to
+            // auto-detecting them in params.arriba_db_dir by matching params.genome
+            // against known assembly names (hg19/hg38/mm10/mm39) -- this is how
+            // `--build --shared_resources` output gets picked up for a custom build.
+            ch_fusion_blacklist     = Utils.resolveOptionalPathParam( params, 'fusion_blacklist',
+                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'blacklist_', '.tsv.gz' ) )
+            ch_fusion_cytoband      = Utils.resolveOptionalPathParam( params, 'fusion_cytoband',
+                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'cytobands_', '.tsv' ) )
+            ch_fusion_protdomain    = Utils.resolveOptionalPathParam( params, 'fusion_protdomain',
+                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'protein_domains_', '.gff3' ) )
+            ch_fusion_known_fusions = Utils.resolveOptionalPathParam( params, 'fusion_known_fusions',
+                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'known_fusions_', '.tsv.gz' ) )
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,
