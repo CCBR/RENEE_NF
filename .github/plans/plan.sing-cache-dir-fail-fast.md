@@ -1,17 +1,17 @@
 ## Plan: Fail fast on missing Singularity cache dir
 
-Nextflow only resolves and creates `singularity.cacheDir` lazily at the *first container pull*, so a missing `/data/$USER/singularity` surfaces late as a cryptic `Failed to create Singularity cache directory`. Worse, hardcoding `cacheDir` in the profile **silently overrides** `NXF_SINGULARITY_CACHEDIR` (config wins in Nextflow's resolution order), so the `/data/CCBR_Pipeliner/SIFS` value in [assets/slurm_header_biowulf.sh](assets/slurm_header_biowulf.sh#L13) is ignored — and that line is missing `export`, so it never reaches the nextflow process anyway.
+Nextflow only resolves and creates `singularity.cacheDir` lazily at the _first container pull_, so a missing `/data/$USER/singularity` surfaces late as a cryptic `Failed to create Singularity cache directory`. Worse, hardcoding `cacheDir` in the profile **silently overrides** `NXF_SINGULARITY_CACHEDIR` (config wins in Nextflow's resolution order), so the `/data/CCBR_Pipeliner/SIFS` value in [assets/slurm_header_biowulf.sh](assets/slurm_header_biowulf.sh#L13) is ignored — and that line is missing `export`, so it never reaches the nextflow process anyway.
 
 Fix: make the profiles env-var-first, and add a startup check in `Utils` that mirrors Nextflow's resolution order (`singularity.cacheDir` → `NXF_SINGULARITY_CACHEDIR` → `${workDir}/singularity`) and errors with an actionable message.
 
 **Steps**
 
 1. Add `Utils.checkSingularityCacheDir(workflow)` to [lib/Utils.groovy](lib/Utils.groovy) — no-op unless `workflow.containerEngine in ['singularity','apptainer']` or `workflow.stubRun`. Resolve the effective dir, then `Nextflow.error` if: path is blank or has an empty `$USER` segment (`/data//singularity`), parent dir doesn't exist, path exists as a file, or path exists but isn't writable. Message includes the resolved path plus `mkdir -p <path>` and `export NXF_SINGULARITY_CACHEDIR=<path>` hints. Follows the existing static-method style of `spooker()`/`check_command_in_path()`.
-2. Call it in [main.nf](main.nf#L52) inside `workflow { main: }`, right after `validateParameters()` and before the mutually-exclusive `--build` check — *depends on step 1*.
-3. [conf/biowulf.config](conf/biowulf.config#L27): `cacheDir = System.getenv('NXF_SINGULARITY_CACHEDIR') ?: "/data/${System.getenv('USER')}/.singularity"` (note: also normalizes `singularity` → `.singularity` to match slurmint) — *parallel with step 1*.
-4. Same env-var-first pattern in [conf/frce.config](conf/frce.config#L17) (fallback `/mnt/projects/CCBR-Pipelines/SIFs`) and [conf/slurmint.config](conf/slurmint.config#L13) — *parallel with step 3*.
-5. Add `export` to `NXF_SINGULARITY_CACHEDIR` in [assets/slurm_header_biowulf.sh](assets/slurm_header_biowulf.sh#L13) and [assets/slurm_header_frce.sh](assets/slurm_header_frce.sh#L12) — *parallel*.
-6. Add an nf-test asserting the helpful error when the cache dir's parent is missing; add a [CHANGELOG.md](CHANGELOG.md) entry — *depends on steps 1-2*.
+2. Call it in [main.nf](main.nf#L52) inside `workflow { main: }`, right after `validateParameters()` and before the mutually-exclusive `--build` check — _depends on step 1_.
+3. [conf/biowulf.config](conf/biowulf.config#L27): `cacheDir = System.getenv('NXF_SINGULARITY_CACHEDIR') ?: "/data/${System.getenv('USER')}/.singularity"` (note: also normalizes `singularity` → `.singularity` to match slurmint) — _parallel with step 1_.
+4. Same env-var-first pattern in [conf/frce.config](conf/frce.config#L17) (fallback `/mnt/projects/CCBR-Pipelines/SIFs`) and [conf/slurmint.config](conf/slurmint.config#L13) — _parallel with step 3_.
+5. Add `export` to `NXF_SINGULARITY_CACHEDIR` in [assets/slurm_header_biowulf.sh](assets/slurm_header_biowulf.sh#L13) and [assets/slurm_header_frce.sh](assets/slurm_header_frce.sh#L12) — _parallel_.
+6. Add an nf-test asserting the helpful error when the cache dir's parent is missing; add a [CHANGELOG.md](CHANGELOG.md) entry — _depends on steps 1-2_.
 
 **Relevant files**
 
