@@ -25,10 +25,10 @@ process WRITE_GENOME_CONFIG {
 
     output:
         path("*.config"), emit: conf
-        path("custom_genome/"), emit: files
+        path("${genome_name}/"), emit: files
 
     script:
-    def genome_name = 'custom_genome'
+    genome_name = params.genome ?: 'custom_genome'
     """
     #!/usr/bin/env python
     import os
@@ -107,8 +107,9 @@ process WRITE_GENOME_CONFIG {
     """
 
     stub:
+    genome_name = params.genome ?: 'custom_genome'
     """
-    mkdir custom_genome/
-    touch custom_genome.config custom_genome/genome.fa
+    mkdir ${genome_name}/
+    touch ${genome_name}.config ${genome_name}/genome.fa
     """
 }
