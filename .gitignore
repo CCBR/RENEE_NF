@@ -50,9 +50,10 @@ conf/local_singularity.config
 run*.sh
 
 
-# AI summary files
+# genAI files
 snakemake_summaries/
 .agents
 docs/dev
 .github/agents/
 .github/hooks/
+.github/plans/
