@@ -1,9 +1,21 @@
 Changes in component 'nf-core/qualimap/bamqc'
 'modules/nf-core/qualimap/bamqc/environment.yml' is unchanged
+'modules/nf-core/qualimap/bamqc/meta.yml' is unchanged
 Changes in 'qualimap/bamqc/main.nf':
 --- modules/nf-core/qualimap/bamqc/main.nf
 +++ modules/nf-core/qualimap/bamqc/main.nf
-@@ -23,9 +23,14 @@
+@@ -3,9 +3,7 @@
+     label 'process_medium'
+
+     conda "${moduleDir}/environment.yml"
+-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/2b/2b795495fdae4cb3319d19ed4a694302366aa574ba15a0613b85c602f0de4911/data' :
+-        'community.wave.seqera.io/library/qualimap:2.3--c1797c2253925b3a' }"
++    container "nciccbr/ccbr_qualimap:v0.0.1"
+
+     input:
+     tuple val(meta), path(bam)
+@@ -23,9 +21,14 @@
      prefix   = task.ext.prefix ?: "${meta.id}"
 
      def collect_pairs = meta.single_end ? '' : '--collect-overlap-pairs'
@@ -20,7 +32,7 @@ Changes in 'qualimap/bamqc/main.nf':
      def strandedness = 'non-strand-specific'
      if (meta.strandedness == 'forward') {
          strandedness = 'strand-specific-forward'
-@@ -49,7 +54,7 @@
+@@ -49,7 +52,7 @@
      """
 
      stub:
@@ -30,7 +42,7 @@ Changes in 'qualimap/bamqc/main.nf':
      mkdir -p $prefix/css
      mkdir $prefix/images_qualimapReport
 
-'modules/nf-core/qualimap/bamqc/meta.yml' is unchanged
+'modules/nf-core/qualimap/bamqc/tests/nextflow.config' was created
 Changes in 'qualimap/bamqc/tests/main.nf.test':
 --- modules/nf-core/qualimap/bamqc/tests/main.nf.test
 +++ modules/nf-core/qualimap/bamqc/tests/main.nf.test
@@ -139,52 +151,67 @@ Changes in 'qualimap/bamqc/tests/main.nf.test.snap':
 +    "sarscov2 - single_end [bam]": {
 +        "content": [
 +            "qualimapReport.html",
-+            "genome_results.txt:md5,5ede0503cc772d5ffcd95ba7df0e53bd",
++            "genome_results.txt:md5,e0f3742c6b9504a8a6fc98f009983de1",
 +            {
 +                "versions_qualimap": [
 +                    [
 +                        "QUALIMAP_BAMQC",
 +                        "qualimap",
-+                        "2.3"
++                        "2.2.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-17T15:00:24.058054384",
++        "timestamp": "2026-09-09T17:15:40.696783647",
 +        "meta": {
 +            "nf-test": "0.9.5",
-+            "nextflow": "25.10.0"
++            "nextflow": "26.04.0"
 +        }
 +    },
 +    "sarscov2 - paired_end [bam] [gff]": {
 +        "content": [
 +            "qualimapReport.html",
-+            "genome_results.txt:md5,7aead72eac22c31c173a31d89a3ce6c4",
++            "genome_results.txt:md5,327d6f613c6ea209599528de6d435a72",
 +            {
 +                "versions_qualimap": [
 +                    [
 +                        "QUALIMAP_BAMQC",
 +                        "qualimap",
-+                        "2.3"
++                        "2.2.1"
 +                    ]
 +                ]
 +            }
 +        ],
-+        "timestamp": "2026-07-17T15:00:09.815333987",
++        "timestamp": "2026-09-09T17:15:28.254099085",
 +        "meta": {
 +            "nf-test": "0.9.5",
-+            "nextflow": "25.10.0"
++            "nextflow": "26.04.0"
 +        }
 +    },
 +    "sarscov2 - paired_end [bam] - stub": {
          "content": [
              {
                  "0": [
-@@ -150,30 +190,10 @@
+@@ -72,7 +112,7 @@
+                     [
+                         "QUALIMAP_BAMQC",
+                         "qualimap",
+-                        "2.3"
++                        "2.2.1"
+                     ]
+                 ],
+                 "results": [
+@@ -145,35 +185,15 @@
+                     [
+                         "QUALIMAP_BAMQC",
+                         "qualimap",
+-                        "2.3"
++                        "2.2.1"
+                     ]
                  ]
              }
          ],
-+        "timestamp": "2026-07-20T15:42:14.695599575",
++        "timestamp": "2026-09-09T17:15:51.558354147",
          "meta": {
 -            "nf-test": "0.9.3",
 -            "nextflow": "25.10.3"
@@ -211,9 +238,8 @@ Changes in 'qualimap/bamqc/tests/main.nf.test.snap':
 -        },
 -        "timestamp": "2026-02-13T22:12:46.38879"
 +            "nf-test": "0.9.5",
-+            "nextflow": "25.10.0"
++            "nextflow": "26.04.0"
 +        }
      }
  }
-'modules/nf-core/qualimap/bamqc/tests/nextflow.config' was created
 ************************************************************
