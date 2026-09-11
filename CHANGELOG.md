@@ -29,6 +29,7 @@
 
 ### Bug fixes
 
+- Swapped container in Qualimap bamQC so behavior matches snakemake
 - Normalized volatile Cutadapt CPU-count log lines in module snapshots so harmless `--cores` differences do not fail nf-test comparisons.
 - Fixed local `FASTQC` module metadata scoping by switching to a closure-based `tag` directive and removing module-local `publishDir`, resolving `ERROR ~ No such variable: meta` during Nextflow preview/CI runs.
 
