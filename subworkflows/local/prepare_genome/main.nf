@@ -1,9 +1,17 @@
-include { GTF2BED             } from "../../../modules/local/gtf2bed/main.nf"
 include { RENAME_FASTA_CONTIGS as RENAME_FASTA_CONTIGS_REF } from "../../../modules/local/rename_fasta_contigs/main.nf"
 include { RENAME_DELIM_CONTIGS } from "../../../modules/local/rename_delim_contigs/main.nf"
 include { WRITE_GENOME_CONFIG  } from "../../../modules/local/write_genome_config/main.nf"
 
 include { STAR_GENOMEGENERATE } from "../../../modules/nf-core/star/genomegenerate/main.nf"
+
+// Custom-genome-build helpers -- port of RENEE (classic) workflow/rules/build.smk's
+// remaining rules, so a custom `--build` produces the same reference files a
+// predefined conf/genomes/*.config entry ships with (see WRITE_GENOME_CONFIG).
+include { BUILD_ANNOTATE       } from "../../../modules/local/build_annotate/main.nf"
+include { BUILD_RRNA_LIST      } from "../../../modules/local/build_rrna_list/main.nf"
+include { BUILD_TIN_REF        } from "../../../modules/local/build_tin_ref/main.nf"
+include { BUILD_QUALIMAP_INFO  } from "../../../modules/local/build_qualimap_info/main.nf"
+include { BUILD_RSEM_REF       } from "../../../modules/local/build_rsem_ref/main.nf"
 
 
 workflow PREPARE_GENOME {
@@ -77,7 +85,10 @@ workflow PREPARE_GENOME {
 
             ch_genes_gtf = ch_gtf
 
-            ch_gene_info = GTF2BED(ch_gtf).bed
+            ch_fasta_file = ch_fasta.map { meta, fa -> fa }
+            ch_gtf_file   = ch_gtf.map   { meta, gtf -> gtf }
+
+            def genome_name = params.genome ?: 'custom_genome'
 
             /*
              * Build STAR genome index for custom reference.
@@ -90,17 +101,66 @@ workflow PREPARE_GENOME {
                 ch_genes_gtf
             ).index
 
-            ch_organism          = Channel.value( params.organism ?: 'custom' )
-            ch_annotate          = Utils.optionalPathParam( params, 'annotate' )
-            ch_annotate_isoforms = Utils.optionalPathParam( params, 'annotate_isoforms' )
-            ch_refflat           = Utils.optionalPathParam( params, 'refflat' )
-            ch_bed_ref           = Utils.optionalPathParam( params, 'bed_ref' )
-            ch_qualimap_info     = Utils.optionalPathParam( params, 'qualimap_info' )
-            ch_karyobeds         = Utils.optionalPathParam( params, 'karyobeds' )
-            ch_karyoploter       = Utils.optionalPathParam( params, 'karyoploter' )
-            ch_rsem_ref          = Channel.value( params.rsem_ref ?: '' )
-            ch_rrna_list         = Utils.optionalPathParam( params, 'rrna_list' )
-            ch_tin_ref           = Utils.optionalPathParam( params, 'tin_ref' )
+            ch_organism = Channel.value( params.organism ?: 'custom' )
+
+            // annotate.genes.txt / annotate.isoforms.txt / refFlat.txt / genes.ref.bed /
+            // geneinfo.bed / karyobeds/ / karyoplot_gene_coordinates.txt all come
+            // from one process (make_refFlat.py and make_geneinfo.py read each
+            // other's output from the CWD with no arguments -- see
+            // modules/local/build_annotate, which also folds in RENEE classic's
+            // karyo_beds/karyo_coord rules since they too take only the GTF).
+            // gene_info has no override param, so this always has to run; the
+            // rest individually still defer to an explicit --annotate/--refflat/
+            // etc. when one is given.
+            BUILD_ANNOTATE(ch_gtf_file)
+            ch_gene_info         = BUILD_ANNOTATE.out.gene_info
+            ch_annotate          = params.annotate          ? Utils.optionalPathParam(params, 'annotate')          : BUILD_ANNOTATE.out.genes
+            ch_annotate_isoforms = params.annotate_isoforms ? Utils.optionalPathParam(params, 'annotate_isoforms') : BUILD_ANNOTATE.out.isoforms
+            ch_refflat           = params.refflat           ? Utils.optionalPathParam(params, 'refflat')           : BUILD_ANNOTATE.out.refflat
+            ch_bed_ref           = params.bed_ref           ? Utils.optionalPathParam(params, 'bed_ref')           : BUILD_ANNOTATE.out.bed_ref
+            ch_karyobeds         = params.karyobeds         ? Utils.optionalPathParam(params, 'karyobeds')         : BUILD_ANNOTATE.out.karyobeds
+            ch_karyoploter       = params.karyoploter       ? Utils.optionalPathParam(params, 'karyoploter')       : BUILD_ANNOTATE.out.karyoploter
+
+            if (params.qualimap_info) {
+                ch_qualimap_info = Utils.optionalPathParam(params, 'qualimap_info')
+            } else {
+                ch_qualimap_info = BUILD_QUALIMAP_INFO(ch_fasta_file, ch_gtf_file).qualimap_info
+            }
+
+            if (params.rrna_list) {
+                ch_rrna_list = Utils.optionalPathParam(params, 'rrna_list')
+            } else {
+                ch_rrna_list = BUILD_RRNA_LIST(ch_fasta_file, ch_gtf_file, genome_name).rrna_list
+            }
+
+            if (params.tin_ref) {
+                ch_tin_ref = Utils.optionalPathParam(params, 'tin_ref')
+            } else {
+                ch_tin_ref = BUILD_TIN_REF(ch_gtf_file).tin_ref
+            }
+
+            // rsem_ref is a --reference *prefix* string, not a single file/dir (see
+            // WRITE_GENOME_CONFIG). An explicit --rsem_ref points at an
+            // already-built external reference, so BUILD_RSEM_REF only runs when
+            // one isn't given.
+            //
+            // ch_rsem_ref (the subworkflow's own emitted value, used if this same
+            // run goes on to RSEM quantification) always resolves to a real,
+            // usable prefix. ch_rsem_ref_explicit is different on purpose: it's
+            // what WRITE_GENOME_CONFIG uses to decide whether to stage the built
+            // reference into the published genome bundle, so it must stay empty
+            // in the built case -- an already-non-empty ch_rsem_ref there would
+            // make WRITE_GENOME_CONFIG treat the just-built reference as an
+            // external one and skip staging it, leaving the generated config
+            // pointing at Nextflow's (ephemeral) work directory.
+            ch_rsem_ref_explicit = Channel.value(params.rsem_ref ?: '')
+            if (params.rsem_ref) {
+                ch_rsem_ref     = Channel.value(params.rsem_ref)
+                ch_rsem_ref_dir = Channel.value([])
+            } else {
+                ch_rsem_ref_dir = BUILD_RSEM_REF(ch_fasta_file, ch_gtf_file, genome_name).rsem_ref
+                ch_rsem_ref     = ch_rsem_ref_dir.map { dir -> "${dir}/${genome_name}" }
+            }
             // Arriba fusion-calling references. If not explicitly set, fall back to
             // auto-detecting them in params.arriba_db_dir by matching params.genome
             // against known assembly names (hg19/hg38/mm10/mm39) -- this is how
@@ -127,7 +187,8 @@ workflow PREPARE_GENOME {
                 ch_qualimap_info.ifEmpty([]),
                 ch_karyobeds.ifEmpty([]),
                 ch_karyoploter.ifEmpty([]),
-                ch_rsem_ref,
+                ch_rsem_ref_explicit,
+                ch_rsem_ref_dir,
                 ch_rrna_list.ifEmpty([]),
                 ch_tin_ref.ifEmpty([]),
                 ch_fusion_blacklist.ifEmpty([]),

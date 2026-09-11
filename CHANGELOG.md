@@ -6,6 +6,7 @@
 
 ### New features
 
+- Build mode now downloads and creates all files for config, shuch as arriba files, and qualimap info and rsem refs
 - Added `kraken2` module for taxonomic classification of reads. (#66, @AlecSilver)
 - Added `MultiQC` report (#68, @AlecSilver)
 - Implemented `RSeQC` for post-alignment RNA-seq quality control, including read distribution, infer experiment, and junction annotation analyses.
