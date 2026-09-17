@@ -49,6 +49,7 @@ snakemake_summaries/
 docs/dev
 .github/agents/
 .github/hooks/
+.github/plans/
 
 # pixi environments
 .pixi/*
