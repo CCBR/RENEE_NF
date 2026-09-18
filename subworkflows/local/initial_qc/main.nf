@@ -35,10 +35,11 @@ workflow INITIAL_QC {
 
         // default to using db link than shared resources if both are provided
         // FastQ Screen steps
+        def default_fqscreen_db_dir = file("${Utils.sharedResourcesDir(params)}/fastq_screen_db")
         if (params.fastq_screen_db_dir) {
             ch_fqscreen_db_dir = Channel.value(file(params.fastq_screen_db_dir))
-        } else if (params.shared_resources) {
-            ch_fqscreen_db_dir = Channel.value(file("${params.shared_resources}/fastq_screen_db"))
+        } else if (default_fqscreen_db_dir.exists()) {
+            ch_fqscreen_db_dir = Channel.value(default_fqscreen_db_dir)
         } else  {
             log.warn "No FastQ Screen database directory provided. FastQ Screen will be skipped."
             ch_fqscreen_db_dir = Channel.empty()
@@ -59,10 +60,11 @@ workflow INITIAL_QC {
 
         // Kraken2 taxonomic classification step
 
+        def default_kraken2_db_dir = file("${Utils.sharedResourcesDir(params)}/20180907_standard_kraken2")
         if (params.kraken2_db_dir) {
             ch_kraken2_db_dir = Channel.value(file(params.kraken2_db_dir))
-        } else if (params.shared_resources) {
-            ch_kraken2_db_dir = Channel.value(file("${params.shared_resources}/20180907_standard_kraken2"))
+        } else if (default_kraken2_db_dir.exists()) {
+            ch_kraken2_db_dir = Channel.value(default_kraken2_db_dir)
         } else  {
             log.warn "No Kraken2 database directory provided. Kraken2 will be skipped."
             ch_kraken2_db_dir = Channel.empty()

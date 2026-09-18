@@ -82,7 +82,6 @@ Options for supplying or building a custom reference genome.
 | `index_dir`                   | Root directory containing pre-built genome indices. Used by HPC profiles (biowulf, frce) to locate references when --genome is set.                                          | `string`  |         |          |        |
 | `build`                       | When true, the pipeline stops after building the custom genome reference without proceeding to alignment.                                                                    | `boolean` | False   |          |        |
 | `build_shared_resources_only` | When true, download and publish only the shared FastQ Screen and Kraken2 databases without preparing a genome or analyzing samples.                                          | `boolean` | False   |          |        |
-| `shared_resources`            | Shared FastQ Screen and Kraken2 database directory. With --build or --build_shared_resources_only, downloaded databases are published beneath this directory.                | `string`  |         |          |        |
 | `database_urls`               | Map of database names to archive URLs consumed by the DOWNLOAD_DATABASES subworkflow.                                                                                        | `object`  |         |          |        |
 
 ## QC options

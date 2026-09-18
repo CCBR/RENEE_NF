@@ -175,7 +175,7 @@ workflow PREPARE_GENOME {
             // Arriba fusion-calling references. If not explicitly set, fall back to
             // auto-detecting them in ch_arriba_db_dir by matching params.genome
             // against known assembly names (hg19/hg38/mm10/mm39) -- this is how
-            // `--build --shared_resources` output gets picked up for a custom build.
+            // `--build --download_shared_resources` output gets picked up for a custom build.
             // The glob-matching runs inside .map{} so it only fires once
             // ch_arriba_db_dir actually emits a value: for a same-invocation
             // `--download_shared_resources` run that's after ARRIBA_DOWNLOAD
