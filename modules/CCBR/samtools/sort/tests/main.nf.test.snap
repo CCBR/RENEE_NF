@@ -3,40 +3,30 @@
         "content": [
             {
                 "0": [
-                    [
-                        {
-                            "id": "test",
-                            "single_end": false
-                        },
-                        "test.sorted.bam:md5,2488c73846ea4d9cb67187af1c58c716",
-                        "test.sorted.bam.bai:md5,be2757b9479e364588d855a77a251940"
-                    ]
+
                 ],
                 "1": [
 
                 ],
                 "2": [
-                    "versions.yml:md5,71140c760cb15f7f02cc48f3ed90149e"
+
                 ],
                 "bam": [
-                    [
-                        {
-                            "id": "test",
-                            "single_end": false
-                        },
-                        "test.sorted.bam:md5,2488c73846ea4d9cb67187af1c58c716",
-                        "test.sorted.bam.bai:md5,be2757b9479e364588d855a77a251940"
-                    ]
+
                 ],
                 "csi": [
 
                 ],
                 "versions": [
-                    "versions.yml:md5,71140c760cb15f7f02cc48f3ed90149e"
+
                 ]
             }
         ],
-        "timestamp": "2023-10-24T13:53:20.473892"
+        "timestamp": "2026-09-18T16:12:26.591911245",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "test_samtools_sort_stub": {
         "content": [
@@ -75,6 +65,10 @@
                 ]
             }
         ],
-        "timestamp": "2023-10-24T13:53:25.129302"
+        "timestamp": "2023-10-24T13:53:25.129302",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

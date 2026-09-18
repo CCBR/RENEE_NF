@@ -10,13 +10,14 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.value(null)
+                input[0] = Channel.value([])
                 """
             }
             params {
+                // These are loaded before  test_data.config so the paths must be hard coded.
                 genome         = null
-                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
-                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.fasta"
+                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.gtf"
                 rename_contigs = null
             }
         }
@@ -39,13 +40,13 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.value(null)
+                input[0] = Channel.value([])
                 """
             }
             params {
                 genome         = null
-                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
-                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.fasta"
+                genes_gtf      = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.gtf"
                 rename_contigs = null
             }
         }

@@ -81,7 +81,7 @@ workflow {
                     first_file ? first_file.parent.toString() : null
                 }
         } else {
-            ch_arriba_db_dir = Channel.value(null)
+            ch_arriba_db_dir = Channel.value([]) // Use ([]) instead of (null)
         }
 
         if (params.build_shared_resources_only) {

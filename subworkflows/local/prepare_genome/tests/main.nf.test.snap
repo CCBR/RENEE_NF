@@ -20,7 +20,7 @@
                         {
                             "id": "reference"
                         },
-                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.fasta"
                     ]
                 ],
                 "1": [
@@ -28,35 +28,45 @@
                         {
                             "id": "reference"
                         },
-                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.gtf"
                     ]
                 ],
                 "10": [
-
+                    [
+                        "karyobed.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "11": [
-
+                    "karyoplot_gene_coordinates.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "12": [
-                    ""
+                    "/projectnb/wax-es/alecs/renee/RENEE_NF/.nf-test/tests/78f2ace37ffc097a6e003a2351a018d1/work/e2/8daf67f04a5a4cd19ea4d8446f84b3/rsemref/custom_genome"
                 ],
                 "13": [
-
+                    "custom_genome.rRNA_interval_list:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "14": [
-
+                    "transcripts.protein_coding_only.bed12:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "15": [
+                    [
 
+                    ]
                 ],
                 "16": [
+                    [
 
+                    ]
                 ],
                 "17": [
+                    [
 
+                    ]
                 ],
                 "18": [
+                    [
 
+                    ]
                 ],
                 "19": [
                     [
@@ -65,7 +75,7 @@
                     "custom_genome.config:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "2": [
-                    "genome.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "geneinfo.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "3": [
                     [
@@ -96,28 +106,28 @@
                     "custom"
                 ],
                 "5": [
-
+                    "annotate.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "6": [
-
+                    "annotate.isoforms.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "7": [
-
+                    "refFlat.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "8": [
-
+                    "genes.ref.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "9": [
-
+                    "qualimap_info.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "annotate": [
-
+                    "annotate.genes.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "annotate_isoforms": [
-
+                    "annotate.isoforms.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "bed_ref": [
-
+                    "genes.ref.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "conf": [
                     [
@@ -130,52 +140,62 @@
                         {
                             "id": "reference"
                         },
-                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
+                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.fasta"
                     ]
                 ],
                 "fusion_blacklist": [
+                    [
 
+                    ]
                 ],
                 "fusion_cytoband": [
+                    [
 
+                    ]
                 ],
                 "fusion_known_fusions": [
+                    [
 
+                    ]
                 ],
                 "fusion_protdomain": [
+                    [
 
+                    ]
                 ],
                 "gene_info": [
-                    "genome.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "geneinfo.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "genes_gtf": [
                     [
                         {
                             "id": "reference"
                         },
-                        "/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.gtf"
+                        "/nf-core/test-datasets/modules/data/genomics/homo_sapiens/genome/genome.gtf"
                     ]
                 ],
                 "karyobeds": [
-
+                    [
+                        "karyobed.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
                 ],
                 "karyoploter": [
-
+                    "karyoplot_gene_coordinates.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "organism": [
                     "custom"
                 ],
                 "qualimap_info": [
-
+                    "qualimap_info.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "refflat": [
-
+                    "refFlat.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "rrna_list": [
-
+                    "custom_genome.rRNA_interval_list:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "rsem_ref": [
-                    ""
+                    "/projectnb/wax-es/alecs/renee/RENEE_NF/.nf-test/tests/78f2ace37ffc097a6e003a2351a018d1/work/e2/8daf67f04a5a4cd19ea4d8446f84b3/rsemref/custom_genome"
                 ],
                 "star_index": [
                     [
@@ -203,14 +223,14 @@
                     ]
                 ],
                 "tin_ref": [
-
+                    "transcripts.protein_coding_only.bed12:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
             }
         ],
-        "timestamp": "2026-07-10T13:04:54.345752435",
+        "timestamp": "2026-09-18T17:42:04.23468018",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.0"
         }
     }
 }
