@@ -27,8 +27,14 @@ workflow DOWNLOAD_DATABASES {
         UNTAR_KRAKEN_DB(ch_kraken_archives)
 
         // FastQ Screen conf files (not archived with the DBs above); mirrors
-        // RENEE/workflow/rules/build.smk rule fqscreen_conf
-        DOWNLOAD_FASTQ_SCREEN_CONF(shared_resources_dir)
+        // RENEE/workflow/rules/build.smk rule fqscreen_conf. Templates are
+        // checked-in local assets rather than a runtime download -- see
+        // modules/local/download_fastq_screen_conf/main.nf.
+        DOWNLOAD_FASTQ_SCREEN_CONF(
+            shared_resources_dir,
+            file("${projectDir}/assets/fastq_screen_p1.conf.template"),
+            file("${projectDir}/assets/fastq_screen_p2.conf.template")
+        )
 
         // Arriba fusion-calling reference database. RENEE (classic) never
         // downloads this -- it's provisioned here as a genome-agnostic

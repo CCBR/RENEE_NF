@@ -16,6 +16,15 @@ include { BUILD_RSEM_REF       } from "../../../modules/local/build_rsem_ref/mai
 
 workflow PREPARE_GENOME {
 
+    take:
+        // Directory to search for auto-detected Arriba fusion-calling reference
+        // files during a custom genome build (may emit null); ignored for a
+        // preset --genome, which sources its own fusion_* paths from conf/genomes.
+        // Built in main.nf so a same-invocation --download_shared_resources run
+        // can defer this until ARRIBA_DOWNLOAD actually finishes -- see the
+        // .map{} usage below.
+        ch_arriba_db_dir
+
     main:
 
         ch_genome_conf = Channel.empty()
@@ -38,6 +47,8 @@ workflow PREPARE_GENOME {
                 ).index
             }
 
+            // Utils.optionalPathParam(g, key) will create a value channel with a value from the dict g using the key
+            // or an empty channel when no key present
             ch_organism          = Channel.value( g.organism )
             ch_annotate          = Utils.optionalPathParam( g, 'annotate' )
             ch_annotate_isoforms = Utils.optionalPathParam( g, 'annotate_isoforms' )
@@ -162,17 +173,29 @@ workflow PREPARE_GENOME {
                 ch_rsem_ref     = ch_rsem_ref_dir.map { dir -> "${dir}/${genome_name}" }
             }
             // Arriba fusion-calling references. If not explicitly set, fall back to
-            // auto-detecting them in params.arriba_db_dir by matching params.genome
+            // auto-detecting them in ch_arriba_db_dir by matching params.genome
             // against known assembly names (hg19/hg38/mm10/mm39) -- this is how
             // `--build --shared_resources` output gets picked up for a custom build.
-            ch_fusion_blacklist     = Utils.resolveOptionalPathParam( params, 'fusion_blacklist',
-                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'blacklist_', '.tsv.gz' ) )
-            ch_fusion_cytoband      = Utils.resolveOptionalPathParam( params, 'fusion_cytoband',
-                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'cytobands_', '.tsv' ) )
-            ch_fusion_protdomain    = Utils.resolveOptionalPathParam( params, 'fusion_protdomain',
-                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'protein_domains_', '.gff3' ) )
-            ch_fusion_known_fusions = Utils.resolveOptionalPathParam( params, 'fusion_known_fusions',
-                Utils.arribaReferenceFile( params.arriba_db_dir, params.genome, 'known_fusions_', '.tsv.gz' ) )
+            // The glob-matching runs inside .map{} so it only fires once
+            // ch_arriba_db_dir actually emits a value: for a same-invocation
+            // `--download_shared_resources` run that's after ARRIBA_DOWNLOAD
+            // finishes (see main.nf), not eagerly before it has run.
+            ch_fusion_blacklist = ch_arriba_db_dir.map { dir ->
+                def path = params.fusion_blacklist ?: Utils.arribaReferenceFile( dir, params.genome, 'blacklist_', '.tsv.gz' )
+                path ? file( path, checkIfExists: true ) : []
+            }
+            ch_fusion_cytoband = ch_arriba_db_dir.map { dir ->
+                def path = params.fusion_cytoband ?: Utils.arribaReferenceFile( dir, params.genome, 'cytobands_', '.tsv' )
+                path ? file( path, checkIfExists: true ) : []
+            }
+            ch_fusion_protdomain = ch_arriba_db_dir.map { dir ->
+                def path = params.fusion_protdomain ?: Utils.arribaReferenceFile( dir, params.genome, 'protein_domains_', '.gff3' )
+                path ? file( path, checkIfExists: true ) : []
+            }
+            ch_fusion_known_fusions = ch_arriba_db_dir.map { dir ->
+                def path = params.fusion_known_fusions ?: Utils.arribaReferenceFile( dir, params.genome, 'known_fusions_', '.tsv.gz' )
+                path ? file( path, checkIfExists: true ) : []
+            }
 
             WRITE_GENOME_CONFIG(
                 ch_fasta,

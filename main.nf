@@ -78,12 +78,29 @@ workflow {
             DOWNLOAD_DATABASES(sharedResourcesDir())
         }
 
+        // Directory to search for auto-detected Arriba fusion-calling reference
+        // files during a custom genome build. An explicit --arriba_db_dir always
+        // wins (e.g. a directory populated by a prior separate run); otherwise,
+        // when this same invocation also downloads shared resources, defer until
+        // ARRIBA_DOWNLOAD actually finishes -- .collect() only emits once its
+        // source channel closes -- rather than letting PREPARE_GENOME's file-glob
+        // lookup run before the download has happened.
+        if (params.arriba_db_dir) {
+            ch_arriba_db_dir = Channel.value(params.arriba_db_dir)
+        } else if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
+            ch_arriba_db_dir = DOWNLOAD_DATABASES.out.arriba_database
+                .collect()
+                .map { files -> files ? files[0].parent.toString() : null }
+        } else {
+            ch_arriba_db_dir = Channel.value(null)
+        }
+
         if (params.build_shared_resources_only) {
             log.info "Shared resources only mode enabled. Skipping genome preparation and sample analysis."
             prepare_genome_conf = Channel.empty()
         } else {
             // Prepare the genome for both genome-build and sample-analysis modes.
-            PREPARE_GENOME()
+            PREPARE_GENOME(ch_arriba_db_dir)
         }
 
         if (params.build && !params.build_shared_resources_only) {

@@ -5,6 +5,8 @@ process DOWNLOAD_FASTQ_SCREEN_CONF {
 
     input:
         val(shared_resources_dir)
+        path(conf1_template)
+        path(conf2_template)
 
     output:
         path("fastq_screen_p1.conf"), emit: conf1
@@ -14,15 +16,19 @@ process DOWNLOAD_FASTQ_SCREEN_CONF {
         task.ext.when == null || task.ext.when
 
     script:
-    // Mirrors RENEE/workflow/rules/build.smk rule fqscreen_conf: download the
-    // FastQ Screen conf files and repoint their DATABASE paths at the shared
-    // resources directory the databases are published to.
+    // Mirrors RENEE/workflow/rules/build.smk rule fqscreen_conf: repoint the
+    // DATABASE paths of the checked-in FastQ Screen conf templates
+    // (assets/fastq_screen_p{1,2}.conf.template) at the shared resources
+    // directory this build publishes to. The templates are local copies of
+    // https://hpc.nih.gov/~OpenOmics/common/fastq_screen_p{1,2}.conf with
+    // their DATABASE paths already pointed at a prior local build; that
+    // hard-coded path is reused below as the placeholder to substitute, so
+    // this no longer needs outbound network access from compute nodes.
     def db_root = "${shared_resources_dir}".replaceAll('/+$', '')
+    def placeholder = '/projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources'
     """
-    wget https://hpc.nih.gov/~OpenOmics/common/fastq_screen_p1.conf -O fastq_screen_p1.conf
-    wget https://hpc.nih.gov/~OpenOmics/common/fastq_screen_p2.conf -O fastq_screen_p2.conf
-    sed -i 's@/data/OpenOmics/references/common@${db_root}@g' fastq_screen_p1.conf
-    sed -i 's@/data/OpenOmics/references/common@${db_root}@g' fastq_screen_p2.conf
+    sed 's@${placeholder}@${db_root}@g' ${conf1_template} > fastq_screen_p1.conf
+    sed 's@${placeholder}@${db_root}@g' ${conf2_template} > fastq_screen_p2.conf
     """
 
     stub:

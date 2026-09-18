@@ -8,6 +8,11 @@ nextflow_workflow {
         config "./nextflow.config"
 
         when {
+            workflow {
+                """
+                input[0] = Channel.value(null)
+                """
+            }
             params {
                 genome         = null
                 genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"
@@ -32,6 +37,11 @@ nextflow_workflow {
         options '-stub'
 
         when {
+            workflow {
+                """
+                input[0] = Channel.value(null)
+                """
+            }
             params {
                 genome         = null
                 genome_fasta   = "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/genome/genome.fasta"

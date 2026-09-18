@@ -9,17 +9,6 @@ class Utils {
             : Channel.empty()
     }
 
-    // Like optionalPathParam, but falls back to fallbackPath when params[paramName]
-    // is unset. Used to auto-wire downloaded shared resources (e.g. the Arriba
-    // database) into a custom genome build without overriding an explicit
-    // user-supplied path.
-    public static resolveOptionalPathParam(params, String paramName, String fallbackPath) {
-        def path = (params.containsKey(paramName) && params[paramName]) ? params[paramName] : fallbackPath
-        return path
-            ? Channel.value(Nextflow.file(path, checkIfExists: true))
-            : Channel.empty()
-    }
-
     // Auto-detect an Arriba reference file for a genome build by name-matching,
     // mirroring RENEE (classic)'s workflow/rules/build.smk jsonmaker rule:
     // it infers the assembly from substrings in the genome name (hg19/hg38/
