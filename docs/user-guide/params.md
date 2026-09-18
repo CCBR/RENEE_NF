@@ -88,11 +88,12 @@ Options for supplying or building a custom reference genome.
 
 Options for FastQ Screen contamination screening.
 
-| Parameter             | Description                                                                                                                                        | Type     | Default | Required | Hidden |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- | -------- | ------ |
-| `fastq_screen_conf`   | Path to the primary FastQ Screen configuration file. Set automatically by HPC profiles (biowulf, frce). FastQ Screen is skipped when not provided. | `string` |         |          |        |
-| `fastq_screen_conf2`  | Path to the secondary FastQ Screen configuration file (second screening panel). Set automatically by HPC profiles (biowulf, frce).                 | `string` |         |          |        |
-| `fastq_screen_db_dir` | Path to the FastQ Screen database directory. Set automatically by HPC profiles (biowulf, frce).                                                    | `string` |         |          |        |
+| Parameter             | Description                                                                                                                                                                                                                                                                                                              | Type     | Default | Required | Hidden |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- | -------- | ------ |
+| `fastq_screen_conf`   | Path to the primary FastQ Screen configuration file. Set automatically by HPC profiles (biowulf, frce). FastQ Screen is skipped when not provided.                                                                                                                                                                       | `string` |         |          |        |
+| `fastq_screen_conf2`  | Path to the secondary FastQ Screen configuration file (second screening panel). Set automatically by HPC profiles (biowulf, frce).                                                                                                                                                                                       | `string` |         |          |        |
+| `fastq_screen_db_dir` | Path to the FastQ Screen database directory. Set automatically by HPC profiles (biowulf, frce).                                                                                                                                                                                                                          | `string` |         |          |        |
+| `arriba_db_dir`       | Directory containing Arriba's blacklist/cytobands/protein*domains/known_fusions files for all genome builds (e.g. <shared_resources>/arriba_v<version>/database/ from --build --shared_resources). Used to auto-detect fusion*\* references for a custom genome build by matching --genome against known assembly names. | `string` |         |          |        |
 
 ## Alignment options
 
