@@ -76,7 +76,7 @@ jobs:
           mkdir -p tmp && pushd tmp
           renee_nf init
           renee_nf run -profile ci_stub \
-            -stub-run --outputDir output \
+            -stub --mode local --outputDir output \
             --build \
             --download_shared_resources
           popd
