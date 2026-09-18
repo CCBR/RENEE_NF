@@ -6,7 +6,6 @@ process WRITE_SHARED_RESOURCES_CONFIG {
         path(kraken_db_dir)
         path(fastq_screen_conf1)
         path(fastq_screen_conf2)
-        path(arriba_blacklist)
 
     output:
         path("shared_resources.config"), emit: conf
@@ -18,23 +17,18 @@ process WRITE_SHARED_RESOURCES_CONFIG {
     // --outputDir -- matches how the databases this points at are actually
     // published (see Utils.sharedResourcesDir / main.nf's output {} block).
     def shared_resources_dir = Utils.sharedResourcesDir(params)
-    // arriba_blacklist is only taken as an input to force this process to run
-    // after ARRIBA_DOWNLOAD -- the published directory name below is a fixed
-    // literal, not derived from it (mirrors main.nf's arriba_database output
-    // block). Version pin lives in modules/nf-core/arriba/download/main.nf
-    // (not exposed as a param there); keep this path in sync with it.
     """
     {
         echo 'params {'
         echo '    kraken2_db_dir     = "${shared_resources_dir}/${kraken_db_dir.name}"'
+        echo '    fastq_screen_db_dir = "${shared_resources_dir}/fastq_screen_db"'
         echo '    fastq_screen_conf  = "${shared_resources_dir}/fastq_screen_db/${fastq_screen_conf1.name}"'
         echo '    fastq_screen_conf2 = "${shared_resources_dir}/fastq_screen_db/${fastq_screen_conf2.name}"'
-        echo '    arriba_db_dir      = "${shared_resources_dir}/arriba_v2.5.0/database"'
         echo '}'
     } > shared_resources.config
     """
 
-    // No stub block: this just writes 4 lines of text from filenames already
+    // No stub block: this just writes 3 lines of text from filenames already
     // known to Nextflow -- cheap enough to always run for real, even under
     // -stub-run, unlike the heavier downloads/untars it runs after.
 }
