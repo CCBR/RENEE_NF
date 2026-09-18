@@ -76,7 +76,10 @@ workflow {
         } else if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
             ch_arriba_db_dir = DOWNLOAD_DATABASES.out.arriba_database
                 .collect()
-                .map { files -> files ? files[0].parent.toString() : null }
+                .map { files ->
+                    def first_file = files.flatten().find()
+                    first_file ? first_file.parent.toString() : null
+                }
         } else {
             ch_arriba_db_dir = Channel.value(null)
         }
