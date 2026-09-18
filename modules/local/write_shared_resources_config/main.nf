@@ -6,6 +6,7 @@ process WRITE_SHARED_RESOURCES_CONFIG {
         path(kraken_db_dir)
         path(fastq_screen_conf1)
         path(fastq_screen_conf2)
+        path(arriba_blacklist)
 
     output:
         path("shared_resources.config"), emit: conf
@@ -17,6 +18,9 @@ process WRITE_SHARED_RESOURCES_CONFIG {
     // --outputDir -- matches how the databases this points at are actually
     // published (see Utils.sharedResourcesDir / main.nf's output {} block).
     def shared_resources_dir = Utils.sharedResourcesDir(params)
+    // Version pin mirrors main.nf's arriba_database output {} block and
+    // modules/nf-core/arriba/download/main.nf -- keep these in sync.
+    def arriba_db_dir = "${shared_resources_dir}/arriba_v2.5.0/database"
     """
     {
         echo 'params {'
@@ -24,6 +28,7 @@ process WRITE_SHARED_RESOURCES_CONFIG {
         echo '    fastq_screen_db_dir = "${shared_resources_dir}/fastq_screen_db"'
         echo '    fastq_screen_conf  = "${shared_resources_dir}/fastq_screen_db/${fastq_screen_conf1.name}"'
         echo '    fastq_screen_conf2 = "${shared_resources_dir}/fastq_screen_db/${fastq_screen_conf2.name}"'
+        echo '    arriba_db_dir      = "${arriba_db_dir}"'
         echo '}'
     } > shared_resources.config
     """
