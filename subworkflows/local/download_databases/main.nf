@@ -41,13 +41,16 @@ workflow DOWNLOAD_DATABASES {
         ARRIBA_DOWNLOAD('')
 
         // Params config a later analysis run can `-c` in directly, instead of
-        // passing --kraken2_db_dir/--fastq_screen_conf/--fastq_screen_conf2
-        // by hand -- mirrors WRITE_GENOME_CONFIG's <genome name>.config.
-        // Takes the actual outputs as inputs purely so it runs after they do.
+        // passing --kraken2_db_dir/--fastq_screen_conf/--fastq_screen_conf2/
+        // --arriba_db_dir by hand -- mirrors WRITE_GENOME_CONFIG's
+        // <genome name>.config. Takes the actual outputs as inputs purely so
+        // it runs after they do (arriba_blacklist is just one of the four
+        // ARRIBA_DOWNLOAD outputs, enough to signal that process is done).
         WRITE_SHARED_RESOURCES_CONFIG(
             UNTAR_KRAKEN_DB.out.untar.map { meta, dir -> dir },
             CREATE_FASTQ_SCREEN_CONF.out.conf1,
-            CREATE_FASTQ_SCREEN_CONF.out.conf2
+            CREATE_FASTQ_SCREEN_CONF.out.conf2,
+            ARRIBA_DOWNLOAD.out.blacklist
         )
 
     emit:
