@@ -81,6 +81,8 @@ renee_nf run \
 Once the genome resources have been built, run the pipeline against your samples. Replace `path/to/ref_dir` with the output directory used to build the genome resources above, and `<genome name>` with the genome name chosen there.
 
 ```
+renee_nf init \
+  --output path/to/project
 renee_nf run \
     -profile <singularity | docker> \
     --mode <local | slurm> \
@@ -88,7 +90,7 @@ renee_nf run \
     --genome <genome name> \
     -c path/to/ref_dir/genome/<genome name>.config \
     -c path/to/ref_dir/shared_resources.config \
-    --outputDir path/to/output
+    --output path/to/project
 ```
 
 The `-c` flag lets you include additional config files, each supplying extra parameters for the pipeline. Outside of Biowulf, this pipeline needs two additional configs:
