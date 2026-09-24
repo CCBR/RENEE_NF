@@ -26,7 +26,6 @@ include { RSEM }               from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
 
 
-
 workflow version {
     println "RENEE_NF ${workflow.manifest.version}"
 }
@@ -57,9 +56,32 @@ workflow {
         analysis_mode = !params.build && !params.build_shared_resources_only
 
         // Download shared databases in either full build mode or resources-only mode.
-        if (params.build_shared_resources_only || (params.build && params.shared_resources)) {
+        // download_shared_resources is the on/off switch; the destination is always
+        // <outputDir>/shared_resources (Utils.sharedResourcesDir), which INITIAL_QC
+        // also auto-detects from for an analysis run reusing the same --outputDir.
+        if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
             log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
             DOWNLOAD_DATABASES()
+        }
+
+        // Directory to search for auto-detected Arriba fusion-calling reference
+        // files during a custom genome build. An explicit --arriba_db_dir always
+        // wins (e.g. a directory populated by a prior separate run); otherwise,
+        // when this same invocation also downloads shared resources, defer until
+        // ARRIBA_DOWNLOAD actually finishes -- .collect() only emits once its
+        // source channel closes -- rather than letting PREPARE_GENOME's file-glob
+        // lookup run before the download has happened.
+        if (params.arriba_db_dir) {
+            ch_arriba_db_dir = Channel.value(params.arriba_db_dir)
+        } else if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
+            ch_arriba_db_dir = DOWNLOAD_DATABASES.out.arriba_database
+                .collect()
+                .map { files ->
+                    def first_file = files.flatten().find()
+                    first_file ? first_file.parent.toString() : null
+                }
+        } else {
+            ch_arriba_db_dir = Channel.value([]) // Use ([]) instead of (null)
         }
 
         if (params.build_shared_resources_only) {
@@ -67,7 +89,7 @@ workflow {
             prepare_genome_conf = Channel.empty()
         } else {
             // Prepare the genome for both genome-build and sample-analysis modes.
-            PREPARE_GENOME()
+            PREPARE_GENOME(ch_arriba_db_dir)
         }
 
         if (params.build && !params.build_shared_resources_only) {
@@ -216,8 +238,12 @@ workflow {
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
         prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        fastq_screen_databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
-        kraken_databases       = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
+        fastq_screen_databases = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
+        kraken_databases       = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
+        fastq_screen_conf1     = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_conf1     : Channel.empty()
+        fastq_screen_conf2     = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_conf2     : Channel.empty()
+        arriba_database        = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.arriba_database        : Channel.empty()
+        shared_resources_conf  = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.conf                  : Channel.empty()
 
         fastqc_raw     = analysis_mode ? INITIAL_QC.out.fastqc_raw : Channel.empty()
         fastqvalidator = analysis_mode ? INITIAL_QC.out.fastqvalidator : Channel.empty()
@@ -297,11 +323,34 @@ output {
         mode 'copy'
         }
     fastq_screen_databases {
-        path { meta, dir -> "${params.shared_resources}/fastq_screen_db/" }
+        path { meta, dir -> "shared_resources/fastq_screen_db/" }
         mode 'copy'
         }
     kraken_databases {
-        path { meta, dir -> "${params.shared_resources}/" }
+        path { meta, dir -> "shared_resources/" }
+        mode 'copy'
+        }
+    fastq_screen_conf1 {
+        path { file -> "shared_resources/fastq_screen_db/" }
+        mode 'copy'
+        }
+    fastq_screen_conf2 {
+        path { file -> "shared_resources/fastq_screen_db/" }
+        mode 'copy'
+        }
+    arriba_database {
+        // Version pin lives in modules/nf-core/arriba/download/main.nf (not
+        // exposed as a param there); keep this path in sync with it.
+        // Each of the 4 mixed emits (blacklist/cytobands/protein_domains/
+        // known_fusions) is a glob match across all genome builds, so this
+        // closure receives a list of files, not a single one.
+        path { files -> "shared_resources/arriba_v2.5.0/database/" }
+        mode 'copy'
+        }
+    shared_resources_conf {
+        // Sibling of shared_resources/, mirroring prepare_genome_conf's
+        // <genome name>.config sitting alongside genome/<genome name>/.
+        path { file -> "./" }
         mode 'copy'
         }
 

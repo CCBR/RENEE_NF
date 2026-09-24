@@ -6,6 +6,7 @@
 
 ### New features
 
+- Build mode now downloads and creates all files for config, such as arriba files, and qualimap info and rsem refs
 - Added `kraken2` module for taxonomic classification of reads. (#66, @AlecSilver)
 - Added `MultiQC` report (#68, @AlecSilver)
 - Implemented `RSeQC` for post-alignment RNA-seq quality control, including read distribution, infer experiment, and junction annotation analyses.
@@ -29,6 +30,8 @@
 
 ### Bug fixes
 
+- Fixed `bin/get_isoform_annotate.py` to derive isoform annotations from any GTF line carrying a `transcript_id` (CDS/exon/etc.), not just explicit `transcript`-type lines -- `gtfToGenePred` builds gene models from CDS/exon lines regardless, so a transcript_id with no matching `transcript` line (seen both with NCBI/GenBank-style GTFs and with hand-trimmed test fixtures that drop a transcript's header line) was silently missing from `annotate.isoforms.txt`, causing `make_refFlat.py` to crash with a `KeyError` in `BUILD_ANNOTATE`.
+- Swapped container in Qualimap bamQC so behavior matches snakemake
 - Normalized volatile Cutadapt CPU-count log lines in module snapshots so harmless `--cores` differences do not fail nf-test comparisons.
 - Fixed local `FASTQC` module metadata scoping by switching to a closure-based `tag` directive and removing module-local `publishDir`, resolving `ERROR ~ No such variable: meta` during Nextflow preview/CI runs.
 

@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+from __future__ import print_function
+import sys
+
+gtf = sys.argv[1]
+
+annotate_genes = {
+    a[0]: a
+    for a in map(
+        lambda x: x.strip().replace('"', "").split("  "),
+        open("annotate.genes.txt").readlines(),
+    )
+}
+
+for line in list(
+    filter(
+        lambda x: x[2] == "gene",
+        filter(
+            lambda x: not x[0].startswith("#"),
+            list(map(lambda x: x.strip().split("\t"), open(gtf).readlines())),
+        ),
+    )
+):
+    newl = []
+    newl.append(line[0])
+    newl.append(line[3])
+    newl.append(line[4])
+    newl.append(line[6])
+    col9 = line[8].split(" ")
+    gene_id_index = col9.index("gene_id")
+    gene_id = col9[gene_id_index + 1].strip(";").strip('"')
+    newl.append(gene_id)
+    try:
+        # newl.append(annotate_genes["\""+gene_id+"\""][2].strip("\""))
+        newl.append(annotate_genes[gene_id][2].strip('"'))
+    except IndexError:
+        print(gene_id)
+        exit()
+    newl.append(annotate_genes[gene_id][1].strip('"'))
+    print("\t".join(newl))
