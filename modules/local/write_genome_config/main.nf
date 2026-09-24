@@ -16,6 +16,7 @@ process WRITE_GENOME_CONFIG {
         path(karyobeds)
         path(karyoploter)
         val(rsem_ref)
+        path(rsem_ref_dir)
         path(rrna_list)
         path(tin_ref)
         path(fusion_blacklist)
@@ -25,10 +26,17 @@ process WRITE_GENOME_CONFIG {
 
     output:
         path("*.config"), emit: conf
-        path("custom_genome/"), emit: files
+        path("${genome_name}/"), emit: files
 
     script:
-    def genome_name = 'custom_genome'
+    genome_name = params.genome ?: 'custom_genome'
+    // Absolute, so the generated config keeps working regardless of what
+    // --outputDir a later run uses -- workflow.outputDir is the fully
+    // resolved native output dir (see Utils.sharedResourcesDir, which uses
+    // the same idea for shared_resources.config), matching exactly where
+    // this process's own `files` output gets published (prepare_genome_conf
+    // -> "genome/" in main.nf's output{} block).
+    def index_dir = "${workflow.outputDir}/genome/"
     """
     #!/usr/bin/env python
     import os
@@ -91,12 +99,20 @@ process WRITE_GENOME_CONFIG {
             suffix = "/" if os.path.isdir(src) else ""
             genome[key] = f'"{idx}/{genome_name}/{os.path.basename(src)}{suffix}"'
 
+    # rsem_ref is a --reference *prefix*, not a single file/dir, so it's handled
+    # separately from opt_paths above. An explicit rsem_ref string always wins
+    # (matches conf/genomes/*.config, which point at a pre-existing external
+    # RSEM reference and never stage it); otherwise, if BUILD_RSEM_REF produced
+    # one, stage that whole directory and point at the prefix inside it.
     if "${rsem_ref}":
         genome["rsem_ref"] = '"${rsem_ref}"'
+    elif os.path.isdir("${rsem_ref_dir}"):
+        shutil.copytree("${rsem_ref_dir}", os.path.join(genome_name, "rsemref"))
+        genome["rsem_ref"] = f'"{idx}/{genome_name}/rsemref/{genome_name}"'
 
     with open(f"{genome_name}.config", "w") as out:
         out.write("params {\\n")
-        out.write('\\tindex_dir = "\${outputDir}/genome/"\\n')
+        out.write('\\tindex_dir = "${index_dir}"\\n')
         out.write("\\tgenomes {\\n")
         out.write(f"\\t\\t'{genome_name}' {{\\n")
         for k, v in genome.items():
@@ -107,8 +123,9 @@ process WRITE_GENOME_CONFIG {
     """
 
     stub:
+    genome_name = params.genome ?: 'custom_genome'
     """
-    mkdir custom_genome/
-    touch custom_genome.config custom_genome/genome.fa
+    mkdir ${genome_name}/
+    touch ${genome_name}.config ${genome_name}/genome.fa
     """
 }
