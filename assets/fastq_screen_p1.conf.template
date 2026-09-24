@@ -72,8 +72,8 @@ THREADS		24
 ##
 ## Human - sequences available from
 ## ftp://ftp.ensembl.org/pub/current/fasta/homo_sapiens/dna/
-DATABASE     Human   /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/hg19/hg19
-DATABASE     Mouse  /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/mm9/mm9
-DATABASE     Bacteria        /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/Bacteria/bacteria
-DATABASE     Fungi        /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/Fungi/fungi
-DATABASE     Virus  /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/Virus/virus
+DATABASE     Human   __SHARED_RESOURCES_DIR__/fastq_screen_db/hg19/hg19
+DATABASE     Mouse  __SHARED_RESOURCES_DIR__/fastq_screen_db/mm9/mm9
+DATABASE     Bacteria        __SHARED_RESOURCES_DIR__/fastq_screen_db/Bacteria/bacteria
+DATABASE     Fungi        __SHARED_RESOURCES_DIR__/fastq_screen_db/Fungi/fungi
+DATABASE     Virus  __SHARED_RESOURCES_DIR__/fastq_screen_db/Virus/virus

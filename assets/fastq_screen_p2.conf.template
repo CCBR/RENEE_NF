@@ -72,5 +72,5 @@ THREADS		24
 ##
 ## Human - sequences available from
 ## ftp://ftp.ensembl.org/pub/current/fasta/homo_sapiens/dna/
-DATABASE     Uni_Vec /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/UniVec_vectors/UniVec_vectors
-DATABASE     rRNA  /projectnb/wax-es/alecs/renee/RENEE_NF/build_results2/shared_resources/fastq_screen_db/rRNA/rRNA
+DATABASE     Uni_Vec __SHARED_RESOURCES_DIR__/fastq_screen_db/UniVec_vectors/UniVec_vectors
+DATABASE     rRNA  __SHARED_RESOURCES_DIR__/fastq_screen_db/rRNA/rRNA
