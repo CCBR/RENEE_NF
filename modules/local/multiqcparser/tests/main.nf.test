@@ -15,18 +15,18 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'multiqc' ],
-                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
                     [
-                        file("${moduleDir}/tests/data/sample_b.inner_distance_freq.txt", checkIfExists: true),
-                        file("${moduleDir}/tests/data/sample_a.inner_distance_freq.txt", checkIfExists: true)
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.inner_distance_freq.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.inner_distance_freq.txt", checkIfExists: true)
                     ],
                     [
-                        file("${moduleDir}/tests/data/sample_b.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true),
-                        file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)
                     ],
                     [
-                        file("${moduleDir}/tests/data/sample_b.fastq.info.txt", checkIfExists: true),
-                        file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.fastq.info.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)
                     ]
                 ])
                 """
@@ -36,10 +36,6 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert path(process.out.inner_distances[0][1]).text == path("${moduleDir}/tests/data/expected/rseqc_inner_distances.txt").text },
-                { assert path(process.out.median_tin[0][1]).text == path("${moduleDir}/tests/data/expected/rseqc_median_tin.txt").text },
-                { assert path(process.out.flowcell_lanes[0][1]).text == path("${moduleDir}/tests/data/expected/fastq_flowcell_lanes.txt").text },
-                { assert path(process.out.matrix[0][1]).text == path("${moduleDir}/tests/data/expected/multiqc_matrix.tsv").text },
                 { assert process.out.versions_python[0][2] ==~ /\d+\.\d+\.\d+/ },
                 { assert snapshot(
                     process.out.matrix,
@@ -58,10 +54,10 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'multiqc' ],
-                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
                     [],
-                    [file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
-                    [file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)]
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)]
                 ])
                 """
             }
@@ -71,7 +67,7 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert path(process.out.inner_distances[0][1]).text == "Sample\tInner_Dist_Maxima\n" },
-                { assert path(process.out.matrix[0][1]).text.contains("sample_a") }
+                { assert path(process.out.matrix[0][1]).text.contains("WT_S1") }
             )
         }
     }
@@ -85,7 +81,7 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'multiqc' ],
-                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
                     [],
                     [],
                     []
@@ -114,10 +110,10 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'multiqc' ],
-                    file("${moduleDir}/tests/data/multiqc_data", checkIfExists: true),
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
                     [],
-                    [file("${moduleDir}/tests/data/sample_a.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
-                    [file("${moduleDir}/tests/data/sample_a.fastq.info.txt", checkIfExists: true)]
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)]
                 ])
                 """
             }
@@ -130,7 +126,7 @@ nextflow_process {
                 { assert path(process.out.inner_distances[0][1]).fileName.toString() == "project.rseqc_inner_distances.txt" },
                 { assert path(process.out.median_tin[0][1]).fileName.toString() == "project.rseqc_median_tin.txt" },
                 { assert path(process.out.flowcell_lanes[0][1]).fileName.toString() == "project.fastq_flowcell_lanes.txt" },
-                { assert path(process.out.matrix[0][1]).text.contains("sample_a") }
+                { assert path(process.out.matrix[0][1]).text.contains("WT_S1") }
             )
         }
     }

@@ -6,7 +6,7 @@
                     {
                         "id": "multiqc"
                     },
-                    "multiqc_matrix.tsv:md5,9384b7d521bbd31eed0466a0feb0a3ea"
+                    "multiqc_matrix.tsv:md5,994734bcae1bb72f2ea25229a5b0da48"
                 ]
             ],
             [
@@ -14,7 +14,7 @@
                     {
                         "id": "multiqc"
                     },
-                    "rseqc_inner_distances.txt:md5,98a165b50ecee58cf9e2c0b654b3da9f"
+                    "rseqc_inner_distances.txt:md5,3086ef7aaeb4a0a28da39abfae3a2602"
                 ]
             ],
             [
@@ -22,7 +22,7 @@
                     {
                         "id": "multiqc"
                     },
-                    "rseqc_median_tin.txt:md5,446599c92f6b654c0d69063928c3cc3a"
+                    "rseqc_median_tin.txt:md5,6e0601c8e260349689865b67ff52e41e"
                 ]
             ],
             [
@@ -30,14 +30,14 @@
                     {
                         "id": "multiqc"
                     },
-                    "fastq_flowcell_lanes.txt:md5,c7ade2bacf834ef5813f3641fb1cd938"
+                    "fastq_flowcell_lanes.txt:md5,ae09c43676419369285ad20ea3561769"
                 ]
             ]
         ],
-        "timestamp": "2026-07-29T10:04:54.24323966",
+        "timestamp": "2026-09-24T11:12:02.663633171",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.0"
         }
     }
 }

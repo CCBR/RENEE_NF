@@ -1,0 +1,5 @@
+Sample	0.0
+KO_S3.ccurve
+KO_S4.ccurve
+WT_S1.ccurve
+WT_S2.ccurve
