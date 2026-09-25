@@ -29,7 +29,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 4
     strategy:
       matrix:
         python-version:
@@ -70,6 +70,15 @@ jobs:
           mkdir -p tmp && pushd tmp
           renee_nf init
           renee_nf run -profile ci_stub -stub --mode local
+          popd
+      - name: Build mode stub run
+        run: |
+          mkdir -p tmp && pushd tmp
+          renee_nf init
+          renee_nf run -profile ci_stub \
+            -stub --mode local --outputDir output \
+            --build \
+            --download_shared_resources
           popd
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v7
