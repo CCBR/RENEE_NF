@@ -1,5 +1,8 @@
-include { UNTAR as UNTAR_FASTQ_DB  } from '../../../modules/nf-core/untar/main.nf'
-include { UNTAR as UNTAR_KRAKEN_DB } from '../../../modules/nf-core/untar/main.nf'
+include { UNTAR as UNTAR_FASTQ_DB      } from '../../../modules/nf-core/untar/main.nf'
+include { UNTAR as UNTAR_KRAKEN_DB     } from '../../../modules/nf-core/untar/main.nf'
+include { CREATE_FASTQ_SCREEN_CONF     } from '../../../modules/local/create_fastq_screen_conf/main.nf'
+include { ARRIBA_DOWNLOAD              } from '../../../modules/nf-core/arriba/download/main.nf'
+include { WRITE_SHARED_RESOURCES_CONFIG } from '../../../modules/local/write_shared_resources_config/main.nf'
 
 
 workflow DOWNLOAD_DATABASES {
@@ -21,7 +24,43 @@ workflow DOWNLOAD_DATABASES {
         UNTAR_FASTQ_DB(ch_fastq_archives)
         UNTAR_KRAKEN_DB(ch_kraken_archives)
 
+        // FastQ Screen conf files (not archived with the DBs above); mirrors
+        // RENEE/workflow/rules/build.smk rule fqscreen_conf. Templates are
+        // checked-in local assets rather than a runtime download -- see
+        // modules/local/create_fastq_screen_conf/main.nf.
+        CREATE_FASTQ_SCREEN_CONF(
+            file("${projectDir}/assets/fastq_screen_p1.conf.template"),
+            file("${projectDir}/assets/fastq_screen_p2.conf.template")
+        )
+
+        // Arriba fusion-calling reference database. RENEE (classic) never
+        // downloads this -- it's provisioned here as a genome-agnostic
+        // shared resource instead (one tarball covers every genome build).
+        // Passing an empty genome value keeps ARRIBA_DOWNLOAD's glob outputs
+        // unfiltered, i.e. every genome's files, not just one.
+        ARRIBA_DOWNLOAD('')
+
+        // Params config a later analysis run can `-c` in directly, instead of
+        // passing --kraken2_db_dir/--fastq_screen_conf/--fastq_screen_conf2/
+        // --arriba_db_dir by hand -- mirrors WRITE_GENOME_CONFIG's
+        // <genome name>.config. Takes the actual outputs as inputs purely so
+        // it runs after they do (arriba_blacklist is just one of the four
+        // ARRIBA_DOWNLOAD outputs, enough to signal that process is done).
+        WRITE_SHARED_RESOURCES_CONFIG(
+            UNTAR_KRAKEN_DB.out.untar.map { meta, dir -> dir },
+            CREATE_FASTQ_SCREEN_CONF.out.conf1,
+            CREATE_FASTQ_SCREEN_CONF.out.conf2,
+            ARRIBA_DOWNLOAD.out.blacklist
+        )
+
     emit:
         fastq_screen_databases = UNTAR_FASTQ_DB.out.untar
         kraken_databases       = UNTAR_KRAKEN_DB.out.untar
+        fastq_screen_conf1     = CREATE_FASTQ_SCREEN_CONF.out.conf1
+        fastq_screen_conf2     = CREATE_FASTQ_SCREEN_CONF.out.conf2
+        arriba_database        = ARRIBA_DOWNLOAD.out.blacklist
+            .mix(ARRIBA_DOWNLOAD.out.cytobands)
+            .mix(ARRIBA_DOWNLOAD.out.protein_domains)
+            .mix(ARRIBA_DOWNLOAD.out.known_fusions)
+        conf                   = WRITE_SHARED_RESOURCES_CONFIG.out.conf
 }

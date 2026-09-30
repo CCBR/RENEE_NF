@@ -1,0 +1,6 @@
+## FastQ Screen config 2 — vector and rRNA screen (Biowulf)
+## Databases: UniVec vectors, rRNA
+
+
+DATABASE     Uni_Vec __SHARED_RESOURCES_DIR__/fastq_screen_db/UniVec_vectors/UniVec_vectors
+DATABASE     rRNA  __SHARED_RESOURCES_DIR__/fastq_screen_db/rRNA/rRNA

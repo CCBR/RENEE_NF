@@ -2,41 +2,41 @@
     "sarscov2 - single_end [bam]": {
         "content": [
             "qualimapReport.html",
-            "genome_results.txt:md5,5ede0503cc772d5ffcd95ba7df0e53bd",
+            "genome_results.txt:md5,e0f3742c6b9504a8a6fc98f009983de1",
             {
                 "versions_qualimap": [
                     [
                         "QUALIMAP_BAMQC",
                         "qualimap",
-                        "2.3"
+                        "2.2.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-17T15:00:24.058054384",
+        "timestamp": "2026-09-09T17:15:40.696783647",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.0"
         }
     },
     "sarscov2 - paired_end [bam] [gff]": {
         "content": [
             "qualimapReport.html",
-            "genome_results.txt:md5,7aead72eac22c31c173a31d89a3ce6c4",
+            "genome_results.txt:md5,327d6f613c6ea209599528de6d435a72",
             {
                 "versions_qualimap": [
                     [
                         "QUALIMAP_BAMQC",
                         "qualimap",
-                        "2.3"
+                        "2.2.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-17T15:00:09.815333987",
+        "timestamp": "2026-09-09T17:15:28.254099085",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.0"
         }
     },
     "sarscov2 - paired_end [bam] - stub": {
@@ -112,7 +112,7 @@
                     [
                         "QUALIMAP_BAMQC",
                         "qualimap",
-                        "2.3"
+                        "2.2.1"
                     ]
                 ],
                 "results": [
@@ -185,15 +185,15 @@
                     [
                         "QUALIMAP_BAMQC",
                         "qualimap",
-                        "2.3"
+                        "2.2.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-07-20T15:42:14.695599575",
+        "timestamp": "2026-09-09T17:15:51.558354147",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.0"
+            "nextflow": "26.04.0"
         }
     }
 }

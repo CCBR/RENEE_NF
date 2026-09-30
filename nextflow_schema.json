@@ -199,9 +199,10 @@
                     "default": false,
                     "description": "When true, download and publish only the shared FastQ Screen and Kraken2 databases without preparing a genome or analyzing samples."
                 },
-                "shared_resources": {
-                    "type": "string",
-                    "description": "Shared FastQ Screen and Kraken2 database directory. With --build or --build_shared_resources_only, downloaded databases are published beneath this directory."
+                "download_shared_resources": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "With --build, also download and publish the shared FastQ Screen, Kraken2, and Arriba databases to <outputDir>/shared_resources, alongside a shared_resources.config a later analysis run can `-c` in directly. Has no effect with --build_shared_resources_only, which always downloads them."
                 },
                 "database_urls": {
                     "type": "object",
@@ -226,23 +227,6 @@
                     "then": {
                         "required": [
                             "input"
-                        ]
-                    }
-                },
-                {
-                    "if": {
-                        "required": [
-                            "build_shared_resources_only"
-                        ],
-                        "properties": {
-                            "build_shared_resources_only": {
-                                "const": true
-                            }
-                        }
-                    },
-                    "then": {
-                        "required": [
-                            "shared_resources"
                         ]
                     }
                 }
@@ -270,6 +254,11 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "Path to the FastQ Screen database directory. Set automatically by HPC profiles (biowulf, frce)."
+                },
+                "arriba_db_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Directory containing Arriba's blacklist/cytobands/protein_domains/known_fusions files for all genome builds (e.g. <outputDir>/shared_resources/arriba_v<version>/database/ from --build --download_shared_resources). Used to auto-detect fusion_* references for a custom genome build by matching --genome against known assembly names."
                 }
             }
         },

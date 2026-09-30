@@ -29,7 +29,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 4
     strategy:
       matrix:
         python-version:
@@ -71,6 +71,15 @@ jobs:
           renee_nf init
           renee_nf run -profile ci_stub -stub --mode local
           popd
+      - name: Build mode stub run
+        run: |
+          mkdir -p tmp && pushd tmp
+          renee_nf init
+          renee_nf run -profile ci_stub \
+            -stub --mode local --outputDir output \
+            --build \
+            --download_shared_resources
+          popd
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v7
         if: always() # run even if previous steps fail
@@ -90,7 +99,7 @@ jobs:
           fetch-depth: 0
       - name: List nf-test files
         id: list
-        uses: adamrtalbot/detect-nf-test-changes@v0.0.6
+        uses: adamrtalbot/detect-nf-test-changes@accef9459c66baa65dbca647615f088b98eefa9c
         with:
           head: ${{ github.sha }}
           base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
