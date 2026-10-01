@@ -1,0 +1,36 @@
+{
+    "CASAVA 1.8+ FASTQ": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "KO_S3"
+                    },
+                    "KO_S3.fastq.info.txt:md5,e6b70ba3a1a5c3c90210fa4854df7f40"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-29T12:34:52.296916948",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    },
+    "SRA FASTQ without flowcell metadata": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "SRA_test"
+                    },
+                    "SRA_test.fastq.info.txt:md5,ca888d64cafd463a21b9ee1b193e194a"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-29T12:35:00.037804013",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}

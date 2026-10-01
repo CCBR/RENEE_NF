@@ -1,0 +1,133 @@
+nextflow_process {
+
+    name "Test Process MULTIQCPARSER"
+    script "../main.nf"
+    process "MULTIQCPARSER"
+
+    tag "modules"
+    tag "modules_local"
+    tag "multiqcparser"
+
+    test("RENEE QC files - paired-end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
+                    [
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.inner_distance_freq.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.inner_distance_freq.txt", checkIfExists: true)
+                    ],
+                    [
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)
+                    ],
+                    [
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S2.fastq.info.txt", checkIfExists: true),
+                        file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.versions_python[0][2] ==~ /\d+\.\d+\.\d+/ },
+                { assert snapshot(
+                    process.out.matrix,
+                    process.out.inner_distances,
+                    process.out.median_tin,
+                    process.out.flowcell_lanes
+                ).match() }
+            )
+        }
+    }
+
+    test("RENEE QC files - single-end") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
+                    [],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.inner_distances[0][1]).text == "Sample\tInner_Dist_Maxima\n" },
+                { assert path(process.out.matrix[0][1]).text.contains("WT_S1") }
+            )
+        }
+    }
+
+    test("RENEE QC files - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
+                    [],
+                    [],
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.matrix[0][1]).exists() },
+                { assert path(process.out.inner_distances[0][1]).text == "Sample\tInner_Dist_Maxima\n" },
+                { assert path(process.out.median_tin[0][1]).text == "Sample\tmedian_tin\n" },
+                { assert path(process.out.flowcell_lanes[0][1]).text == "Sample\tflowcell_lanes\n" }
+            )
+        }
+    }
+
+    test("RENEE QC files - custom prefix") {
+
+        config "./custom_prefix.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data", checkIfExists: true),
+                    [],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.star_rg_added.sorted.dmark.summary.txt", checkIfExists: true)],
+                    [file("${projectDir}/tests/test_data/multiqcparser/WT_S1.fastq.info.txt", checkIfExists: true)]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.matrix[0][1]).fileName.toString() == "project.multiqc_matrix.tsv" },
+                { assert path(process.out.inner_distances[0][1]).fileName.toString() == "project.rseqc_inner_distances.txt" },
+                { assert path(process.out.median_tin[0][1]).fileName.toString() == "project.rseqc_median_tin.txt" },
+                { assert path(process.out.flowcell_lanes[0][1]).fileName.toString() == "project.fastq_flowcell_lanes.txt" },
+                { assert path(process.out.matrix[0][1]).text.contains("WT_S1") }
+            )
+        }
+    }
+}

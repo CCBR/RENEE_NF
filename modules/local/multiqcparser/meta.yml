@@ -1,0 +1,98 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "multiqcparser"
+description: Aggregate selected MultiQC, RSeQC, and FASTQ metadata into a RENEE QC matrix
+keywords:
+  - multiqc
+  - rseqc
+  - quality control
+  - rnaseq
+tools:
+  - python:
+      description: General-purpose programming language
+      homepage: https://www.python.org/
+      documentation: https://docs.python.org/3/
+      licence:
+        - "PSF-2.0"
+      identifier: biotools:python
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing aggregate report information
+          e.g. `[ id:'multiqc' ]`
+    - multiqc_data:
+        type: directory
+        description: MultiQC data directory containing tabular text outputs
+        pattern: "*_data"
+    - inner_distance_freq:
+        type: file
+        description: RSeQC inner-distance frequency files; may be an empty list for single-end data
+        pattern: "*.inner_distance_freq.txt"
+    - tin_summary:
+        type: file
+        description: RSeQC TIN summary files
+        pattern: "*.summary.txt"
+    - fastq_info:
+        type: file
+        description: RENEE FASTQ information files containing flowcell and lane metadata
+        pattern: "*.fastq.info.txt"
+
+output:
+  matrix:
+    - - meta:
+          type: map
+          description: Groovy Map containing aggregate report information
+      - "*multiqc_matrix.tsv":
+          type: file
+          description: Aggregated per-sample QC matrix
+          pattern: "*multiqc_matrix.tsv"
+  inner_distances:
+    - - meta:
+          type: map
+          description: Groovy Map containing aggregate report information
+      - "*rseqc_inner_distances.txt":
+          type: file
+          description: Maximum-frequency RSeQC inner distance for each sample
+          pattern: "*rseqc_inner_distances.txt"
+  median_tin:
+    - - meta:
+          type: map
+          description: Groovy Map containing aggregate report information
+      - "*rseqc_median_tin.txt":
+          type: file
+          description: Median RSeQC TIN for each sample
+          pattern: "*rseqc_median_tin.txt"
+  flowcell_lanes:
+    - - meta:
+          type: map
+          description: Groovy Map containing aggregate report information
+      - "*fastq_flowcell_lanes.txt":
+          type: file
+          description: Flowcell and lane identifiers for each sample
+          pattern: "*fastq_flowcell_lanes.txt"
+  versions_python:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "python":
+          type: string
+          description: The name of the tool
+      - 'python3 --version 2>&1 | cut -d " " -f 2':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - 'python3 --version 2>&1 | cut -d " " -f 2':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"
