@@ -1,0 +1,5 @@
+Sample	pe_sense	pe_antisense	failed
+KO_S3.strand.info	0.4313	0.4426	0.1261
+KO_S4.strand.info	0.4277	0.4449	0.1273
+WT_S1.strand.info	0.0339	0.8342	0.1319
+WT_S2.strand.info	0.033	0.8491	0.1179

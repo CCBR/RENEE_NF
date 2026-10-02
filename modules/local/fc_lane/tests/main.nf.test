@@ -1,0 +1,117 @@
+nextflow_process {
+
+    name "Test Process FC_LANE"
+    script "../main.nf"
+    process "FC_LANE"
+
+    tag "modules"
+    tag "modules_local"
+    tag "fc_lane"
+
+    test("CASAVA 1.8+ FASTQ") {
+
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'KO_S3' ],
+                    file("${projectDir}/tests/test_data/KO_S3.R1.fastq.gz", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fqinfo[0][1]).fileName.toString() == "KO_S3.fastq.info.txt" },
+                { assert path(process.out.fqinfo[0][1]).text ==
+                    "sample_name\ttotal_read_pairs\tflowcell_ids\tlanes\tflowcell_lanes\tmd5_checksum\n" +
+                    "KO_S3\t4857\tC037KACXX\t6\tC037KACXX_6\t8d1c7e90810054b0d27926c3fce1029c\n"
+                },
+                { assert process.out.versions_python[0][2] ==~ /\d+\.\d+\.\d+/ },
+                { assert snapshot(process.out.fqinfo).match() }
+            )
+        }
+    }
+
+    test("SRA FASTQ without flowcell metadata") {
+
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'SRA_test' ],
+                    file(params.test_data['homo_sapiens']['illumina'].test_rnaseq_1_fastq_gz, checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fqinfo[0][1]).readLines()[1].split("\t")[0..4] ==
+                    ["SRA_test", "4159", "SRR5665260", "SRR5665260", "SRR5665260_SRR5665260"]
+                },
+                { assert snapshot(process.out.fqinfo).match() }
+            )
+        }
+    }
+
+    test("custom output prefix") {
+
+        config "./nextflow.config"
+        config "./custom_prefix.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'KO_S3' ],
+                    file("${projectDir}/tests/test_data/KO_S3.R1.fastq.gz", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fqinfo[0][1]).fileName.toString() == "custom.fastq.info.txt" },
+                { assert path(process.out.fqinfo[0][1]).readLines()[1].startsWith("KO_S3\t") }
+            )
+        }
+    }
+
+    test("stub") {
+
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'stub_sample' ],
+                    file("${projectDir}/tests/test_data/KO_S3.R1.fastq.gz", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fqinfo[0][1]).text ==
+                    "sample_name\ttotal_read_pairs\tflowcell_ids\tlanes\tflowcell_lanes\tmd5_checksum\n" +
+                    "stub_sample\t0\tNA\tNA\tNA\tNA\n"
+                }
+            )
+        }
+    }
+}

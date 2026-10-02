@@ -1,0 +1,54 @@
+nextflow_workflow {
+
+    name "Test Subworkflow DOWNLOAD_DATABASES"
+    script "../main.nf"
+    workflow "DOWNLOAD_DATABASES"
+
+    tag "subworkflows"
+    tag "subworkflows/download_databases"
+    tag "untar"
+    tag "create_fastq_screen_conf"
+    tag "arriba/download"
+    tag "write_shared_resources_config"
+
+    test("download_databases - stub") {
+
+        options "-stub"
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                // No declared inputs -- driven entirely by params.database_urls
+                // and Utils.sharedResourcesDir(params), both set in ./nextflow.config.
+                ""
+            }
+        }
+
+        then {
+            // WRITE_SHARED_RESOURCES_CONFIG bakes Utils.sharedResourcesDir(params)
+            // -- an *absolute* path under the nf-test work dir, unique to this
+            // machine and this run -- into shared_resources.config's content.
+            // Snapshotting it by md5 like every other output would fail on
+            // every re-run and on every other machine/CI runner, so exclude
+            // it (keys "5" and "conf", the positional/named duplicates of
+            // WRITE_SHARED_RESOURCES_CONFIG.out.conf) and assert on its
+            // machine-independent parts directly instead.
+            def sharedResourcesConfig = path(workflow.out.conf[0]).text
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.findAll { key, val -> key != "5" && key != "conf" }
+                ).match() },
+                { assert sharedResourcesConfig.contains('kraken2_db_dir     = "') },
+                { assert sharedResourcesConfig.contains('fastq_screen_db_dir = "') },
+                { assert sharedResourcesConfig.contains('fastq_screen_conf  = "') },
+                { assert sharedResourcesConfig.contains('fastq_screen_conf2 = "') },
+                { assert sharedResourcesConfig.contains('arriba_db_dir      = "') },
+                { assert sharedResourcesConfig.contains('/shared_resources/20180907_standard_kraken2"') },
+                { assert sharedResourcesConfig.contains('/shared_resources/fastq_screen_db/fastq_screen_p1.conf"') },
+                { assert sharedResourcesConfig.contains('/shared_resources/fastq_screen_db/fastq_screen_p2.conf"') },
+                { assert sharedResourcesConfig.contains('/shared_resources/arriba_v2.5.0/database"') }
+            )
+        }
+    }
+}

@@ -1,0 +1,2 @@
+Bam_file	TIN(mean)	TIN(median)	TIN(stdev)
+WT_S2.star_rg_added.sorted.dmark.bam	32.25865665479886	29.006041046965485	20.32481054737126

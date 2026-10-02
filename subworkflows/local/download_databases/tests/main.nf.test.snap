@@ -1,0 +1,177 @@
+{
+    "download_databases - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Bacteria"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "Fungi"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "UniVec_vectors"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "Virus"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "hg19"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "mm9"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "rRNA"
+                        },
+                        [
+
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "20180907_standard_kraken2"
+                        },
+                        [
+                            "hash.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "opts.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "taxo.k2d:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "2": [
+                    "fastq_screen_p1.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "3": [
+                    "fastq_screen_p2.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "4": [
+                    "blacklist_hg38_GRCh38_v2.5.0.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                    "cytobands_hg38_GRCh38_v2.5.0.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "known_fusions_hg38_GRCh38_v2.5.0.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                    "protein_domains_hg38_GRCh38_v2.5.0.gff3:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "arriba_database": [
+                    "blacklist_hg38_GRCh38_v2.5.0.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                    "cytobands_hg38_GRCh38_v2.5.0.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "known_fusions_hg38_GRCh38_v2.5.0.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                    "protein_domains_hg38_GRCh38_v2.5.0.gff3:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "fastq_screen_conf1": [
+                    "fastq_screen_p1.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "fastq_screen_conf2": [
+                    "fastq_screen_p2.conf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "fastq_screen_databases": [
+                    [
+                        {
+                            "id": "Bacteria"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "Fungi"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "UniVec_vectors"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "Virus"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "hg19"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "mm9"
+                        },
+                        [
+
+                        ]
+                    ],
+                    [
+                        {
+                            "id": "rRNA"
+                        },
+                        [
+
+                        ]
+                    ]
+                ],
+                "kraken_databases": [
+                    [
+                        {
+                            "id": "20180907_standard_kraken2"
+                        },
+                        [
+                            "hash.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "opts.k2d:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "taxo.k2d:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-23T22:11:32.48306129",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

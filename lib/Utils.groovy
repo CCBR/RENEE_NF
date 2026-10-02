@@ -2,11 +2,55 @@ import nextflow.Channel
 import nextflow.Nextflow
 
 class Utils {
+    // Fixed location for shared resources (FastQ Screen/Kraken2/Arriba
+    // databases) -- always <outputDir>/shared_resources, with no separate
+    // override. Used both as the DOWNLOAD_DATABASES publish destination and,
+    // in INITIAL_QC, to auto-detect a prior build's databases for an
+    // analysis run that reuses the same --outputDir.
+    public static String sharedResourcesDir(params) {
+        return "${Nextflow.file(params.outputDir).toAbsolutePath()}/shared_resources"
+    }
+
     // Create a value channel for a configured path, or an empty channel when unset.
     public static optionalPathParam(params, String paramName) {
         return params.containsKey(paramName) && params[paramName]
             ? Channel.value(Nextflow.file(params[paramName], checkIfExists: true))
             : Channel.empty()
+    }
+
+    // Auto-detect an Arriba reference file for a genome build by name-matching,
+    // mirroring RENEE (classic)'s workflow/rules/build.smk jsonmaker rule:
+    // it infers the assembly from substrings in the genome name (hg19/hg38/
+    // mm10/mm39 and their aliases) and looks up a preset path per assembly.
+    // Here the "preset" is whatever file matching that assembly actually
+    // exists in arribaDbDir, so it isn't pinned to one Arriba database
+    // version. Returns null when arribaDbDir or genomeName is unset, the
+    // name doesn't match a known assembly, or no matching file is found.
+    public static String arribaReferenceFile(arribaDbDir, genomeName, String filePrefix, String fileSuffix) {
+        if (!arribaDbDir || !genomeName) {
+            return null
+        }
+        def name = genomeName.toString().toLowerCase()
+        def build
+        if (name.contains('hg19') || name.contains('hs37d') || name.contains('grch37')) {
+            build = 'hg19_hs37d5_GRCh37'
+        } else if (name.contains('hg38') || name.contains('hs38d') || name.contains('grch38')) {
+            build = 'hg38_GRCh38'
+        } else if (name.contains('mm10') || name.contains('grcm38')) {
+            build = 'mm10_GRCm38'
+        } else if (name.contains('mm39') || name.contains('grcm39')) {
+            build = 'mm39_GRCm39'
+        } else {
+            return null
+        }
+        def dir = new File(arribaDbDir.toString())
+        if (!dir.exists() || !dir.isDirectory()) {
+            return null
+        }
+        def match = dir.listFiles()?.find { f ->
+            f.name.startsWith(filePrefix) && f.name.contains(build) && f.name.endsWith(fileSuffix)
+        }
+        return match ? match.path : null
     }
 
     // run spooker for the workflow

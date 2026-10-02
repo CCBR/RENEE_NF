@@ -5,14 +5,11 @@ include { validateParameters; paramsSummaryLog } from 'plugin/nf-schema'
 
 
 // Modules
-include { QUALIMAP_BAMQC }              from './modules/nf-core/qualimap/bamqc/main'
-include { SAMTOOLS_FLAGSTAT }           from './modules/CCBR/samtools/flagstat/main.nf'
 include { MULTIQC }                     from './modules/nf-core/multiqc/main'
-include { PICARD_COLLECTRNASEQMETRICS } from './modules/nf-core/picard/collectrnaseqmetrics/main.nf'
 include { BAM2STRANDEDBW }              from './modules/local/bam2strandedbw/main'
-include { PRESEQ_CCURVE }               from './modules/nf-core/preseq/ccurve/main'
-include { HANDLE_PRESEQ_ERROR }         from './modules/local/preseq/helperfunctions/main'
-include { PARSE_PRESEQ_LOG }            from './modules/local/preseq/helperfunctions/main'
+include { FC_LANE }                     from './modules/local/fc_lane/main'
+include { MULTIQCPARSER }               from './modules/local/multiqcparser/main'
+include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
 include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
@@ -21,10 +18,9 @@ include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
-include { RSEQC_QC }           from './subworkflows/local/rseqc_qc/main'
+include { POST_ALIGNMENT_QC }  from './subworkflows/local/post_alignment_qc/main'
 include { RSEM }               from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
-
 
 
 workflow version {
@@ -57,9 +53,32 @@ workflow {
         analysis_mode = !params.build && !params.build_shared_resources_only
 
         // Download shared databases in either full build mode or resources-only mode.
-        if (params.build_shared_resources_only || (params.build && params.shared_resources)) {
+        // download_shared_resources is the on/off switch; the destination is always
+        // <outputDir>/shared_resources (Utils.sharedResourcesDir), which INITIAL_QC
+        // also auto-detects from for an analysis run reusing the same --outputDir.
+        if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
             log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
             DOWNLOAD_DATABASES()
+        }
+
+        // Directory to search for auto-detected Arriba fusion-calling reference
+        // files during a custom genome build. An explicit --arriba_db_dir always
+        // wins (e.g. a directory populated by a prior separate run); otherwise,
+        // when this same invocation also downloads shared resources, defer until
+        // ARRIBA_DOWNLOAD actually finishes -- .collect() only emits once its
+        // source channel closes -- rather than letting PREPARE_GENOME's file-glob
+        // lookup run before the download has happened.
+        if (params.arriba_db_dir) {
+            ch_arriba_db_dir = Channel.value(params.arriba_db_dir)
+        } else if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
+            ch_arriba_db_dir = DOWNLOAD_DATABASES.out.arriba_database
+                .collect()
+                .map { files ->
+                    def first_file = files.flatten().find()
+                    first_file ? first_file.parent.toString() : null
+                }
+        } else {
+            ch_arriba_db_dir = Channel.value([]) // Use ([]) instead of (null)
         }
 
         if (params.build_shared_resources_only) {
@@ -67,7 +86,7 @@ workflow {
             prepare_genome_conf = Channel.empty()
         } else {
             // Prepare the genome for both genome-build and sample-analysis modes.
-            PREPARE_GENOME()
+            PREPARE_GENOME(ch_arriba_db_dir)
         }
 
         if (params.build && !params.build_shared_resources_only) {
@@ -95,23 +114,21 @@ workflow {
             // post-alignment steps ----------------------------------------------------------
             PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
 
-            // RSeQC QC: strandedness, read distribution, inner distance, TIN
-            ch_bam_bai = PICARD_INITIAL_QC.out.bam
-                .join(PICARD_INITIAL_QC.out.bai)
-
-
-            RSEQC_QC(
-                ch_bam_bai,
+            POST_ALIGNMENT_QC(
+                PICARD_INITIAL_QC.out.bam,
+                PICARD_INITIAL_QC.out.bai,
                 PREPARE_GENOME.out.bed_ref,
-                PREPARE_GENOME.out.tin_ref
+                PREPARE_GENOME.out.tin_ref,
+                PREPARE_GENOME.out.refflat,
+                PREPARE_GENOME.out.fasta,
+                PREPARE_GENOME.out.rrna_list,
+                PREPARE_GENOME.out.genes_gtf
             )
 
             // RSEM quantification -----------------------------------------------
-            // strand_info is emitted as empty channel until RSeQC is integrated;
-            // strandedness defaults to unstranded (--forward-prob 0.5)
             RSEM(
                 STAR_ALIGN.out.pass2_transcript_bam,
-                RSEQC_QC.out.infer_experiment,
+                POST_ALIGNMENT_QC.out.infer_experiment,
                 PREPARE_GENOME.out.rsem_ref,
                 PREPARE_GENOME.out.annotate
             )
@@ -119,43 +136,8 @@ workflow {
             BAM2STRANDEDBW(
                 PICARD_INITIAL_QC.out.bam
                     .join(PICARD_INITIAL_QC.out.bai)
-                    .join(RSEQC_QC.out.infer_experiment)
+                    .join(POST_ALIGNMENT_QC.out.infer_experiment)
             )
-            // Estimate library complexity from mark-duplicated BAM (matches snakemake preseq rule)
-            // PICARD_INITIAL_QC.out.bam.view()
-            PRESEQ_CCURVE(PICARD_INITIAL_QC.out.bam)
-
-            // when preseq fails, write NAs for the stats that are calculated from its log
-            PRESEQ_CCURVE.out.log
-                .join(PICARD_INITIAL_QC.out.bam, remainder: true)
-                .branch { meta, preseq_log, bam_tuple ->
-                failed: preseq_log == null
-                    return (tuple(meta, "nopresqlog"))
-                succeeded: true
-                    return (tuple(meta, preseq_log))
-                }.set{ preseq_logs }
-            preseq_logs.failed | HANDLE_PRESEQ_ERROR
-            preseq_logs.succeeded | PARSE_PRESEQ_LOG
-            PARSE_PRESEQ_LOG.out.nrf
-                .concat(HANDLE_PRESEQ_ERROR.out.nrf)
-                .set{ preseq_nrf }
-            ch_fasta_path = PREPARE_GENOME.out.fasta.map { meta, fasta -> fasta }
-
-            PICARD_COLLECTRNASEQMETRICS(
-                PICARD_INITIAL_QC.out.bam,
-                PREPARE_GENOME.out.refflat,
-                ch_fasta_path,
-                PREPARE_GENOME.out.rrna_list.ifEmpty([])
-            )
-            // QualiMap BAM QC ---------------------------------------------------------------
-            ch_gtf_path = PREPARE_GENOME.out.genes_gtf.map { meta, gtf -> gtf }
-            QUALIMAP_BAMQC(PICARD_INITIAL_QC.out.bam, ch_gtf_path)
-
-
-            // SAMTOOLS_FLAGSTAT expects a tuple: [ meta, bam, bai ]
-            picard_bam_bai_ch = PICARD_INITIAL_QC.out.bam.join(PICARD_INITIAL_QC.out.bai)
-
-            SAMTOOLS_FLAGSTAT(picard_bam_bai_ch)
 
 
             // Arriba gene-fusion calling (only when genome supplies a blacklist) ----------
@@ -181,14 +163,16 @@ workflow {
                 .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
                 .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
                 .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
-                .mix(PICARD_COLLECTRNASEQMETRICS.out.metrics.map { meta, file -> file })
-                .mix(QUALIMAP_BAMQC.out.results.map          { meta, dir   -> dir   })
-                .mix(SAMTOOLS_FLAGSTAT.out.flagstat.map      { meta, file  -> file  })
-                .mix(RSEQC_QC.out.read_distribution.map      { meta, file  -> file  })
-                .mix(RSEQC_QC.out.inner_distance_freq.map    { meta, file  -> file  })
-                .mix(RSEQC_QC.out.tin_txt.map                { meta, file  -> file  })
+                .mix(PICARD_INITIAL_QC.out.metrics.map              { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.qualimap_results.map    { meta, dir  -> dir  })
+                .mix(POST_ALIGNMENT_QC.out.flagstat.map            { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.read_distribution.map   { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.infer_experiment.map    { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.inner_distance_freq.map { meta, file -> file })
+                .mix(POST_ALIGNMENT_QC.out.tin_txt.map             { meta, file -> file })
                 .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
-                .mix(PRESEQ_CCURVE.out.c_curve.map           { meta, file  -> file  })
+                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map { meta, file  -> file  })
                 .collect()
 
             // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
@@ -202,6 +186,56 @@ workflow {
                     []] //sample names TSV
                 }
             )
+
+            // Parse MultiQC outputs and render the RNA QC report ----------------------------
+            FC_LANE(
+                CHECK_INPUT.out.reads.map { meta, reads -> tuple(meta, reads[0]) }
+            )
+
+            ch_inner_distance_files = POST_ALIGNMENT_QC.out.inner_distance_freq
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_tin_summary_files = POST_ALIGNMENT_QC.out.tin_txt
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_fastq_info_files = FC_LANE.out.fqinfo
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_multiqcparser_input = MULTIQC.out.data
+                .combine(ch_inner_distance_files)
+                .combine(ch_tin_summary_files)
+                .combine(ch_fastq_info_files)
+                .map { meta, data, inner_distance, tin_summary, fastq_info ->
+                    tuple(meta, data, inner_distance, tin_summary, fastq_info)
+                }
+
+            MULTIQCPARSER(ch_multiqcparser_input)
+
+            ch_tin_matrix_files = POST_ALIGNMENT_QC.out.tin_xls
+                .map { meta, file -> file }
+                .collect()
+                .map { files -> [files] }
+
+            ch_rna_report_input = MULTIQCPARSER.out.matrix
+                .combine(RSEM.out.reformatted.map { counts -> [counts] })
+                .combine(ch_tin_matrix_files)
+                .map { meta, qc, counts, tins ->
+                    tuple(
+                        [id: 'rna_report'],
+                        counts,
+                        tins,
+                        qc,
+                        file("${projectDir}/assets/rNA_flowcells.Rmd")
+                    )
+                }
+
+            RNA_REPORT(ch_rna_report_input)
         }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
@@ -216,8 +250,12 @@ workflow {
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
         prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
-        fastq_screen_databases = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
-        kraken_databases       = (params.build_shared_resources_only || (params.shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
+        fastq_screen_databases = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_databases : Channel.empty()
+        kraken_databases       = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.kraken_databases       : Channel.empty()
+        fastq_screen_conf1     = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_conf1     : Channel.empty()
+        fastq_screen_conf2     = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.fastq_screen_conf2     : Channel.empty()
+        arriba_database        = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.arriba_database        : Channel.empty()
+        shared_resources_conf  = (params.build_shared_resources_only || (params.download_shared_resources && params.build)) ? DOWNLOAD_DATABASES.out.conf                  : Channel.empty()
 
         fastqc_raw     = analysis_mode ? INITIAL_QC.out.fastqc_raw : Channel.empty()
         fastqvalidator = analysis_mode ? INITIAL_QC.out.fastqvalidator : Channel.empty()
@@ -243,14 +281,15 @@ workflow {
         star_pass2_bam            = analysis_mode ? STAR_ALIGN.out.pass2_bam : Channel.empty()
         star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN.out.pass2_transcript_bam : Channel.empty()
 
-        picard_bam         = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
-        picard_bai         = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
-        picard_rna_metrics = analysis_mode ? PICARD_COLLECTRNASEQMETRICS.out.metrics : Channel.empty()
+        picard_bam             = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
+        picard_bai             = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
+        picard_markdup_metrics = analysis_mode ? PICARD_INITIAL_QC.out.metrics : Channel.empty()
+        picard_rna_metrics     = analysis_mode ? POST_ALIGNMENT_QC.out.picard_rna_metrics : Channel.empty()
 
-        qualimap_results = analysis_mode ? QUALIMAP_BAMQC.out.results : Channel.empty()
+        qualimap_results = analysis_mode ? POST_ALIGNMENT_QC.out.qualimap_results : Channel.empty()
 
-        flagstat          = analysis_mode ? SAMTOOLS_FLAGSTAT.out.flagstat : Channel.empty()
-        flagstat_versions = analysis_mode ? SAMTOOLS_FLAGSTAT.out.versions : Channel.empty()
+        flagstat          = analysis_mode ? POST_ALIGNMENT_QC.out.flagstat          : Channel.empty()
+        flagstat_versions = analysis_mode ? POST_ALIGNMENT_QC.out.flagstat_versions : Channel.empty()
 
         arriba_fusions      = analysis_mode ? ARRIBA.out.fusions : Channel.empty()
         arriba_fusions_fail = analysis_mode ? ARRIBA.out.fusions_fail : Channel.empty()
@@ -270,23 +309,30 @@ workflow {
         rsem_gene_matrix      = analysis_mode ? RSEM.out.gene_matrix      : Channel.empty()
         rsem_isoform_matrix   = analysis_mode ? RSEM.out.isoform_matrix   : Channel.empty()
 
-        rseqc_infer_experiment       = analysis_mode ? RSEQC_QC.out.infer_experiment       : Channel.empty()
-        rseqc_read_distribution      = analysis_mode ? RSEQC_QC.out.read_distribution      : Channel.empty()
-        rseqc_inner_distance_freq    = analysis_mode ? RSEQC_QC.out.inner_distance_freq    : Channel.empty()
-        rseqc_inner_distance_dist    = analysis_mode ? RSEQC_QC.out.inner_distance_dist    : Channel.empty()
-        rseqc_inner_distance_rscript = analysis_mode ? RSEQC_QC.out.inner_distance_rscript : Channel.empty()
-        rseqc_tin_txt                = analysis_mode ? RSEQC_QC.out.tin_txt                : Channel.empty()
-        rseqc_tin_xls                = analysis_mode ? RSEQC_QC.out.tin_xls                : Channel.empty()
+        rseqc_infer_experiment       = analysis_mode ? POST_ALIGNMENT_QC.out.infer_experiment       : Channel.empty()
+        rseqc_read_distribution      = analysis_mode ? POST_ALIGNMENT_QC.out.read_distribution      : Channel.empty()
+        rseqc_inner_distance_freq    = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_freq    : Channel.empty()
+        rseqc_inner_distance_dist    = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_dist    : Channel.empty()
+        rseqc_inner_distance_rscript = analysis_mode ? POST_ALIGNMENT_QC.out.inner_distance_rscript : Channel.empty()
+        rseqc_tin_txt                = analysis_mode ? POST_ALIGNMENT_QC.out.tin_txt                : Channel.empty()
+        rseqc_tin_xls                = analysis_mode ? POST_ALIGNMENT_QC.out.tin_xls                : Channel.empty()
 
         bam2bw_fwd = analysis_mode ? BAM2STRANDEDBW.out.fwd_bw : Channel.empty()
         bam2bw_rev = analysis_mode ? BAM2STRANDEDBW.out.rev_bw : Channel.empty()
 
-        preseq_ccurve = analysis_mode ? PRESEQ_CCURVE.out.c_curve : Channel.empty()
-        preseq_log    = analysis_mode ? PRESEQ_CCURVE.out.log      : Channel.empty()
-        preseq_nrf    = analysis_mode ? preseq_nrf                  : Channel.empty()
+        preseq_ccurve = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_ccurve : Channel.empty()
+        preseq_log    = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_log    : Channel.empty()
+        preseq_nrf    = analysis_mode ? POST_ALIGNMENT_QC.out.preseq_nrf    : Channel.empty()
 
         multiqc_report = analysis_mode ? MULTIQC.out.report : Channel.empty()
         multiqc_data   = analysis_mode ? MULTIQC.out.data   : Channel.empty()
+        fastq_info     = analysis_mode ? FC_LANE.out.fqinfo  : Channel.empty()
+
+        multiqc_matrix       = analysis_mode ? MULTIQCPARSER.out.matrix          : Channel.empty()
+        rseqc_inner_distances = analysis_mode ? MULTIQCPARSER.out.inner_distances : Channel.empty()
+        rseqc_median_tin     = analysis_mode ? MULTIQCPARSER.out.median_tin       : Channel.empty()
+        fastq_flowcell_lanes = analysis_mode ? MULTIQCPARSER.out.flowcell_lanes   : Channel.empty()
+        rna_report           = analysis_mode ? RNA_REPORT.out.html                : Channel.empty()
 
 }
 
@@ -297,11 +343,34 @@ output {
         mode 'copy'
         }
     fastq_screen_databases {
-        path { meta, dir -> "${params.shared_resources}/fastq_screen_db/" }
+        path { meta, dir -> "shared_resources/fastq_screen_db/" }
         mode 'copy'
         }
     kraken_databases {
-        path { meta, dir -> "${params.shared_resources}/" }
+        path { meta, dir -> "shared_resources/" }
+        mode 'copy'
+        }
+    fastq_screen_conf1 {
+        path { file -> "shared_resources/fastq_screen_db/" }
+        mode 'copy'
+        }
+    fastq_screen_conf2 {
+        path { file -> "shared_resources/fastq_screen_db/" }
+        mode 'copy'
+        }
+    arriba_database {
+        // Version pin lives in modules/nf-core/arriba/download/main.nf (not
+        // exposed as a param there); keep this path in sync with it.
+        // Each of the 4 mixed emits (blacklist/cytobands/protein_domains/
+        // known_fusions) is a glob match across all genome builds, so this
+        // closure receives a list of files, not a single one.
+        path { files -> "shared_resources/arriba_v2.5.0/database/" }
+        mode 'copy'
+        }
+    shared_resources_conf {
+        // Sibling of shared_resources/, mirroring prepare_genome_conf's
+        // <genome name>.config sitting alongside genome/<genome name>/.
+        path { file -> "./" }
         mode 'copy'
         }
 
@@ -342,9 +411,10 @@ output {
     rsem_gene_matrix      { path { file -> 'DEG_ALL/' } }
     rsem_isoform_matrix   { path { file -> 'DEG_ALL/' } }
 
-    picard_bam         { path { meta, file -> 'bams/' } }
-    picard_bai         { path { meta, file -> 'bams/' } }
-    picard_rna_metrics { path { meta, file -> 'picard/' } }
+    picard_bam             { path { meta, file -> 'bams/' } }
+    picard_bai             { path { meta, file -> 'bams/' } }
+    picard_markdup_metrics { path { meta, file -> 'picard/' } }
+    picard_rna_metrics     { path { meta, file -> 'picard/' } }
 
     rseqc_infer_experiment       { path { meta, file -> 'RSeQC/' } }
     rseqc_read_distribution      { path { meta, file -> 'RSeQC/' } }
@@ -373,5 +443,11 @@ output {
 
     multiqc_report { path { meta, file -> 'Reports/' } }
     multiqc_data   { path { meta, dir  -> 'Reports/' } }
+    fastq_info { path { meta, file -> 'rawQC/' } }
+    multiqc_matrix { path { meta, file -> 'Reports/' } }
+    rseqc_inner_distances { path { meta, file -> 'Reports/' } }
+    rseqc_median_tin { path { meta, file -> 'Reports/' } }
+    fastq_flowcell_lanes { path { meta, file -> 'Reports/' } }
+    rna_report { path { meta, file -> 'Reports/' } }
     preseq_nrf          { path { meta, file -> 'preseq/' } }
 }

@@ -1,0 +1,98 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "rna_report"
+description: Generate an interactive RNA-seq quality-control report from cohort-level metrics
+keywords:
+  - rnaseq
+  - quality control
+  - rmarkdown
+  - report
+tools:
+  - r:
+      description: A language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      documentation: https://cran.r-project.org/manuals.html
+      licence:
+        - "GPL-2.0-or-later"
+  - rmarkdown:
+      description: Render dynamic documents from R Markdown
+      homepage: https://rmarkdown.rstudio.com/
+      documentation: https://rmarkdown.rstudio.com/docs/
+      licence:
+        - "GPL-3.0-only"
+  - pandas:
+      description: |
+        Used by bin/create_tin_matrix.py to combine per-sample RSeQC TIN (*.tin.xls)
+        files into a single matrix, keyed by transcript ID (last value wins on
+        duplicate IDs, matching the RENEE Snakemake pipeline's behavior)
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence:
+        - "BSD-3-clause"
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing cohort information
+          e.g. `[ id:'rna_report' ]`
+    - counts:
+        type: file
+        description: Raw gene-count matrix
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+    - tins:
+        type: file
+        description: Transcript Integrity Number matrix
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+    - qc:
+        type: file
+        description: Per-sample quality-control metadata matrix
+        pattern: "*.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+    - rmarkdown:
+        type: file
+        description: Parameterized R Markdown template used to render the report
+        pattern: "*.{Rmd,rmd}"
+
+output:
+  html:
+    - - meta:
+          type: map
+          description: Groovy Map containing cohort information
+      - "${prefix}.html":
+          type: file
+          description: Interactive RNA-seq quality-control report
+          pattern: "*.html"
+          ontologies:
+            - edam: http://edamontology.org/format_2331
+  versions_r:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "R":
+          type: string
+          description: The name of the tool
+      - "R --version | head -n 1 | cut -d ' ' -f 3":
+          type: eval
+          description: The R version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - R:
+          type: string
+          description: The name of the tool
+      - "R --version | head -n 1 | cut -d ' ' -f 3":
+          type: eval
+          description: The R version
+
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"

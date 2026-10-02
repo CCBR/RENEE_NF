@@ -1,0 +1,8 @@
+## FastQ Screen config 1 — multi-organism contamination screen (Biowulf)
+## Databases: human (hg19), mouse (mm9), bacteria, fungi, virus
+
+DATABASE     Human   __SHARED_RESOURCES_DIR__/fastq_screen_db/hg19/hg19
+DATABASE     Mouse  __SHARED_RESOURCES_DIR__/fastq_screen_db/mm9/mm9
+DATABASE     Bacteria        __SHARED_RESOURCES_DIR__/fastq_screen_db/Bacteria/bacteria
+DATABASE     Fungi        __SHARED_RESOURCES_DIR__/fastq_screen_db/Fungi/fungi
+DATABASE     Virus  __SHARED_RESOURCES_DIR__/fastq_screen_db/Virus/virus

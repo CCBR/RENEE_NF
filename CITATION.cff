@@ -3,6 +3,7 @@ message: "Please cite RENEE_NF as below."
 authors: # TODO: author names should match those in pyproject.toml
   - family-names: Silver
     given-names: Alec
+    orcid: https://orcid.org/0009-0006-8589-5123
   - family-names: Sovacool
     given-names: Kelly
     orcid: https://orcid.org/0000-0003-3283-829X

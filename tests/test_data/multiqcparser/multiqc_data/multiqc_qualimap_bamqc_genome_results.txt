@@ -1,0 +1,5 @@
+Sample	bam_file	total_reads	mapped_reads	mapped_bases	sequenced_bases	mean_insert_size	median_insert_size	mean_mapping_quality	general_error_rate	mean_coverage	percentage_aligned
+KO_S3	/projectnb/wax-es/alecs/renee/RNA_hg38_36/bams/KO_S3.star_rg_added.sorted.dmark.bam	16004.0	15762.0	1784325.0	695325.0	2100.3003	208.0	221.4703	0.0	0.001	98.48787803049238
+KO_S4	/projectnb/wax-es/alecs/renee/RNA_hg38_36/bams/KO_S4.star_rg_added.sorted.dmark.bam	15782.0	15536.0	1826301.0	690177.0	2740.5905	208.0	219.1843	0.0	0.001	98.44126219744012
+WT_S1	/projectnb/wax-es/alecs/renee/RNA_hg38_36/bams/WT_S1.star_rg_added.sorted.dmark.bam	47258.0	47229.0	7416897.0	2301075.0	1546.9563	256.0	237.7206	0.0	0.0042	99.93863472851157
+WT_S2	/projectnb/wax-es/alecs/renee/RNA_hg38_36/bams/WT_S2.star_rg_added.sorted.dmark.bam	63202.0	63183.0	10528676.0	3073261.0	1304.369	256.0	238.2134	0.0	0.006	99.96993766020063

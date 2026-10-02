@@ -42,17 +42,15 @@ data/
 results/
 /params.yaml
 .nf-test
-/setup-nextflow/
 
-# running nextflow scripts
-run_scripts
-conf/local_singularity.config
-run*.sh
-
-
-# AI summary files
+# genAI files
 snakemake_summaries/
 .agents
 docs/dev
 .github/agents/
 .github/hooks/
+.github/plans/
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml
