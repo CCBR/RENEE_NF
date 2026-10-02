@@ -1,0 +1,5 @@
+Sample	Inner_Dist_Maxima
+WT_S2.inner_distance_freq.txt	30
+KO_S4.inner_distance_freq.txt	25
+KO_S3.inner_distance_freq.txt	20
+WT_S1.inner_distance_freq.txt	40

@@ -1,0 +1,5 @@
+Sample	median_tin
+WT_S2.star_rg_added.sorted.dmark.bam	29.006
+KO_S3.star_rg_added.sorted.dmark.bam	8.312
+WT_S1.star_rg_added.sorted.dmark.bam	26.038
+KO_S4.star_rg_added.sorted.dmark.bam	8.576

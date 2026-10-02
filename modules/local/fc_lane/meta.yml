@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "fc_lane"
+description: Extract flowcell and lane metadata from a gzipped FASTQ file
+keywords:
+  - fastq
+  - flowcell
+  - lane
+  - quality control
+tools:
+  - python:
+      description: General-purpose programming language
+      homepage: https://www.python.org/
+      documentation: https://docs.python.org/3/
+      licence:
+        - "PSF-2.0"
+      identifier: biotools:python
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fastq:
+        type: file
+        description: Gzipped R1 FASTQ file
+        pattern: "*.{fastq,fq}.gz"
+        ontologies:
+          - edam: http://edamontology.org/format_3989
+
+output:
+  fqinfo:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.fastq.info.txt":
+          type: file
+          description: |
+            Tab-delimited sample name, read count, flowcell IDs, lanes,
+            flowcell/lane pairs, and compressed-FASTQ MD5 checksum.
+          pattern: "*.fastq.info.txt"
+          ontologies:
+            - edam: http://edamontology.org/format_3475
+  versions_python:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "python":
+          type: string
+          description: The name of the tool
+      - 'python3 --version 2>&1 | cut -d " " -f 2':
+          type: eval
+          description: The Python version
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - 'python3 --version 2>&1 | cut -d " " -f 2':
+          type: eval
+          description: The Python version
+
+authors:
+  - "@AlecSilver"
+maintainers:
+  - "@AlecSilver"

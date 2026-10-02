@@ -1,0 +1,99 @@
+nextflow_process {
+
+    name "Test Process RNA_REPORT"
+    script "../main.nf"
+    process "RNA_REPORT"
+
+    tag "modules"
+    tag "modules_local"
+    tag "rna_report"
+
+    test("renders an RNA report") {
+
+        config "./nextflow.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'rna_report' ],
+                    file("${moduleDir}/tests/fixtures/counts.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/tins.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/qc.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/smoke_report.Rmd", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.html[0][1]).fileName.toString() == "RNA_Report.html" },
+                { assert path(process.out.html[0][1]).text.contains("RNA report module smoke test") },
+                { assert path(process.out.html[0][1]).text.contains("Annotation enabled: FALSE") },
+                { assert process.out.versions_r[0][2] ==~ /\d+\.\d+\.\d+/ },
+                { assert snapshot(
+                    path(process.out.html[0][1]).fileName.toString(),
+                    process.out.versions_r
+                ).match() }
+            )
+        }
+    }
+
+    test("supports task.ext arguments and output prefix") {
+
+        config "./nextflow.config"
+        config "./custom.config"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'annotated_report' ],
+                    file("${moduleDir}/tests/fixtures/counts.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/tins.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/qc.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/smoke_report.Rmd", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.html[0][1]).fileName.toString() == "project_RNA_Report.html" },
+                { assert path(process.out.html[0][1]).text.contains("Annotation enabled: TRUE") }
+            )
+        }
+    }
+
+    test("stub") {
+
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'stub_report' ],
+                    file("${moduleDir}/tests/fixtures/counts.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/tins.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/qc.tsv", checkIfExists: true),
+                    file("${moduleDir}/tests/fixtures/smoke_report.Rmd", checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.html[0][1]).fileName.toString() == "RNA_Report.html" },
+                { assert path(process.out.html[0][1]).size() == 0 }
+            )
+        }
+    }
+}

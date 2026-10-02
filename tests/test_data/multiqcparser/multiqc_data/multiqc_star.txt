@@ -1,0 +1,5 @@
+Sample	total_reads	avg_input_read_length	uniquely_mapped	uniquely_mapped_percent	avg_mapped_read_length	num_splices	num_annotated_splices	num_GTAG_splices	num_GCAG_splices	num_ATAC_splices	num_noncanonical_splices	mismatch_rate	deletion_rate	deletion_length	insertion_rate	insertion_length	multimapped	multimapped_percent	multimapped_toomany	multimapped_toomany_percent	unmapped_mismatches_percent	unmapped_tooshort_percent	unmapped_other_percent	unmapped_mismatches	unmapped_tooshort	unmapped_other
+KO_S3	4253.0	141.0	3193.0	75.08	144.97	242.0	237.0	234.0	6.0	0.0	2.0	0.35	0.01	1.4	0.01	1.46	836.0	19.66	0.0	0.0	0.0	2.82	0.05	0	220	4
+KO_S4	4325.0	142.0	3297.0	76.23	145.03	266.0	262.0	259.0	6.0	0.0	1.0	0.35	0.01	2.0	0.01	1.17	807.0	18.66	0.0	0.0	0.02	2.77	0.12	2	210	9
+WT_S1	7441.0	197.0	4585.0	61.62	197.84	1209.0	1202.0	1188.0	13.0	1.0	7.0	0.17	0.02	1.74	0.01	1.11	2786.0	37.44	0.0	0.0	0.01	0.11	0.0	6	64	0
+WT_S2	9912.0	197.0	6115.0	61.69	197.64	1627.0	1611.0	1599.0	13.0	2.0	13.0	0.19	0.02	1.73	0.01	1.4	3719.0	37.52	0.0	0.0	0.02	0.06	0.01	17	52	9

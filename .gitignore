@@ -43,7 +43,7 @@ results/
 /params.yaml
 .nf-test
 
-# AI summary files
+# genAI files
 snakemake_summaries/
 .agents
 docs/dev

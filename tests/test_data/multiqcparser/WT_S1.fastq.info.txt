@@ -1,0 +1,2 @@
+sample_name	total_read_pairs	flowcell_ids	lanes	flowcell_lanes	md5_checksum
+WT_S1	7501	C1HKJACXX	7	C1HKJACXX_7	e0ebdb0c0702e1dc62578e5d396c8d78

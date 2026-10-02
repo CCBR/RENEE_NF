@@ -1,0 +1,19 @@
+{
+    "renders an RNA report": {
+        "content": [
+            "RNA_Report.html",
+            [
+                [
+                    "RNA_REPORT",
+                    "R",
+                    "3.6.3"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-29T13:29:19.161920583",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
+    }
+}
