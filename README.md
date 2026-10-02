@@ -74,7 +74,7 @@ or [Setup for Generic SLURM Cluster](#setup-for-generic-slurm-cluster).
 
 **Requires:** `Nextflow>=25.10` and a container engine: `singularity>=3.5` / Apptainer or Docker
 
-> **NOTE:**
+> [!NOTE]
 >
 > <ins>Biowulf users</ins>:
 > Both the singularity and Nextflow modules are already installed and available for all Biowulf users. Please skip this step as `module load nextflow` will preload singularity and Nextflow.
@@ -123,7 +123,7 @@ Notes:
 
 Load the ccbrpipeliner module:
 
-> **NOTE:** `renee_nf` will be available in `ccbrpipeliner` release 9 and later.
+> [!NOTE] > `renee_nf` will be available in `ccbrpipeliner` release 9 and later.
 
 ```sh
 # grab an interactive node
@@ -154,6 +154,12 @@ renee_nf run \
 
 # Tip: add the -preview flag to see which processes will run
 # without executing them.
+renee_nf run \
+    -preview \
+    --mode local \
+    --input assets/samplesheet.csv \
+    --genome hg38_36 \
+    --output /data/$USER/RNA_hg38
 ```
 
 <!-- TODO: Add FRCE instructions -->
