@@ -30,6 +30,7 @@
 
 ### Bug fixes
 
+- Fixed `FASTQ_SCREEN_2` outputs silently overwriting `FASTQ_SCREEN_1` outputs in MultiQC. Both processes screen the same trimmed reads, so both emitted identically-named `*_screen.txt` files and MultiQC deduplicated them by sample name, dropping most of the second-pass rows. This left `rRNA_percent_aligned` and `uni_vec_percent_aligned` empty for most samples in `multiqc_matrix.tsv`, which in turn crashed `RNA_REPORT` with `undefined columns selected` when `var()` returned `NA` for those columns. Second-pass outputs are now tagged via `ext.suffix`, matching how the Snakemake RENEE `fastq_screen` rule renames its `FQscreen2` outputs.
 - Fixed `bin/get_isoform_annotate.py` to derive isoform annotations from any GTF line carrying a `transcript_id` (CDS/exon/etc.), not just explicit `transcript`-type lines -- `gtfToGenePred` builds gene models from CDS/exon lines regardless, so a transcript_id with no matching `transcript` line (seen both with NCBI/GenBank-style GTFs and with hand-trimmed test fixtures that drop a transcript's header line) was silently missing from `annotate.isoforms.txt`, causing `make_refFlat.py` to crash with a `KeyError` in `BUILD_ANNOTATE`.
 - Swapped container in Qualimap bamQC so behavior matches snakemake
 - Normalized volatile Cutadapt CPU-count log lines in module snapshots so harmless `--cores` differences do not fail nf-test comparisons.
