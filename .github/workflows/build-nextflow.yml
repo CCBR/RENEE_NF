@@ -104,6 +104,9 @@ jobs:
           head: ${{ github.sha }}
           base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
+          ignored: >-
+            .git/* .gitpod.yml .prettierignore .prettierrc.yml *.md *.png
+            modules.json pyproject.toml tower.yml CITATION.cff
       - name: print list of nf-test files
         run: |
           echo ${{ steps.list.outputs.components }}
