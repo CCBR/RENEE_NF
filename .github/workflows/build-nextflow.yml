@@ -104,7 +104,8 @@ jobs:
           head: ${{ github.sha }}
           base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
-          # Mirrors detect-nf-test-changes@accef945 defaults; adds CITATION.cff. Resync on upgrades.
+          # Mirrors detect-nf-test-changes@accef9459c66baa65dbca647615f088b98eefa9c defaults.
+          # Adds CITATION.cff; resync if the action revision changes.
           ignored: >-
             .git/* .gitpod.yml .prettierignore .prettierrc.yml *.md *.png
             modules.json pyproject.toml tower.yml CITATION.cff
