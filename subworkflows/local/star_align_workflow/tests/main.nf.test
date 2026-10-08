@@ -1,8 +1,8 @@
 nextflow_workflow {
 
-    name "Test Workflow STAR_ALIGN_WORKFLOW"
+    name "Test Workflow STAR_ALIGN_WF"
     script "subworkflows/local/star_align_workflow/main.nf"
-    workflow "STAR_ALIGN_WORKFLOW"
+    workflow "STAR_ALIGN_WF"
 
 
     test("sarscov2 - paired_end - stub - multi-sample two-pass (star_2_pass_basic = false)") {
