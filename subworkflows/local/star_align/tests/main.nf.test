@@ -176,6 +176,8 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert snapshot(
                     workflow.out.pass2_log.collect { meta, f -> file(f).name }.sort(),
+                    // samtools-sorted BAM, named as the RENEE star_small rule names it
+                    workflow.out.pass2_bam.collect { meta, f -> file(f).name },
                     workflow.out.pass2_sj,
                     workflow.out.pass2_reads_per_gene,
                     workflow.out.pass1_sj,

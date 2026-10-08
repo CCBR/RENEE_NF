@@ -19,7 +19,7 @@
 - Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
 - Added `PICARD_COLLECTRNASEQMETRICS` to the main workflow to collect RNA-seq alignment metrics (strand specificity, 5'/3' bias, UTR/intronic/coding distributions) from the duplicate-marked BAM, matching the RENEE Snakemake `stats` rule. (#65, @AlecSilver)
 - Added `arriba` gene-fusion subworkflow (`subworkflows/local/arriba/main.nf`) with a dedicated `STAR_ALIGN_ARRIBA` modules.config block carrying all chimeric-detection flags (`--twopassMode Basic`, `--chimSegmentMin`, `--chimOutType WithinBAM HardClip`, etc.) matching the RENEE Snakemake `arriba` rule; updated nf-test module tests for `arriba/arriba` and `arriba/visualisation` to use local `params.test_data` references instead of `params.modules_testdata_base_path`.
-- Added `small_rna` mode, which trims reads to a minimum length of 16 bp and aligns them with STAR in a single pass using ENCODE's small RNA recommendations. (#51, @kelly-sovacool)
+- Added `small_rna` mode, which trims reads to a minimum length of 16 bp and aligns them with STAR in a single pass followed by samtools sort, matching the `trim_se` and `star_small` rules in RENEE. (#51, @kelly-sovacool)
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.

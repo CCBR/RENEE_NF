@@ -3,6 +3,7 @@ include { STAR_ALIGN as STAR_ALIGN_PASS2  } from '../../../modules/nf-core/star/
 include { STAR_ALIGN as STAR_ALIGN_BASIC  } from '../../../modules/nf-core/star/align'
 include { STAR_ALIGN as STAR_ALIGN_SMALL  } from '../../../modules/nf-core/star/align'
 include { STAR_SJDB_FILTER }               from '../../../modules/local/star_sjdb_filter'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_SMALL } from '../../../modules/CCBR/samtools/sort/main.nf'
 
 workflow STAR_ALIGN {
     take:
@@ -14,8 +15,22 @@ workflow STAR_ALIGN {
         ch_sjdb_placeholder = Channel.value(file(params.sjdb_placeholder_tab, checkIfExists: true))
 
         if (params.small_rna) {
-            // Single-pass alignment using ENCODE's recommendations for small RNA
+            // Single-pass alignment following the RENEE `star_small` rule, which uses
+            // ENCODE's recommendations for small RNA. STAR emits an unsorted BAM that is
+            // sorted with samtools (lower memory than --outSAMtype BAM SortedByCoordinate).
             STAR_ALIGN_SMALL(ch_reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
+
+            // --outSAMtype BAM Unsorted makes STAR write a single *.Aligned.out.bam, but the
+            // module's `bam` glob (*d.out.bam) would also match the sorted BAMs fabricated by
+            // its stub, so keep only the unsorted alignment BAM before sorting it.
+            ch_small_unsorted_bam = STAR_ALIGN_SMALL.out.bam
+                .map { meta, bams ->
+                    def unsorted = (bams instanceof List ? bams : [bams])
+                        .findAll { bam -> !bam.name.contains('sortedByCoord') }
+                    tuple(meta, unsorted.first())
+                }
+
+            SAMTOOLS_SORT_SMALL(ch_small_unsorted_bam)
 
             ch_pass1_sj             = Channel.empty()
             ch_pass1_log            = Channel.empty()
@@ -25,7 +40,7 @@ workflow STAR_ALIGN {
                                           .mix(STAR_ALIGN_SMALL.out.log_progress)
             ch_pass2_sj             = STAR_ALIGN_SMALL.out.spl_junc_tab
             ch_pass2_reads_per_gene = STAR_ALIGN_SMALL.out.read_per_gene_tab
-            ch_pass2_bam            = STAR_ALIGN_SMALL.out.bam_sorted_aligned
+            ch_pass2_bam            = SAMTOOLS_SORT_SMALL.out.bam.map { meta, bam, bai -> tuple(meta, bam) }
             ch_pass2_transcript_bam = STAR_ALIGN_SMALL.out.bam_transcript
         } else if (params.star_2_pass_basic) {
             // Per-sample two-pass: STAR handles both passes internally via --twopassMode Basic

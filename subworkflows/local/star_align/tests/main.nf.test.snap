@@ -142,6 +142,9 @@
                 "test.p2.Log.progress.out"
             ],
             [
+                "test.p2.Aligned.sortedByCoord.out.bam"
+            ],
+            [
                 [
                     {
                         "id": "test",
