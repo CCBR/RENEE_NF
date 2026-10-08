@@ -12,14 +12,14 @@ include { MULTIQCPARSER }               from './modules/local/multiqcparser/main
 include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
-include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
+include { DOWNLOAD_DATABASES }  from './subworkflows/local/download_databases/main.nf'
 include { STAR_ALIGN_WORKFLOW } from './subworkflows/local/star_align/main'
-include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
-include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
-include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
-include { POST_ALIGNMENT_QC }  from './subworkflows/local/post_alignment_qc/main'
-include { RSEM }               from './subworkflows/local/rsem/main'
+include { PREPARE_GENOME }      from './subworkflows/local/prepare_genome/main.nf'
+include { INITIAL_QC }          from './subworkflows/local/initial_qc/main'
+include { CHECK_INPUT }         from './subworkflows/local/read_samples/main'
+include { PICARD_INITIAL_QC }   from './subworkflows/local/picard_initial_qc/main'
+include { POST_ALIGNMENT_QC }   from './subworkflows/local/post_alignment_qc/main'
+include { RSEM }                from './subworkflows/local/rsem/main'
 include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
 
 
