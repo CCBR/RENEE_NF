@@ -1,2 +1,2 @@
 replicate,sample,fastq_1,fastq_2
-S1,WT,tests/test_data/WT_S1.R1.fastq.gz,tests/test_data/WT_S1.R2.fastq.gz
+S1,WT,../tests/test_data/WT_S1.R1.fastq.gz,../tests/test_data/WT_S1.R2.fastq.gz
