@@ -2,7 +2,7 @@ nextflow_workflow {
 
     name "Test Workflow STAR_ALIGN"
     script "subworkflows/local/star_align/main.nf"
-    workflow "STAR_ALIGN"
+    workflow "STAR_ALIGN_WORKFLOW"
 
 
     test("sarscov2 - paired_end -stub - multi-sample two-pass (star_2_pass_basic = false)") {

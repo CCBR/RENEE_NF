@@ -13,7 +13,7 @@ include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
 include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
-include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
+include { STAR_ALIGN_WORKFLOW as STAR_ALIGN } from './subworkflows/local/star_align/main'
 include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
 include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
 include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
