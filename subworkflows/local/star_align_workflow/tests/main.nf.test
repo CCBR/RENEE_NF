@@ -5,7 +5,7 @@ nextflow_workflow {
     workflow "STAR_ALIGN_WORKFLOW"
 
 
-    test("sarscov2 - paired_end -stub - multi-sample two-pass (star_2_pass_basic = false)") {
+    test("sarscov2 - paired_end - stub - multi-sample two-pass (star_2_pass_basic = false)") {
         config "./nextflow.config"
         options "-stub"
         setup {
