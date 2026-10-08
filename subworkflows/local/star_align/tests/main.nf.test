@@ -1,6 +1,6 @@
 nextflow_workflow {
 
-    name "Test Workflow STAR_ALIGN"
+    name "Test Workflow STAR_ALIGN_WORKFLOW"
     script "subworkflows/local/star_align/main.nf"
     workflow "STAR_ALIGN_WORKFLOW"
 
