@@ -20,7 +20,7 @@ include { CHECK_INPUT }         from './subworkflows/local/read_samples/main'
 include { PICARD_INITIAL_QC }   from './subworkflows/local/picard_initial_qc/main'
 include { POST_ALIGNMENT_QC }   from './subworkflows/local/post_alignment_qc/main'
 include { RSEM }                from './subworkflows/local/rsem/main'
-include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
+include { arriba as ARRIBA }    from './subworkflows/local/arriba/main'
 
 
 workflow version {
@@ -155,15 +155,15 @@ workflow {
 
             // MultiQC ------------------------------------------------------------------------
             ch_multiqc_files = Channel.empty()
-                .mix(INITIAL_QC.out.fastqc_raw.map           { meta, files -> files }.flatten())
-                .mix(INITIAL_QC.out.cutadapt_log.map         { meta, log   -> log   })
-                .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
-                .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
-                .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
-                .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
-                .mix(STAR_ALIGN_WORKFLOW.out.pass1_log.map   { meta, log   -> log   })
-                .mix(STAR_ALIGN_WORKFLOW.out.pass2_log.map   { meta, log   -> log   })
-                .mix(PICARD_INITIAL_QC.out.metrics.map              { meta, file -> file })
+                .mix(INITIAL_QC.out.fastqc_raw.map                 { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.cutadapt_log.map               { meta, log   -> log   })
+                .mix(INITIAL_QC.out.fastqc_trimmed.map             { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.fqscreen_1_txt.map             { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.fqscreen_2_txt.map             { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.kraken2_report.map             { meta, file  -> file  })
+                .mix(STAR_ALIGN_WORKFLOW.out.pass1_log.map         { meta, log   -> log   })
+                .mix(STAR_ALIGN_WORKFLOW.out.pass2_log.map         { meta, log   -> log   })
+                .mix(PICARD_INITIAL_QC.out.metrics.map             { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.qualimap_results.map    { meta, dir  -> dir  })
                 .mix(POST_ALIGNMENT_QC.out.flagstat.map            { meta, file -> file })
@@ -171,8 +171,8 @@ workflow {
                 .mix(POST_ALIGNMENT_QC.out.infer_experiment.map    { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.inner_distance_freq.map { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.tin_txt.map             { meta, file -> file })
-                .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
-                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map { meta, file  -> file  })
+                .mix(RSEM.out.genes_results.map                    { meta, file  -> file  })
+                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map       { meta, file  -> file  })
                 .collect()
 
             // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
