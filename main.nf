@@ -192,9 +192,13 @@ workflow {
                 CHECK_INPUT.out.reads.map { meta, reads -> tuple(meta, reads[0]) }
             )
 
+            // Inner distance is paired-end only, so this channel is empty when
+            // every sample is single-end; emit an empty list so the downstream
+            // report steps still run.
             ch_inner_distance_files = POST_ALIGNMENT_QC.out.inner_distance_freq
                 .map { meta, file -> file }
                 .collect()
+                .ifEmpty([])
                 .map { files -> [files] }
 
             ch_tin_summary_files = POST_ALIGNMENT_QC.out.tin_txt
