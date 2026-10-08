@@ -599,18 +599,13 @@ g
 
 ```{r colored-by-rrna}
 # Gene Expression PCA colored by % rRNA
-rrna_values <- suppressWarnings(as.numeric(as.character(multiQC$rRNA_percent_aligned)))
-if (all(is.na(rrna_values))) {
-  cat("% rRNA is not available for this run (FastQ Screen was not run against the rRNA/UniVec databases).")
-} else {
-  g <- ggplot(multiQC, aes(PC1, PC2, color = rrna_values), xlab) +
-    geom_point(size = multiQC$flowcell_lanes) +
-    theme_minimal() +
-    labs(color = "% rRNA", x = paste0("PC1 (", pc1, "%)"), y = paste0("PC2 (", pc2, "%)")) +
-    scale_colour_gradientn(colours = viridis::viridis(100))
+g <- ggplot(multiQC, aes(PC1, PC2, color = rRNA_percent_aligned), xlab) +
+  geom_point(size = multiQC$flowcell_lanes) +
+  theme_minimal() +
+  labs(color = "% rRNA", x = paste0("PC1 (", pc1, "%)"), y = paste0("PC2 (", pc2, "%)")) +
+  scale_colour_gradientn(colours = viridis::viridis(100))
 
-  g
-}
+g
 ```
 
 ### % Anti-sense
