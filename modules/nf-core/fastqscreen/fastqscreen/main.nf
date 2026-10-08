@@ -21,12 +21,21 @@ process FASTQSCREEN_FASTQSCREEN {
 
     script:
     def args = task.ext.args ?: ""
+    // fastq_screen names outputs after the input reads, so screening the same reads
+    // against a second config collides in MultiQC unless the outputs are tagged
+    def suffix = task.ext.suffix ?: ""
 
     """
     fastq_screen --threads ${task.cpus} \\
         --conf ${fastq_screen_config} \\
         ${reads} \\
         ${args}
+
+    if [ -n "${suffix}" ]; then
+        for f in *_screen.*; do
+            mv "\$f" "\${f/_screen./${suffix}_screen.}"
+        done
+    fi
     """
 
     stub:

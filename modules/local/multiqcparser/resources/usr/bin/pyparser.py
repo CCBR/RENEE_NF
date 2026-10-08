@@ -89,6 +89,7 @@ config = {
             "^FQscreen \\| ",
             "^FQscreen2 \\| ",
             "_screen$",
+            "\\.fqscreen2$",
             "_1\\.trim$",
             "_2\\.trim$",
             "\.trim$",

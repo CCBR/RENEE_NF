@@ -72,9 +72,46 @@ nextflow_process {
         }
     }
 
+    test("both FastQ Screen passes collapse to one sample") {
+
+        // Regression test: FASTQ_SCREEN_1 and FASTQ_SCREEN_2 screen the same reads, so
+        // their reports only stay distinct in MultiQC because the second pass is tagged
+        // via ext.suffix. Both rows must still clean back to the same sample name, or the
+        // rRNA/UniVec columns end up empty and crash RNA_REPORT.
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'multiqc' ],
+                    file("${projectDir}/tests/test_data/multiqcparser/multiqc_data_nxf", checkIfExists: true),
+                    [],
+                    [],
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            def matrix = path(process.out.matrix[0][1]).text.readLines()
+            def header = matrix[0].split('\t') as List
+            def rows = matrix.tail().collect { line ->
+                [header, line.split('\t', -1) as List].transpose().collectEntries()
+            }
+
+            assertAll(
+                { assert process.success },
+                { assert rows.collect { it.Sample } == ['KO_S3', 'KO_S4', 'WT_S1', 'WT_S2'] },
+                { assert rows.every { it.rRNA_percent_aligned?.trim() } },
+                { assert rows.every { it.uni_vec_percent_aligned?.trim() } }
+            )
+        }
+    }
+
     test("RENEE QC files - stub") {
 
         options "-stub"
+
 
         when {
             process {
