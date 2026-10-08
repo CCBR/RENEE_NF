@@ -104,7 +104,7 @@ jobs:
           head: ${{ github.sha }}
           base: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || 'origin/master' }}
           include: .github/include.yml
-          # Re-specify detector defaults and add CITATION.cff to ignored paths.
+          # Mirrors detect-nf-test-changes@accef945 defaults; adds CITATION.cff. Resync on upgrades.
           ignored: >-
             .git/* .gitpod.yml .prettierignore .prettierrc.yml *.md *.png
             modules.json pyproject.toml tower.yml CITATION.cff
