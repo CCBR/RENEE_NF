@@ -50,6 +50,10 @@ workflow {
             error "Parameters --build and --build_shared_resources_only are mutually exclusive."
         }
 
+        if (params.small_rna && params.star_2_pass_basic) {
+            error "Parameters --small_rna and --star_2_pass_basic are mutually exclusive."
+        }
+
         analysis_mode = !params.build && !params.build_shared_resources_only
 
         // Download shared databases in either full build mode or resources-only mode.

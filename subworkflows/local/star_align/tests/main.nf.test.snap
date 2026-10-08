@@ -133,5 +133,49 @@
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
         }
+    },
+    "sarscov2 - single_end - stub - small RNA (small_rna = true)": {
+        "content": [
+            [
+                "test.p2.Log.final.out",
+                "test.p2.Log.out",
+                "test.p2.Log.progress.out"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.p2.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": true
+                    },
+                    "test.p2.ReadsPerGene.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            [
+
+            ],
+            {
+
+            }
+        ],
+        "timestamp": "2026-10-08T17:00:00.000000000",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.0"
+        }
     }
 }

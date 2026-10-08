@@ -27,6 +27,9 @@ process CUTADAPT {
     //"MINLEN": 35,
     //"CUTADAPT_MIN_READS": 100 not implemented yet
 
+    // minimum read length to keep after trimming; 16 for small RNA libraries
+    def minlen = task.ext.min_length ?: 35
+
     def args = [
             '--nextseq-trim=2',
             '--trim-n -n 5 -O 5',
@@ -35,12 +38,12 @@ process CUTADAPT {
         ]
     if (isSingle) {
         args += [
-            '-m 35' // changed from 20 to 35 to match Snakemake parameters
+            "-m ${minlen}" // 35 by default, to match Snakemake parameters
         ]
     } else {
         args += [
             '-B file:/opt2/TruSeq_and_nextera_adapters.consolidated.fa',
-            '-m 35:35', // changed from 20:20 to 35:35 to match Snakemake parameters
+            "-m ${minlen}:${minlen}", // 35:35 by default, to match Snakemake parameters
         ]
     }
     args = args.join(' ').trim()

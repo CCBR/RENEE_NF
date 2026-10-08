@@ -49,6 +49,12 @@
                     "default": false,
                     "description": "Run STAR in per-sample two-pass basic mode (--twopassMode Basic) instead of the default multi-sample two-pass alignment."
                 },
+                "small_rna": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use ENCODE's recommendations for small RNA libraries.",
+                    "help_text": "Use this option with rRNA-depleted libraries that have been size selected to be shorter than 200bp, which enriches for small RNA species such as miRNAs, siRNAs, or piRNAs. Reads are trimmed to a minimum length of 16 bp and aligned with STAR in a single pass using ENCODE's small RNA parameters. This option is only supported with single-end data and cannot be combined with star_2_pass_basic."
+                },
                 "picard_strand_specificity": {
                     "type": "string",
                     "default": "SECOND_READ_TRANSCRIPTION_STRAND",

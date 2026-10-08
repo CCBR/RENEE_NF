@@ -1,6 +1,7 @@
 include { STAR_ALIGN as STAR_ALIGN_PASS1  } from '../../../modules/nf-core/star/align'
 include { STAR_ALIGN as STAR_ALIGN_PASS2  } from '../../../modules/nf-core/star/align'
 include { STAR_ALIGN as STAR_ALIGN_BASIC  } from '../../../modules/nf-core/star/align'
+include { STAR_ALIGN as STAR_ALIGN_SMALL  } from '../../../modules/nf-core/star/align'
 include { STAR_SJDB_FILTER }               from '../../../modules/local/star_sjdb_filter'
 
 workflow STAR_ALIGN {
@@ -12,7 +13,21 @@ workflow STAR_ALIGN {
     main:
         ch_sjdb_placeholder = Channel.value(file(params.sjdb_placeholder_tab, checkIfExists: true))
 
-        if (params.star_2_pass_basic) {
+        if (params.small_rna) {
+            // Single-pass alignment using ENCODE's recommendations for small RNA
+            STAR_ALIGN_SMALL(ch_reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
+
+            ch_pass1_sj             = Channel.empty()
+            ch_pass1_log            = Channel.empty()
+            ch_sjdb                 = Channel.empty()
+            ch_pass2_log            = STAR_ALIGN_SMALL.out.log_final
+                                          .mix(STAR_ALIGN_SMALL.out.log_out)
+                                          .mix(STAR_ALIGN_SMALL.out.log_progress)
+            ch_pass2_sj             = STAR_ALIGN_SMALL.out.spl_junc_tab
+            ch_pass2_reads_per_gene = STAR_ALIGN_SMALL.out.read_per_gene_tab
+            ch_pass2_bam            = STAR_ALIGN_SMALL.out.bam_sorted_aligned
+            ch_pass2_transcript_bam = STAR_ALIGN_SMALL.out.bam_transcript
+        } else if (params.star_2_pass_basic) {
             // Per-sample two-pass: STAR handles both passes internally via --twopassMode Basic
             STAR_ALIGN_BASIC(ch_reads, ch_star_index, ch_star_gtf, false, ch_sjdb_placeholder)
 
