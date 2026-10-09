@@ -8,7 +8,7 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.value(file("${projectDir}/assets/samplesheet_small.csv", checkIfExists: true))
+                input[0] = file("${projectDir}/assets/samplesheet_small.csv", checkIfExists: true)
                 """
             }
         }
@@ -16,7 +16,7 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.out.reads[0][1].every { it.exists() } }
+                { assert workflow.out.reads[0][1].every { new File(it.toString()).exists() } }
             )
         }
     }
