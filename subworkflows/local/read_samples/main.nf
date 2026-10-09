@@ -23,6 +23,10 @@ workflow CHECK_INPUT {
                     reads << projectDirPath(row.fastq_2)
                 }
 
+                if (params.small_rna && has_fastq_2) {
+                    error "The small_rna option is only supported with single-end data, but sample ${meta.id} is paired-end."
+                }
+
                 tuple(meta, reads)
             }
 
