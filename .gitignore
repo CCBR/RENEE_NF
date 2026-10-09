@@ -54,3 +54,4 @@ docs/dev
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+pixi.lock

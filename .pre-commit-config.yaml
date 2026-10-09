@@ -36,6 +36,8 @@ repos:
     hooks:
       - id: codespell
         args: ["-I", ".github/WORDLIST.txt"]
+        exclude: ^pyproject\.toml$
+
   # Python formatting
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.13
