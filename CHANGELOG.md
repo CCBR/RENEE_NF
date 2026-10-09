@@ -32,6 +32,7 @@
 ### Bug fixes
 
 - Single-end samples no longer break the QC report: RSeQC `inner_distance` is now only run on paired-end samples (it requires mate pairs), and `MULTIQCPARSER`/`RNA_REPORT` still run when no inner distance files are produced. (#18, @AlecSilver)
+- Fixed bundled samplesheet FASTQ paths to resolve relative to the pipeline directory. (#95, @kelly-sovacool)
 - Fix `FASTQ_SCREEN_2` results being dropped by MultiQC, which crashed `RNA_REPORT`. (#91, @kelly-sovacool)
 - Deduplicate `rNA_flowcells.Rmd` to match Snakemake RENEE. (#91, @kelly-sovacool)
 - Fixed `bin/get_isoform_annotate.py` to derive isoform annotations from any GTF line carrying a `transcript_id` (CDS/exon/etc.), not just explicit `transcript`-type lines -- `gtfToGenePred` builds gene models from CDS/exon lines regardless, so a transcript_id with no matching `transcript` line (seen both with NCBI/GenBank-style GTFs and with hand-trimmed test fixtures that drop a transcript's header line) was silently missing from `annotate.isoforms.txt`, causing `make_refFlat.py` to crash with a `KeyError` in `BUILD_ANNOTATE`.

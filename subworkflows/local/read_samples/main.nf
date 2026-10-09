@@ -15,9 +15,12 @@ workflow CHECK_INPUT {
                     single_end   : !has_fastq_2
                 ]
 
-                def reads = [file(row.fastq_1)]
+                def projectDirPath = { path ->
+                    file(path.toString().replace('${projectDir}', projectDir.toString()))
+                }
+                def reads = [projectDirPath(row.fastq_1)]
                 if (has_fastq_2) {
-                    reads << file(row.fastq_2)
+                    reads << projectDirPath(row.fastq_2)
                 }
 
                 if (params.small_rna && has_fastq_2) {
