@@ -12,15 +12,15 @@ include { MULTIQCPARSER }               from './modules/local/multiqcparser/main
 include { RNA_REPORT }                  from './modules/local/rna_report/main'
 
 // Subworkflows
-include { DOWNLOAD_DATABASES } from './subworkflows/local/download_databases/main.nf'
-include { STAR_ALIGN }         from './subworkflows/local/star_align/main'
-include { PREPARE_GENOME }     from './subworkflows/local/prepare_genome/main.nf'
-include { INITIAL_QC }         from './subworkflows/local/initial_qc/main'
-include { CHECK_INPUT }        from './subworkflows/local/read_samples/main'
-include { PICARD_INITIAL_QC }  from './subworkflows/local/picard_initial_qc/main'
-include { POST_ALIGNMENT_QC }  from './subworkflows/local/post_alignment_qc/main'
-include { RSEM }               from './subworkflows/local/rsem/main'
-include { arriba as ARRIBA }   from './subworkflows/local/arriba/main'
+include { DOWNLOAD_DATABASES }  from './subworkflows/local/download_databases/main.nf'
+include { STAR_ALIGN_WF } from './subworkflows/local/star_align_workflow/main'
+include { PREPARE_GENOME }      from './subworkflows/local/prepare_genome/main.nf'
+include { INITIAL_QC }          from './subworkflows/local/initial_qc/main'
+include { CHECK_INPUT }         from './subworkflows/local/read_samples/main'
+include { PICARD_INITIAL_QC }   from './subworkflows/local/picard_initial_qc/main'
+include { POST_ALIGNMENT_QC }   from './subworkflows/local/post_alignment_qc/main'
+include { RSEM }                from './subworkflows/local/rsem/main'
+include { arriba as ARRIBA }    from './subworkflows/local/arriba/main'
 
 
 workflow version {
@@ -105,14 +105,14 @@ workflow {
 
             // STAR alignment steps ----------------------------------------------------------
 
-            STAR_ALIGN(
+            STAR_ALIGN_WF(
                 INITIAL_QC.out.trimmed_reads,
                 PREPARE_GENOME.out.star_index,
                 PREPARE_GENOME.out.genes_gtf
             )
 
             // post-alignment steps ----------------------------------------------------------
-            PICARD_INITIAL_QC(STAR_ALIGN.out.pass2_bam)
+            PICARD_INITIAL_QC(STAR_ALIGN_WF.out.pass2_bam)
 
             POST_ALIGNMENT_QC(
                 PICARD_INITIAL_QC.out.bam,
@@ -127,7 +127,7 @@ workflow {
 
             // RSEM quantification -----------------------------------------------
             RSEM(
-                STAR_ALIGN.out.pass2_transcript_bam,
+                STAR_ALIGN_WF.out.pass2_transcript_bam,
                 POST_ALIGNMENT_QC.out.infer_experiment,
                 PREPARE_GENOME.out.rsem_ref,
                 PREPARE_GENOME.out.annotate
@@ -155,15 +155,15 @@ workflow {
 
             // MultiQC ------------------------------------------------------------------------
             ch_multiqc_files = Channel.empty()
-                .mix(INITIAL_QC.out.fastqc_raw.map           { meta, files -> files }.flatten())
-                .mix(INITIAL_QC.out.cutadapt_log.map         { meta, log   -> log   })
-                .mix(INITIAL_QC.out.fastqc_trimmed.map       { meta, files -> files }.flatten())
-                .mix(INITIAL_QC.out.fqscreen_1_txt.map       { meta, txt   -> txt   })
-                .mix(INITIAL_QC.out.fqscreen_2_txt.map       { meta, txt   -> txt   })
-                .mix(INITIAL_QC.out.kraken2_report.map       { meta, file  -> file  })
-                .mix(STAR_ALIGN.out.pass1_log.map            { meta, log   -> log   })
-                .mix(STAR_ALIGN.out.pass2_log.map            { meta, log   -> log   })
-                .mix(PICARD_INITIAL_QC.out.metrics.map              { meta, file -> file })
+                .mix(INITIAL_QC.out.fastqc_raw.map                 { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.cutadapt_log.map               { meta, log   -> log   })
+                .mix(INITIAL_QC.out.fastqc_trimmed.map             { meta, files -> files }.flatten())
+                .mix(INITIAL_QC.out.fqscreen_1_txt.map             { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.fqscreen_2_txt.map             { meta, txt   -> txt   })
+                .mix(INITIAL_QC.out.kraken2_report.map             { meta, file  -> file  })
+                .mix(STAR_ALIGN_WF.out.pass1_log.map               { meta, log   -> log   })
+                .mix(STAR_ALIGN_WF.out.pass2_log.map               { meta, log   -> log   })
+                .mix(PICARD_INITIAL_QC.out.metrics.map             { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.picard_rna_metrics.map  { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.qualimap_results.map    { meta, dir  -> dir  })
                 .mix(POST_ALIGNMENT_QC.out.flagstat.map            { meta, file -> file })
@@ -171,8 +171,8 @@ workflow {
                 .mix(POST_ALIGNMENT_QC.out.infer_experiment.map    { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.inner_distance_freq.map { meta, file -> file })
                 .mix(POST_ALIGNMENT_QC.out.tin_txt.map             { meta, file -> file })
-                .mix(RSEM.out.genes_results.map              { meta, file  -> file  })
-                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map { meta, file  -> file  })
+                .mix(RSEM.out.genes_results.map                    { meta, file  -> file  })
+                .mix(POST_ALIGNMENT_QC.out.preseq_ccurve.map       { meta, file  -> file  })
                 .collect()
 
             // multiqc_config = channel.value(file('conf/multiqc_config.yaml'))
@@ -272,14 +272,14 @@ workflow {
         kraken2_krona_html                  = analysis_mode ? INITIAL_QC.out.kraken2_krona_html : Channel.empty()
         kraken2_db_dir                      = analysis_mode ? INITIAL_QC.out.kraken2_db_dir : Channel.empty()
 
-        star_pass1_sj             = analysis_mode ? STAR_ALIGN.out.pass1_sj : Channel.empty()
-        star_pass1_log            = analysis_mode ? STAR_ALIGN.out.pass1_log : Channel.empty()
-        star_sjdb                 = analysis_mode ? STAR_ALIGN.out.sjdb : Channel.empty()
-        star_pass2_log            = analysis_mode ? STAR_ALIGN.out.pass2_log : Channel.empty()
-        star_pass2_sj             = analysis_mode ? STAR_ALIGN.out.pass2_sj : Channel.empty()
-        star_pass2_reads_per_gene = analysis_mode ? STAR_ALIGN.out.pass2_reads_per_gene : Channel.empty()
-        star_pass2_bam            = analysis_mode ? STAR_ALIGN.out.pass2_bam : Channel.empty()
-        star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN.out.pass2_transcript_bam : Channel.empty()
+        star_pass1_sj             = analysis_mode ? STAR_ALIGN_WF.out.pass1_sj : Channel.empty()
+        star_pass1_log            = analysis_mode ? STAR_ALIGN_WF.out.pass1_log : Channel.empty()
+        star_sjdb                 = analysis_mode ? STAR_ALIGN_WF.out.sjdb : Channel.empty()
+        star_pass2_log            = analysis_mode ? STAR_ALIGN_WF.out.pass2_log : Channel.empty()
+        star_pass2_sj             = analysis_mode ? STAR_ALIGN_WF.out.pass2_sj : Channel.empty()
+        star_pass2_reads_per_gene = analysis_mode ? STAR_ALIGN_WF.out.pass2_reads_per_gene : Channel.empty()
+        star_pass2_bam            = analysis_mode ? STAR_ALIGN_WF.out.pass2_bam : Channel.empty()
+        star_pass2_transcript_bam = analysis_mode ? STAR_ALIGN_WF.out.pass2_transcript_bam : Channel.empty()
 
         picard_bam             = analysis_mode ? PICARD_INITIAL_QC.out.bam : Channel.empty()
         picard_bai             = analysis_mode ? PICARD_INITIAL_QC.out.bai : Channel.empty()
