@@ -116,6 +116,7 @@ Notes:
 
 - Each library is named `<sample>_<replicate>` in the output (e.g. `WT_S1`), so every `sample`/`replicate` combination must be unique. Stick to letters, numbers, and underscores.
 - Use absolute paths to FastQ files. `renee_nf run` launches Nextflow from the `--output` directory, so relative paths are resolved against that directory, not where you ran the command.
+- Bundled sample sheets use the literal `${projectDir}` prefix to refer to files in the pipeline installation; the workflow expands this marker when it reads the sheet, independent of the `renee_nf init` location.
 - All FastQ files are checked with fastQValidator before analysis; the run stops and lists any files that fail validation.
 - Example samplesheets are available in [`assets/`](assets/) (`samplesheet.csv`, `samplesheet_single_read.csv`).
 
