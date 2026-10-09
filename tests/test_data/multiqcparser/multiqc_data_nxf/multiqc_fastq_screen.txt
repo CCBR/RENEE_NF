@@ -1,0 +1,17 @@
+Sample	total_reads	Human counts	Human percentage	Mouse counts	Mouse percentage	Bacteria counts	Bacteria percentage	Fungi counts	Fungi percentage	Virus counts	Virus percentage	No hits counts	No hits percentage	Uni_Vec counts	Uni_Vec percentage	rRNA counts	rRNA percentage
+KO_S3_1.trim_screen	4253	3935.0	92.53	669.0	15.73	21.0	0.49	134.0	3.1500000000000004	10.0	0.22999999999999998	84	1.98				
+KO_S3_1.trim.fqscreen2_screen	4253											3658	86.03	6.0	0.14	591.0	13.89
+KO_S3_2.trim_screen	4253	3757.0	88.33	610.0	14.34	15.0	0.36	114.0	2.6799999999999997	7.0	0.16	310	7.29				
+KO_S3_2.trim.fqscreen2_screen	4253											3706	87.14	2.0	0.05	547.0	12.86
+KO_S4_1.trim_screen	4325	4019.0	92.92	651.0	15.05	20.0	0.46	136.0	3.15	15.0	0.35000000000000003	93	2.17				
+KO_S4_1.trim.fqscreen2_screen	4325											3783	87.49	3.0	0.07	540.0	12.49
+KO_S4_2.trim_screen	4325	3850.0	89.00999999999999	557.0	12.879999999999999	14.0	0.32999999999999996	110.0	2.53	11.0	0.25	304	7.05				
+KO_S4_2.trim.fqscreen2_screen	4325											3838	88.74	1.0	0.02	487.0	11.26
+WT_S1_1.trim_screen	7441	7429.0	99.84	2720.0	36.55	13.0	0.18	1472.0	19.779999999999998	11.0	0.15	11	0.15				
+WT_S1_1.trim.fqscreen2_screen	7441											4800	64.51	3.0	0.04	2641.0	35.49999999999999
+WT_S1_2.trim_screen	7441	7426.0	99.8	2671.0	35.89	7.0	0.1	1069.0	14.37	5.0	0.07	14	0.19				
+WT_S1_2.trim.fqscreen2_screen	7441											4806	64.6	2.0	0.03	2634.0	35.400000000000006
+WT_S2_1.trim_screen	9912	9886.0	99.75	3653.0	36.86	15.0	0.15000000000000002	1932.0	19.490000000000002	10.0	0.1	21	0.22				
+WT_S2_1.trim.fqscreen2_screen	9912											6388	64.45	5.0	0.05	3524.0	35.55
+WT_S2_2.trim_screen	9912	9892.0	99.79	3560.0	35.92	12.0	0.12	1415.0	14.28	5.0	0.05	19	0.2				
+WT_S2_2.trim.fqscreen2_screen	9912											6391	64.48	0.0	0.0	3521.0	35.52

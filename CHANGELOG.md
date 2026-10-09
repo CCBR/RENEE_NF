@@ -19,6 +19,7 @@
 - Ported the `rsem` and `rsem_merge` rules from the RENEE Snakemake pipeline into Nextflow.
 - Added `PICARD_COLLECTRNASEQMETRICS` to the main workflow to collect RNA-seq alignment metrics (strand specificity, 5'/3' bias, UTR/intronic/coding distributions) from the duplicate-marked BAM, matching the RENEE Snakemake `stats` rule. (#65, @AlecSilver)
 - Added `arriba` gene-fusion subworkflow (`subworkflows/local/arriba/main.nf`) with a dedicated `STAR_ALIGN_ARRIBA` modules.config block carrying all chimeric-detection flags (`--twopassMode Basic`, `--chimSegmentMin`, `--chimOutType WithinBAM HardClip`, etc.) matching the RENEE Snakemake `arriba` rule; updated nf-test module tests for `arriba/arriba` and `arriba/visualisation` to use local `params.test_data` references instead of `params.modules_testdata_base_path`.
+- Added `small_rna` mode, which trims reads to a minimum length of 16 bp and aligns them with STAR in a single pass followed by samtools sort, matching the `trim_se` and `star_small` rules in RENEE. (#92, @kelly-sovacool)
 - Added star_2_pass_basic mode, which does not pool splice junctions between samples in STAR alignment
 - Updated template placeholders and project metadata for RENEE.
 - Added a samplesheet-derived paired-read input channel from `params.input` and pointed the bundled samplesheet at the test FASTQs.
@@ -30,6 +31,8 @@
 
 ### Bug fixes
 
+- Fix `FASTQ_SCREEN_2` results being dropped by MultiQC, which crashed `RNA_REPORT`. (#91, @kelly-sovacool)
+- Deduplicate `rNA_flowcells.Rmd` to match Snakemake RENEE. (#91, @kelly-sovacool)
 - Fixed `bin/get_isoform_annotate.py` to derive isoform annotations from any GTF line carrying a `transcript_id` (CDS/exon/etc.), not just explicit `transcript`-type lines -- `gtfToGenePred` builds gene models from CDS/exon lines regardless, so a transcript_id with no matching `transcript` line (seen both with NCBI/GenBank-style GTFs and with hand-trimmed test fixtures that drop a transcript's header line) was silently missing from `annotate.isoforms.txt`, causing `make_refFlat.py` to crash with a `KeyError` in `BUILD_ANNOTATE`.
 - Swapped container in Qualimap bamQC so behavior matches snakemake
 - Normalized volatile Cutadapt CPU-count log lines in module snapshots so harmless `--cores` differences do not fail nf-test comparisons.

@@ -12,15 +12,15 @@ This is a Nextflow port of [RENEE](https://ccbr.github.io/RENEE/latest/), an ope
 See the website for detailed information, documentation, and examples:
 <https://ccbr.github.io/RENEE_NF/>
 
-### Introduction
+## Introduction
 
 RNA-sequencing (_RNA-seq_) has a wide variety of applications. This popular transcriptome profiling technique can be used to quantify gene and isoform expression, detect alternative splicing events, predict gene-fusions, call variants and much more.
 
 **RENEE_NF** is a Nextflow port of [RENEE](https://github.com/CCBR/RENEE)[^1] (originally implemented in Snakemake[^2]), a comprehensive, open-source RNA-seq pipeline that relies on technologies like [Docker](https://www.docker.com/why-docker)[^3] and [Singularity/Apptainery](https://apptainer.org/docs/)[^4] to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Nextflow](https://docs.seqera.io/nextflow/)[^5], a flexible and scalable workflow management system, to submit jobs to a cluster or cloud provider.
 
-### Overview
+## Overview
 
-#### RENEE Pipeline
+### RENEE Pipeline
 
 A bioinformatics pipeline is more than the sum of its data processing steps. A pipeline without quality-control steps provides a myopic view of the potential sources of variation within your data (i.e., biological versus technical sources of variation). RENEE pipeline is composed of a series of quality-control and data processing steps.
 
@@ -61,7 +61,7 @@ Additional software, databases, and relevant citations:
 - empirical Bayes[^24]
 - fusion transcript detection benchmarking[^25]
 
-#### Reference Genomes
+### Reference Genomes
 
 Pre-built reference genomes are provided on Biowulf and FRCE for a number of different annotation versions, view the list here:
 <https://ccbr.github.io/RENEE/latest/RNA-seq/Resources/#1-reference-genomes>
@@ -70,7 +70,7 @@ If you would like to use a custom reference that is not already listed above,
 you can prepare it with `renee_nf run --build`. See [Building a Custom Genome on Biowulf](#building-a-custom-genome-on-biowulf)
 or [Setup for Generic SLURM Cluster](#setup-for-generic-slurm-cluster).
 
-#### Dependencies
+### Dependencies
 
 **Requires:** `Nextflow>=25.10` and a container engine: `singularity>=3.5` / Apptainer or Docker
 
@@ -87,11 +87,11 @@ or [Setup for Generic SLURM Cluster](#setup-for-generic-slurm-cluster).
 </p>
 <hr>
 
-### Run RENEE pipeline
+## Run the pipeline
 
-#### Samplesheet preparation
+### Samplesheet preparation
 
-RENEE_NF takes a comma-separated samplesheet, passed with `--input`, that lists every FastQ file to analyze. Each row is one sequencing library and the file must contain a header with the following columns:
+RENEE takes a comma-separated samplesheet, passed with `--input`, that lists every FastQ file to analyze. Each row is one sequencing library and the file must contain a header with the following columns:
 
 | Column      | Required | Description                                                                                |
 | ----------- | -------- | ------------------------------------------------------------------------------------------ |
@@ -119,11 +119,13 @@ Notes:
 - All FastQ files are checked with fastQValidator before analysis; the run stops and lists any files that fail validation.
 - Example samplesheets are available in [`assets/`](assets/) (`samplesheet.csv`, `samplesheet_single_read.csv`).
 
-#### Biowulf
+### Biowulf
 
 Load the ccbrpipeliner module:
 
-> [!NOTE] > `renee_nf` will be available in `ccbrpipeliner` release 9 and later.
+> [!NOTE]
+>
+> `renee_nf` will be available in `ccbrpipeliner` release 9 and later.
 
 ```sh
 # grab an interactive node
@@ -164,7 +166,7 @@ renee_nf run \
 
 <!-- TODO: Add FRCE instructions -->
 
-#### Building a Custom Genome on Biowulf
+### Building a Custom Genome on Biowulf
 
 If the genome or annotation you need is not one of the [pre-built reference genomes](#reference-genomes), you can build it once from a FASTA and GTF file and reuse it for every project. On Biowulf, the `biowulf` profile already points to the CCBR shared resources (Kraken2 and FastQ Screen databases) and SIF cache, so there is no need to pass `--download_shared_resources`.
 
@@ -203,16 +205,16 @@ renee_nf run \
 
 Gene-fusion calling with Arriba requires genome-specific reference files. If `<genome name>` contains `hg19`, `hg38`, `mm10`, or `mm39` (or an alias, e.g. `GRCh38`, `GRCm39`), they are detected automatically from `--arriba_db_dir`. For any other genome, either pass `--fusion_blacklist`, `--fusion_cytoband`, `--fusion_protdomain`, and `--fusion_known_fusions` explicitly, or omit them and fusion calling will be skipped.
 
-#### Setup for other platforms
+### Setup for other platforms
 
 Running the pipeline outside of Biowulf is easy; however, there are a few extra options you must provide.
 Skip the below section if you are running the pipeline on Biowulf.
 
-##### Installation on other platforms
+#### Installation on other platforms
 
 You will need nextflow and a container engine such as docker, podman, or singularity/apptainer.
 
-If you would like to use the RENEE_NF wrapper CLI, you will need python3 and then install RENEE_NF with pip:
+If you would like to use the `renee_nf` wrapper CLI, you will need python3 and then install it with pip or uv:
 
 ```sh
 pip3 install git+https://github.com/CCBR/RENEE_NF
@@ -225,7 +227,7 @@ Alternatively, you can call the nextflow pipeline directly:
 nextflow run CCBR/RENEE_NF -profile singularity,slurm ...
 ```
 
-##### Build resources on other platforms
+#### Build resources on other platforms
 
 First, the genome must be built from the corresponding FASTA and GTF files. Additionally, when running the build (`--build`) for the first time, you will also need to provide the --download_shared_resources option. This option will download our kraken2 database and bowtie2 indices for FastQ Screen.
 
@@ -247,9 +249,9 @@ renee_nf run \
   --output path/to/ref_dir
 ```
 
-If `<genome name>` (the value passed to `--genome`) contains `hg19`, `hg38`, `mm10`, or `mm39` (or an alias, e.g. `GRCh38`, `GRCm39`), RENEE_NF automatically detects the matching Arriba fusion-calling reference files in the shared resources directory populated by `--download_shared_resources` above (or in the directory passed via `--arriba_db_dir`, if you set that instead). For any other genome, pass `--fusion_blacklist`, `--fusion_cytoband`, `--fusion_protdomain`, and `--fusion_known_fusions` explicitly.
+If `<genome name>` (the value passed to `--genome`) contains `hg19`, `hg38`, `mm10`, or `mm39` (or an alias, e.g. `GRCh38`, `GRCm39`), RENEE automatically detects the matching Arriba fusion-calling reference files in the shared resources directory populated by `--download_shared_resources` above (or in the directory passed via `--arriba_db_dir`, if you set that instead). For any other genome, pass `--fusion_blacklist`, `--fusion_cytoband`, `--fusion_protdomain`, and `--fusion_known_fusions` explicitly.
 
-#### Building another genome
+### Building another genome
 
 When building another genome, skip re-downloading the large shared resources files by omitting `--download_shared_resources` and instead including `-c path/to/ref_dir/shared_resources.config`.
 
@@ -266,7 +268,7 @@ renee_nf run \
     --output path/to/ref_dir
 ```
 
-#### Running on Generic SLURM Cluster
+### Running on Generic SLURM Cluster
 
 Once the genome resources have been built, run the pipeline against your samples. Replace `path/to/ref_dir` with the output directory used to build the genome resources above, and `<genome name>` with the genome name chosen there.
 
@@ -289,12 +291,12 @@ The `-c` flag lets you include additional config files, each supplying extra par
 - `<genome name>.config` adds paths specific to the genome being used.
 - `shared_resources.config` points to the Kraken2, FastQ Screen, and Arriba databases, which are shared across all genome builds.
 
-### About
+## About
 
 This repo was originally generated from the [CCBR Nextflow Template](https://github.com/CCBR/CCBR_NextflowTemplate).
 The template takes inspiration from nektool[^26] and the nf-core[^27] template, and relies on nf-core[^28] and custom modules[^29].
 
-### Help & Contributing
+## Help & Contributing
 
 Come across a **bug**? Open an [issue](https://github.com/CCBR/RENEE_NF/issues) and include a minimal reproducible example.
 
@@ -302,7 +304,13 @@ Have a **question**? Ask it in [discussions](https://github.com/CCBR/RENEE_NF/di
 
 Want to **contribute** to this project? Check out the [contributing guidelines](.github/contributing.md).
 
-### References
+<hr>
+<p align="center">
+	<a href="#renee_nf">Back to Top</a>
+</p>
+<hr>
+
+## References
 
 [^1]: Sevilla, S., Sovacool, K., Kuhn, S., Tandon, M., Koparde, V. RENEE: Rna sEquencing aNalysis pipElinE (Snakemake version). <https://github.com/CCBR/RENEE>. DOI: <https://doi.org/10.5281/zenodo.10553198>.
 
