@@ -128,4 +128,66 @@ nextflow_workflow {
 
     }
 
+    test("sarscov2 - single_end - stub - small RNA (small_rna = true)") {
+        config "./nextflow.config"
+        options "-stub"
+
+        setup {
+            run("STAR_GENOMEGENERATE") {
+                script "../../../../modules/nf-core/star/genomegenerate/main.nf"
+                process {
+                    """
+                    input[0] = Channel.of([
+                        [ id:'test_fasta' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_fasta, checkIfExists: true) ]
+                    ])
+                    input[1] = Channel.of([
+                        [ id:'test_gtf' ],
+                        [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                    ])
+                    """
+                }
+            }
+        }
+
+        when {
+            params {
+                sjdb_placeholder_tab = "${projectDir}/assets/sjdb_placeholder.SJ.out.tab"
+                star_2_pass_basic    = false
+                small_rna            = true
+            }
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test', single_end:true ],
+                    [ file(params.test_data['sarscov2']['illumina'].test_1_fastq_gz, checkIfExists: true) ]
+                ])
+                input[1] = STAR_GENOMEGENERATE.out.index
+                input[2] = Channel.of([
+                    [ id:'test_gtf' ],
+                    [ file(params.test_data['sarscov2']['genome'].genome_gtf, checkIfExists: true) ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.pass2_log.collect { meta, f -> file(f).name }.sort(),
+                    // samtools-sorted BAM, named as the RENEE star_small rule names it
+                    workflow.out.pass2_bam.collect { meta, f -> file(f).name },
+                    workflow.out.pass2_sj,
+                    workflow.out.pass2_reads_per_gene,
+                    workflow.out.pass1_sj,
+                    workflow.out.pass1_log,
+                    workflow.out.sjdb,
+                    workflow.out.findAll { key, val -> key.startsWith('versions') }
+                ).match() }
+            )
+        }
+
+    }
+
 }
