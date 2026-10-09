@@ -1,0 +1,23 @@
+nextflow_workflow {
+
+    name "Test Subworkflow READ_SAMPLES"
+    script "../main.nf"
+    workflow "CHECK_INPUT"
+
+    test("projectDir FASTQ paths resolve") {
+        when {
+            workflow {
+                """
+                input[0] = file("${projectDir}/assets/samplesheet_small.csv", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.reads[0][1].every { new File(it.toString()).exists() } }
+            )
+        }
+    }
+}
