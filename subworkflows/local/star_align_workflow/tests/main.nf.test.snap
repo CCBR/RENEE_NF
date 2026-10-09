@@ -28,25 +28,25 @@
                 ]
             ],
             [
-
+                
             ],
             [
-
+                
             ],
             [
-
+                
             ],
             {
-
+                
             }
         ],
-        "timestamp": "2026-10-08T17:00:00.000000000",
+        "timestamp": "2026-10-09T13:26:27.390574551",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
         }
     },
-    "sarscov2 - paired_end -stub - multi-sample two-pass (star_2_pass_basic = false)": {
+    "sarscov2 - paired_end - stub - multi-sample two-pass (star_2_pass_basic = false)": {
         "content": [
             [
                 "test.p2.Log.final.out",
@@ -87,10 +87,10 @@
                 "uniq.filtered.SJ.out.tab:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
             {
-
+                
             }
         ],
-        "timestamp": "2026-07-08T13:01:26.310885935",
+        "timestamp": "2026-10-09T13:26:00.404896879",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"
@@ -122,10 +122,10 @@
                 ]
             ],
             {
-
+                
             }
         ],
-        "timestamp": "2026-07-08T13:09:23.457714623",
+        "timestamp": "2026-10-09T13:26:13.188693349",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.0"

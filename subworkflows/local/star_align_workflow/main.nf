@@ -5,7 +5,7 @@ include { STAR_ALIGN as STAR_ALIGN_SMALL  } from '../../../modules/nf-core/star/
 include { STAR_SJDB_FILTER }               from '../../../modules/local/star_sjdb_filter'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_SMALL } from '../../../modules/CCBR/samtools/sort/main.nf'
 
-workflow STAR_ALIGN {
+workflow STAR_ALIGN_WF {
     take:
         ch_reads       // channel: [ meta, [ reads ] ]
         ch_star_index  // channel: path
