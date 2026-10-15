@@ -1,0 +1,29 @@
+nextflow_pipeline {
+
+    name "Test RENEE single-end reporting"
+    script "../main.nf"
+    profile "ci_stub"
+
+    tag "workflow"
+    tag "single_end"
+
+    test("single-end-only run emits MultiQC matrix and RNA report") {
+        config "./nextflow.config"
+        options "-stub"
+
+        when {
+            params {
+                input = "${projectDir}/tests/test_data/single_end_samplesheet.csv"
+                outputDir = "${outputDir}"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path("${outputDir}/Reports/multiqc_matrix.tsv").exists() },
+                { assert path("${outputDir}/Reports/RNA_Report.html").exists() }
+            )
+        }
+    }
+}

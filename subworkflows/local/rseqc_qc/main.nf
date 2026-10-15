@@ -16,8 +16,13 @@ workflow RSEQC_QC {
         // Compute read distributions over genomic features
         RSEQC_READDISTRIBUTION(ch_bam_bai, ch_bed_ref)
 
-        // Calculate inner distance between paired-end read mates
-        RSEQC_INNERDISTANCE(ch_bam_bai, ch_bed_ref)
+        // Calculate inner distance between paired-end read mates.
+        // inner_distance.py requires mate pairs, so single-end samples are
+        // filtered out (RENEE's Snakemake inner_distance rule is paired-end only).
+        RSEQC_INNERDISTANCE(
+            ch_bam_bai.filter { meta, bam, bai -> !meta.single_end },
+            ch_bed_ref
+        )
 
         // Compute transcript integrity numbers (TIN) for canonical protein-coding genes
         RSEQC_TIN(ch_bam_bai, ch_tin_ref)

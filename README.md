@@ -111,6 +111,7 @@ S4,KO,/path/to/KO_S4.R1.fastq.gz,/path/to/KO_S4.R2.fastq.gz
 ```
 
 For single-end libraries, leave `fastq_2` empty but keep the trailing comma, e.g. `S4,KO,/path/to/KO_S4.R1.fastq.gz,`. Single-end and paired-end rows may be mixed in the same samplesheet.
+Steps that require mate pairs are skipped for single-end libraries: insert-size estimation with `bbmerge`, RSeQC `inner_distance`, and Arriba fusion calling.
 
 Notes:
 

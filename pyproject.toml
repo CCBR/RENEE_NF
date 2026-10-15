@@ -79,7 +79,7 @@ RENEE_NF = { path = ".", editable = true }
 channels = ["bioconda"]
 
 [tool.pixi.feature.test.target.osx-arm64.dependencies]
-nextflow = ">=25.10.4,<26"
+nextflow = ">=25.10.0,<26"
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
