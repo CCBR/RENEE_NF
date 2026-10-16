@@ -6,9 +6,9 @@ requires = [
 build-backend = 'setuptools.build_meta'
 
 [project]
-name = 'RENEE_NF'
+name = 'RENEE'
 dynamic = ['version','readme']
-description = "Nextflow implementation of RENEE, an open-source, reproducible, and scalable solution for analyzing RNA-seq data. For original implementation see : https://ccbr.github.io/RENEE/latest/"
+description = "RENEE: an open-source, reproducible, and scalable Nextflow pipeline for analyzing RNA-seq data"
 keywords = ["bioinformatics", "nextflow"]
 authors = [
     {name = "Kelly Sovacool", email = "kelly.sovacool@nih.gov"},
@@ -50,7 +50,7 @@ test = [
 ]
 
 [project.scripts]
-renee_nf = "renee_nf.src.__main__:main"
+renee = "renee.src.__main__:main"
 
 [project.urls]
 Homepage = "https://ccbr.github.io/RENEE_NF"
@@ -59,7 +59,7 @@ Repository = "https://github.com/CCBR/RENEE_NF"
 Changelog = "https://github.com/CCBR/RENEE_NF/blob/main/CHANGELOG.md"
 
 [tool.setuptools.package-dir]
-renee_nf = "."
+renee = "."
 
 [tool.setuptools.package-data]
 "*" = ["CITATION.cff", "LICENSE", "VERSION", "main.nf", "nextflow.config", "nextflow_schema.json", "assets/**", "bin/**", "conf/**", "lib/**", "modules/**", "subworkflows/**", "workflows/**", "tests/**"]
@@ -73,7 +73,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64"]
 
 [tool.pixi.pypi-dependencies]
-RENEE_NF = { path = ".", editable = true }
+RENEE = { path = ".", editable = true }
 
 [tool.pixi.feature.test]
 channels = ["bioconda"]

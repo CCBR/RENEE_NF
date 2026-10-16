@@ -24,12 +24,12 @@ include { arriba as ARRIBA }    from './subworkflows/local/arriba/main'
 
 
 workflow version {
-    println "RENEE_NF ${workflow.manifest.version}"
+    println "RENEE ${workflow.manifest.version}"
 }
 
 workflow LOG {
     log.info """\
-            RENEE_NF $workflow.manifest.version
+            RENEE $workflow.manifest.version
             =============
             cmd line     : $workflow.commandLine
             start time   : $workflow.start

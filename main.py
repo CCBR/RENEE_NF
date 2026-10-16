@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# this script gets called by bin/renee_nf
+# Run with python main.py to use the renee CLI without installing it.
 import os
 import re
 import sys
