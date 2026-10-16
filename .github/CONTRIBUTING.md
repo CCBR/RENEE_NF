@@ -1,4 +1,4 @@
-# Contributing to RENEE_NF
+# Contributing to RENEE
 
 ## Proposing changes with issues
 
@@ -15,7 +15,7 @@ so others will know you're working on it.
 We use [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow)
 as our collaboration process.
 Follow the steps below for detailed instructions on contributing changes to
-RENEE_NF.
+RENEE.
 
 [![GitHub Flow diagram](https://raw.githubusercontent.com/CCBR/CCBR_NextflowTemplate/main/.github/img/GitHub-Flow_bg-white.png)](https://lucid.app/lucidchart/03793827-a844-45c3-a3c6-40841ea7a19f/view)
 

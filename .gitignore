@@ -55,3 +55,6 @@ docs/dev
 .pixi/*
 !.pixi/config.toml
 pixi.lock
+
+# uv
+uv.lock

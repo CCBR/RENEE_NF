@@ -1,4 +1,4 @@
-# RENEE_NF
+# RENEE
 
 **R**na s**E**quencing a**N**alysis pip**E**lin**E** in Nextflow
 
@@ -8,7 +8,9 @@
 > [!WARNING]
 > This pipeline is under active development. We are accepting beta testers! Please report any issues you encounter (see [Help & Contributing](#help--contributing)).
 
-This is a Nextflow port of [RENEE](https://ccbr.github.io/RENEE/latest/), an open-source, reproducible, and scalable pipeline for analyzing RNA-seq data.
+RENEE is an open-source, reproducible, and scalable pipeline for analyzing RNA-seq data.
+Starting with v3.0.0, RENEE uses Nextflow and is run with the `renee` CLI.
+Versions below v3.0.0 use Snakemake ([see legacy Snakemake pipeline here](https://ccbr.github.io/RENEE/latest)).
 See the website for detailed information, documentation, and examples:
 <https://ccbr.github.io/RENEE_NF/>
 
@@ -16,7 +18,7 @@ See the website for detailed information, documentation, and examples:
 
 RNA-sequencing (_RNA-seq_) has a wide variety of applications. This popular transcriptome profiling technique can be used to quantify gene and isoform expression, detect alternative splicing events, predict gene-fusions, call variants and much more.
 
-**RENEE_NF** is a Nextflow port of [RENEE](https://github.com/CCBR/RENEE)[^1] (originally implemented in Snakemake[^2]), a comprehensive, open-source RNA-seq pipeline that relies on technologies like [Docker](https://www.docker.com/why-docker)[^3] and [Singularity/Apptainery](https://apptainer.org/docs/)[^4] to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Nextflow](https://docs.seqera.io/nextflow/)[^5], a flexible and scalable workflow management system, to submit jobs to a cluster or cloud provider.
+**RENEE**[^1] was originally implemented in Snakemake[^2] and has been rewritten in Nextflow for v3.0.0 and later. This comprehensive, open-source RNA-seq pipeline relies on technologies like [Docker](https://www.docker.com/why-docker)[^3] and [Singularity/Apptainery](https://apptainer.org/docs/)[^4] to maintain the highest-level of reproducibility. The pipeline consists of a series of data processing and quality-control steps orchestrated by [Nextflow](https://docs.seqera.io/nextflow/)[^5], a flexible and scalable workflow management system, to submit jobs to a cluster or cloud provider.
 
 ## Overview
 
@@ -67,7 +69,7 @@ Pre-built reference genomes are provided on Biowulf and FRCE for a number of dif
 <https://ccbr.github.io/RENEE/latest/RNA-seq/Resources/#1-reference-genomes>
 
 If you would like to use a custom reference that is not already listed above,
-you can prepare it with `renee_nf run --build`. See [Building a Custom Genome on Biowulf](#building-a-custom-genome-on-biowulf)
+you can prepare it with `renee run --build`. See [Building a Custom Genome on Biowulf](#building-a-custom-genome-on-biowulf)
 or [Setup for Generic SLURM Cluster](#setup-for-generic-slurm-cluster).
 
 ### Dependencies
@@ -83,7 +85,7 @@ or [Setup for Generic SLURM Cluster](#setup-for-generic-slurm-cluster).
 
 <hr>
 <p align="center">
-	<a href="#renee_nf">Back to Top</a>
+    <a href="#renee">Back to Top</a>
 </p>
 <hr>
 
@@ -116,8 +118,8 @@ Steps that require mate pairs are skipped for single-end libraries: insert-size 
 Notes:
 
 - Each library is named `<sample>_<replicate>` in the output (e.g. `WT_S1`), so every `sample`/`replicate` combination must be unique. Stick to letters, numbers, and underscores.
-- Use absolute paths to FastQ files. `renee_nf run` launches Nextflow from the `--output` directory, so relative paths are resolved against that directory, not where you ran the command.
-- Bundled sample sheets use the literal `${projectDir}` prefix to refer to files in the pipeline installation; the workflow expands this marker when it reads the sheet, independent of the `renee_nf init` location.
+- Use absolute paths to FastQ files. `renee run` launches Nextflow from the `--output` directory, so relative paths are resolved against that directory, not where you ran the command.
+- Bundled sample sheets use the literal `${projectDir}` prefix to refer to files in the pipeline installation; the workflow expands this marker when it reads the sheet, independent of the `renee init` location.
 - All FastQ files are checked with fastQValidator before analysis; the run stops and lists any files that fail validation.
 - Example samplesheets are available in [`assets/`](assets/) (`samplesheet.csv`, `samplesheet_single_read.csv`).
 
@@ -127,7 +129,7 @@ Load the ccbrpipeliner module:
 
 > [!NOTE]
 >
-> `renee_nf` will be available in `ccbrpipeliner` release 9 and later.
+> RENEE v3.0.0 and later will be available as `renee` in `ccbrpipeliner` release 9 and later. Check `renee --version` to distinguish it from older Snakemake releases.
 
 ```sh
 # grab an interactive node
@@ -143,14 +145,14 @@ RENEE supports two execution modes:
 
 ```sh
 # View the help page for more information
-renee_nf run --help
+renee run --help
 # Initialize the output directory
-renee_nf init --output /data/$USER/RNA_hg38
+renee init --output /data/$USER/RNA_hg38
 cd /data/$USER/RNA_hg38
 # Edit your samplesheet with your preferred text editor
 nano assets/samplesheet.csv
 # Launch the pipeline
-renee_nf run \
+renee run \
     --mode slurm \
     --input assets/samplesheet.csv \
     --genome hg38_36 \
@@ -158,7 +160,7 @@ renee_nf run \
 
 # Tip: add the -preview flag to see which processes will run
 # without executing them.
-renee_nf run \
+renee run \
     -preview \
     --mode local \
     --input assets/samplesheet.csv \
@@ -176,10 +178,10 @@ If the genome or annotation you need is not one of the [pre-built reference geno
 sinteractive --mem=16g --cpus-per-task=2
 module load ccbrpipeliner/9
 
-renee_nf init \
+renee init \
     --output /data/$USER/renee_refs
 
-renee_nf run \
+renee run \
     -profile biowulf,slurm \
     --build \
     --publish_dir_mode copy \
@@ -194,10 +196,10 @@ When the build finishes, the genome resources and a `<genome name>.config` file 
 Pass that config with `-c` to analyze your samples using the custom genome:
 
 ```sh
-renee_nf init \
+renee init \
     --output /data/$USER/my_project
 
-renee_nf run \
+renee run \
     -profile biowulf,slurm \
     --input samplesheet.csv \
     --genome <genome name> \
@@ -216,11 +218,11 @@ Skip the below section if you are running the pipeline on Biowulf.
 
 You will need nextflow and a container engine such as docker, podman, or singularity/apptainer.
 
-If you would like to use the `renee_nf` wrapper CLI, you will need python3 and then install it with pip or uv:
+If you would like to use the `renee` wrapper CLI, you will need Python 3.11 or later and then install it with pip or uv:
 
 ```sh
 pip3 install git+https://github.com/CCBR/RENEE_NF
-renee_nf --help
+renee --help
 ```
 
 Alternatively, you can call the nextflow pipeline directly:
@@ -236,10 +238,10 @@ First, the genome must be built from the corresponding FASTA and GTF files. Addi
 <!-- TODO: Mention setting up temp dir and SIF cache. -->
 
 ```sh
-renee_nf init \
+renee init \
     --output path/to/ref_dir
 
-renee_nf run \
+renee run \
   -profile <singularity | docker> \
   --mode <local | slurm> \
   --build \
@@ -258,7 +260,7 @@ If `<genome name>` (the value passed to `--genome`) contains `hg19`, `hg38`, `mm
 When building another genome, skip re-downloading the large shared resources files by omitting `--download_shared_resources` and instead including `-c path/to/ref_dir/shared_resources.config`.
 
 ```sh
-renee_nf run \
+renee run \
     -profile <singularity | docker> \
     -c path/to/ref_dir/shared_resources.config \
     --mode <local | slurm> \
@@ -275,10 +277,10 @@ renee_nf run \
 Once the genome resources have been built, run the pipeline against your samples. Replace `path/to/ref_dir` with the output directory used to build the genome resources above, and `<genome name>` with the genome name chosen there.
 
 ```sh
-renee_nf init \
+renee init \
   --output path/to/project
 
-renee_nf run \
+renee run \
     -profile <singularity | docker> \
     --mode <local | slurm> \
     --input input.csv \
@@ -308,7 +310,7 @@ Want to **contribute** to this project? Check out the [contributing guidelines](
 
 <hr>
 <p align="center">
-	<a href="#renee_nf">Back to Top</a>
+    <a href="#renee">Back to Top</a>
 </p>
 <hr>
 
