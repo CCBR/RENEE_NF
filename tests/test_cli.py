@@ -51,7 +51,9 @@ def test_run_repository_name(tmp_path, monkeypatch):
     nextflow_run = Mock()
     monkeypatch.setattr("ccbr_tools.pipeline.nextflow.run", nextflow_run)
 
-    invoke("run", "--main", "CCBR/RENEE_NF", "--output", str(tmp_path), "--mode", "local")
+    invoke(
+        "run", "--main", "CCBR/RENEE_NF", "--output", str(tmp_path), "--mode", "local"
+    )
 
     nextflow_run.assert_called_once_with(
         nextfile_path="CCBR/RENEE_NF",
