@@ -2,13 +2,17 @@ import nextflow.Channel
 import nextflow.Nextflow
 
 class Utils {
-    // Fixed location for shared resources (FastQ Screen/Kraken2/Arriba
-    // databases) -- always <outputDir>/shared_resources, with no separate
-    // override. Used both as the DOWNLOAD_DATABASES publish destination and,
-    // in INITIAL_QC, to auto-detect a prior build's databases for an
-    // analysis run that reuses the same --outputDir.
+    public static String genomeName(params) {
+        return params.ref_name
+            ? "${params.ref_name}_${params.gtf_ver ?: 'custom'}"
+            : (params.genome ?: 'custom_genome')
+    }
+
+    // Shared download destination and analysis lookup directory.
     public static String sharedResourcesDir(params) {
-        return "${Nextflow.file(params.outputDir).toAbsolutePath()}/shared_resources"
+        return params.shared_resources
+            ? Nextflow.file(params.shared_resources).toAbsolutePath().toString()
+            : "${Nextflow.file(params.outputDir).toAbsolutePath()}/shared_resources"
     }
 
     // Create a value channel for a configured path, or an empty channel when unset.

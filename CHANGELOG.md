@@ -6,6 +6,8 @@
 
 ### New features
 
+- Restore Snakemake-style launcher initialization, FASTQ-list input, reference building, container caching, scheduler controls, and portable NIDAP outputs; document CLI migration differences. (@kelly-sovacool)
+
 - Build mode now downloads and creates all files for config, such as arriba files, and qualimap info and rsem refs
 - Added `kraken2` module for taxonomic classification of reads. (#66, @AlecSilver)
 - Added `MultiQC` report (#68, @AlecSilver)

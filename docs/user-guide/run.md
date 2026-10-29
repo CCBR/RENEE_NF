@@ -1,52 +1,53 @@
-This should include all information about the various run commands provided within the pipeline.
-
 # 3. Running the Pipeline
 
-## 3.1 Pipeline Overview
+RENEE 3 and later run with Nextflow. Use the installed `renee` command,
+or `bin/renee_nf` from a checkout with the Python dependencies activated.
+For every legacy option and the changes in its behavior, see
+[Migrating from Snakemake](../snakemake-backward-compatibility.md).
 
-The Snakemake workflow has a multiple options:
+## 3.1 Preview and run
 
-```
-Usage: bash ./data/CCBR_Pipeliner/Pipelines/CARLISLE/carlisle -m/--runmode=<RUNMODE> -w/--workdir=<WORKDIR>
-1.  RUNMODE: [Type: String] Valid options:
-    *) init : initialize workdir
-    *) run : run with slurm
-    *) reset : DELETE workdir dir and re-init it
-    *) dryrun : dry run snakemake to generate DAG
-    *) unlock : unlock workdir if locked by snakemake
-    *) runlocal : run without submitting to sbatch
-    *) testrun: run on cluster with included test dataset
-2.  WORKDIR: [Type: String]: Absolute or relative path to the output folder with write permissions.
-```
+```bash
+# Preview without executing tasks or submitting a SLURM driver.
+renee run --input reads/*.R?.fastq.gz --genome hg38_36 \
+    --output analysis --dry-run
 
-## 3.2 Commands explained
+# Submit the driver and tasks to SLURM, waiting for completion.
+renee run --input reads/*.R?.fastq.gz --genome hg38_36 \
+    --output analysis --mode slurm --wait
 
-The following explains each of the command options:
-
-- Preparation Commands
-  - init (REQUIRED): This must be performed before any Snakemake run (dry, local, cluster) can be performed. This will copy the necessary config, manifest and Snakefiles needed to run the pipeline to the provided output directory.
-  - dryrun (OPTIONAL): This is an optional step, to be performed before any Snakemake run (local, cluster). This will check for errors within the pipeline, and ensure that you have read/write access to the files needed to run the full pipeline.
-- Processing Commands
-  - local: This will run the pipeline on a local node. NOTE: This should only be performed on an interactive node.
-  - run: This will submit a master job to the cluster, and subsequent sub-jobs as needed to complete the workflow. An email will be sent when the pipeline begins, if there are any errors, and when it completes.
-- Other Commands (All optional)
-  - unlock: This will unlock the pipeline if an error caused it to stop in the middle of a run.
-  - testrun: This will run a test of the pipeline with test data
-
-To run any of these commands, follow the the syntax:
-
-```
-bash ./data/CCBR_Pipeliner/Pipelines/CARLISLE/carlisle --runmode=COMMAND --workdir=/path/to/output/dir
+# Or run locally with a container profile and explicit resource budgets.
+renee run --input samplesheet.csv --genome hg38_36 \
+    --output analysis --mode local --threads 4 --max_memory '12 GB' \
+    -profile singularity
 ```
 
-## 3.3 Typical Workflow
+New launch directories are initialized automatically; `renee init --output analysis`
+is optional. Results default to `analysis/results/`. Change the publication root
+with `--outputDir`; change persistent task storage with `-work-dir`.
+On a generic cluster or local system, supply a reference config if no genome
+preset is available, for example `--genome reference-build/results/genome/hg38_47.config`.
 
-A typical command workflow, running on the cluster, is as follows:
+## 3.2 Parameters and resuming
 
-```
-bash ./data/CCBR_Pipeliner/Pipelines/CARLISLE/carlisle --runmode=init --workdir=/path/to/output/dir
+Pipeline parameters use double dashes and underscores: `--small_rna`,
+`--star_2_pass_basic`, `--shared_resources`, and `--create_nidap_folder`.
+Nextflow engine options use single dashes: `-profile`, `-params-file`, and `-c`.
+See [pipeline parameters](params.md) for configuration-file usage.
 
-bash ./data/CCBR_Pipeliner/Pipelines/CARLISLE/carlisle --runmode=dryrun --workdir=/path/to/output/dir
+Runs use Nextflow `-resume` automatically. Preserve both the `.nextflow/` session
+metadata and the task work directory. Use `--forceall` (or `-F`) to disable
+resume and execute tasks afresh. Do not reuse a Snakemake working directory.
 
-bash ./data/CCBR_Pipeliner/Pipelines/CARLISLE/carlisle --runmode=run --workdir=/path/to/output/dir
-```
+## 3.3 Other commands
+
+- `renee build`: build a reference from FASTA and GTF files.
+- `renee cache`: populate a Nextflow-compatible Singularity image cache.
+- `renee debug`: show the installed pipeline directory and version.
+- `renee unlock --output analysis`: explain automatic Nextflow lock handling;
+  no session files are deleted.
+- `renee cite`: print the pipeline citation.
+
+Use `renee COMMAND --help` for launcher options and
+[the migration guide](../snakemake-backward-compatibility.md) for complete
+reference-building, caching, and scheduler examples.

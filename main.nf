@@ -57,9 +57,8 @@ workflow {
         analysis_mode = !params.build && !params.build_shared_resources_only
 
         // Download shared databases in either full build mode or resources-only mode.
-        // download_shared_resources is the on/off switch; the destination is always
-        // <outputDir>/shared_resources (Utils.sharedResourcesDir), which INITIAL_QC
-        // also auto-detects from for an analysis run reusing the same --outputDir.
+        // download_shared_resources is the on/off switch. Utils.sharedResourcesDir
+        // selects --shared_resources or <outputDir>/shared_resources, reused by INITIAL_QC.
         if (params.build_shared_resources_only || (params.build && params.download_shared_resources)) {
             log.info "Shared resources build enabled. Downloading FastQ Screen and Kraken2 databases."
             DOWNLOAD_DATABASES()
@@ -82,7 +81,8 @@ workflow {
                     first_file ? first_file.parent.toString() : null
                 }
         } else {
-            ch_arriba_db_dir = Channel.value([]) // Use ([]) instead of (null)
+            def shared_arriba = file("${Utils.sharedResourcesDir(params)}/arriba_v2.5.0/database")
+            ch_arriba_db_dir = Channel.value(shared_arriba.exists() ? shared_arriba.toString() : [])
         }
 
         if (params.build_shared_resources_only) {
@@ -245,6 +245,14 @@ workflow {
 
             RNA_REPORT(ch_rna_report_input)
         }
+        ch_nidap = Channel.empty()
+        if (analysis_mode && params.create_nidap_folder) {
+            ch_nidap = ch_nidap
+                .mix(RNA_REPORT.out.html.map { meta, report -> report })
+                .mix(MULTIQC.out.report.map { meta, report -> report })
+                .mix(RSEM.out.gene_fpkm)
+                .mix(RSEM.out.isoform_fpkm)
+        }
         workflow.onComplete = {
             if (!workflow.stubRun && !workflow.commandLine.contains('-preview')) {
                 def message = Utils.spooker(workflow)
@@ -255,6 +263,7 @@ workflow {
         }
 
     publish:
+        nidap = ch_nidap
         // In build genome mode, only publish the genome conf file, otherwise publish all outputs
         prepare_genome_conf = params.build ? prepare_genome_conf : Channel.empty()
 
@@ -345,25 +354,29 @@ workflow {
 }
 
 output {
+    nidap {
+        path 'NIDAP'
+        mode 'copy'
+    }
     // build outputs
     prepare_genome_conf {
         path { file -> "genome/" }
         mode 'copy'
         }
     fastq_screen_databases {
-        path { meta, dir -> "shared_resources/fastq_screen_db/" }
+        path { meta, dir -> "${params.shared_resources ?: 'shared_resources'}/fastq_screen_db/" }
         mode 'copy'
         }
     kraken_databases {
-        path { meta, dir -> "shared_resources/" }
+        path { meta, dir -> "${params.shared_resources ?: 'shared_resources'}/" }
         mode 'copy'
         }
     fastq_screen_conf1 {
-        path { file -> "shared_resources/fastq_screen_db/" }
+        path { file -> "${params.shared_resources ?: 'shared_resources'}/fastq_screen_db/" }
         mode 'copy'
         }
     fastq_screen_conf2 {
-        path { file -> "shared_resources/fastq_screen_db/" }
+        path { file -> "${params.shared_resources ?: 'shared_resources'}/fastq_screen_db/" }
         mode 'copy'
         }
     arriba_database {
@@ -372,7 +385,7 @@ output {
         // Each of the 4 mixed emits (blacklist/cytobands/protein_domains/
         // known_fusions) is a glob match across all genome builds, so this
         // closure receives a list of files, not a single one.
-        path { files -> "shared_resources/arriba_v2.5.0/database/" }
+        path { files -> "${params.shared_resources ?: 'shared_resources'}/arriba_v2.5.0/database/" }
         mode 'copy'
         }
     shared_resources_conf {

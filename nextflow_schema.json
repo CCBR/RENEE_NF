@@ -5,6 +5,77 @@
     "description": "Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE_NF/",
     "type": "object",
     "$defs": {
+        "compatibility_options": {
+            "title": "Snakemake compatibility options",
+            "type": "object",
+            "properties": {
+                "ref_fa": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Legacy-compatible alias for genome_fasta."
+                },
+                "ref_gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Legacy-compatible alias for genes_gtf."
+                },
+                "ref_name": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_.-]*$",
+                    "description": "Reference name; combined with gtf_ver to name the built genome."
+                },
+                "gtf_ver": {
+                    "type": ["string", "integer", "number"],
+                    "pattern": "^[a-zA-Z0-9_.-]+$",
+                    "description": "Annotation version used with ref_name."
+                },
+                "small_genome": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Compatibility flag: STAR already chooses a genome-size-dependent genomeSAindexNbases for all custom references, including small genomes."
+                },
+                "shared_resources": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Shared database root. Build mode downloads databases here; analysis reuses FastQ Screen, Kraken2 and Arriba resources here."
+                },
+                "create_nidap_folder": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Copy RNA and MultiQC reports and gene/isoform FPKM tables into a portable NIDAP directory."
+                },
+                "partition": {
+                    "type": "string",
+                    "description": "SLURM partition (launcher applies this to the driver as well as tasks)."
+                },
+                "time": {
+                    "type": "string",
+                    "description": "Task walltime limit, accepting SLURM D-HH:MM:SS or HH:MM:SS and Nextflow durations. The launcher also applies it to the SLURM driver."
+                },
+                "max_jobs": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Maximum tasks queued by the executor."
+                },
+                "threads": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Total local executor CPUs and per-task CPU cap."
+                },
+                "tmp_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Task scratch directory. Nextflow's persistent work directory is controlled separately with -work-dir."
+                },
+                "sif_cache": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Nextflow Singularity/Apptainer image cache directory."
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -16,7 +87,7 @@
                     "format": "file-path",
                     "exists": true,
                     "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
+                    "pattern": "^.+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
@@ -223,6 +294,9 @@
                 }
             },
             "allOf": [
+                {
+                    "$ref": "#/$defs/compatibility_options"
+                },
                 {
                     "if": {
                         "properties": {

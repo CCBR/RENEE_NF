@@ -101,6 +101,7 @@ nav:
       - 4. Expected Output: user-guide/output.md
       - 5. Running Test Data: user-guide/test-info.md
       - Troubleshooting: user-guide/troubleshooting.md
+      - Migrating from Snakemake: snakemake-backward-compatibility.md
   - FAQ:
       - How to contribute: contributing.md
       - Contributors: contributors.md

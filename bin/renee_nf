@@ -2,6 +2,6 @@
 # script that allows the CLI to work out-of-the-box
 # without the need to install it via pip first
 
-TOOLDIR=$(realpath $(dirname $(dirname ${BASH_SOURCE})))
+TOOLDIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 
-${TOOLDIR}/main.py "$@"
+exec python "${TOOLDIR}/main.py" "$@"
