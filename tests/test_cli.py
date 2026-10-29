@@ -348,3 +348,10 @@ def test_generated_samplesheet_schema_accepts_spaces(tmp_path):
     assert re.fullmatch(
         pattern, str(tmp_path / "my analysis/log/launcher_samplesheet.csv")
     )
+
+
+def test_schema_definitions_are_referenced_at_root():
+    """Keep every parameter group in the root allOf required by nf-core lint."""
+    schema = json.loads(repo_base("nextflow_schema.json").read_text())
+    references = [entry["$ref"] for entry in schema["allOf"]]
+    assert sorted(references) == sorted(f"#/$defs/{name}" for name in schema["$defs"])

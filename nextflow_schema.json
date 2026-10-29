@@ -295,9 +295,6 @@
             },
             "allOf": [
                 {
-                    "$ref": "#/$defs/compatibility_options"
-                },
-                {
                     "if": {
                         "properties": {
                             "build": {
@@ -388,6 +385,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/$defs/compatibility_options"
+        },
         {
             "$ref": "#/$defs/input_output_options"
         },
