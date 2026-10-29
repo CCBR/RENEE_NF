@@ -47,4 +47,4 @@ body:
         * Executor _(eg. slurm, local, awsbatch)_
         * Container engine: _(e.g. Docker, Singularity)_
         * OS _(eg. Ubuntu Linux, macOS)_
-        * Version of CCBR/RENEE_NF _(eg. 1.0, 1.8.2)_
+        * Version of RENEE _(eg. 3.0.0)_

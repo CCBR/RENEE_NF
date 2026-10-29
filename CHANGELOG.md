@@ -1,8 +1,8 @@
-## RENEE_NF development version
+## RENEE development version
 
 ### API-breaking changes
 
-- None.
+- Rename the Nextflow implementation to RENEE and its CLI to `renee` for the planned v3.0.0 release. RENEE versions below v3.0.0 use Snakemake. (@kelly-sovacool)
 
 ### New features
 

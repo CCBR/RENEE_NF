@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/CCBR/RENEE_NF/main/nextflow_schema.json",
-    "title": "CCBR/RENEE_NF pipeline parameters",
-    "description": "Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE/latest/",
+    "title": "RENEE pipeline parameters",
+    "description": "Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE_NF/",
     "type": "object",
     "$defs": {
         "input_output_options": {
