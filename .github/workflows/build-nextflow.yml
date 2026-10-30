@@ -29,7 +29,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 30
     strategy:
       matrix:
         python-version:
@@ -69,13 +69,13 @@ jobs:
         run: |
           mkdir -p tmp && pushd tmp
           renee init
-          renee run -profile ci_stub -stub --mode local
+          renee run -profile ci_stub,docker -stub --mode local
           popd
       - name: Build mode stub run
         run: |
           mkdir -p tmp && pushd tmp
           renee init
-          renee run -profile ci_stub \
+          renee run -profile ci_stub,docker \
             -stub --mode local --outputDir output \
             --build \
             --download_shared_resources
