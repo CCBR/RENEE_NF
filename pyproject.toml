@@ -36,6 +36,7 @@ dependencies = [
     "ccbr_tools@git+https://github.com/CCBR/Tools@v0.7",
     "cffconvert@git+https://github.com/citation-file-format/cffconvert@b6045d78aac9e02b039703b030588d54d53262ac",
     "Click >= 8.1.3",
+    "PySimpleGUI-4-foss < 5",
     "pyyaml >= 6.0"
 ]
 

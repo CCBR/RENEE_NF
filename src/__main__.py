@@ -281,6 +281,14 @@ def debug():
     click.echo(ccbr_tools.pkg_util.get_version(repo_base=repo_base))
 
 
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
+def gui():
+    """Select inputs, preview, and submit a workflow using a desktop GUI."""
+    from .gui import launch_gui
+
+    launch_gui(repo_base())
+
+
 @click.command()
 @click.option("--output", required=True, type=click.Path(exists=True, file_okay=False))
 def unlock(output):
@@ -324,6 +332,7 @@ cli.add_command(build)
 cli.add_command(cache)
 cli.add_command(debug)
 cli.add_command(unlock)
+cli.add_command(gui)
 
 
 def main():

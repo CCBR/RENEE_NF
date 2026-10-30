@@ -6,6 +6,7 @@
 
 ### New features
 
+- Restore the original PySimpleGUI `renee gui`, wired to the Nextflow launcher for preview and SLURM submission. (#103, @kelly-sovacool)
 - Restore Snakemake-style launcher initialization, FASTQ-list input, reference building, container caching, scheduler controls, and portable NIDAP outputs; document CLI migration differences. (#103, @kelly-sovacool)
 
 - Build mode now downloads and creates all files for config, such as arriba files, and qualimap info and rsem refs

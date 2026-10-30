@@ -41,6 +41,10 @@ resume and execute tasks afresh. Do not reuse a Snakemake working directory.
 
 ## 3.3 Other commands
 
+- `renee gui`: use the original PySimpleGUI form to select a FASTQ folder,
+  output folder, and genome; review the preview before confirming SLURM
+  submission. Requires Tk support and a graphical display. See the
+  [GUI migration notes](../snakemake-backward-compatibility.md#desktop-launcher-gui).
 - `renee build`: build a reference from FASTA and GTF files.
 - `renee cache`: populate a Nextflow-compatible Singularity image cache.
 - `renee debug`: show the installed pipeline directory and version.

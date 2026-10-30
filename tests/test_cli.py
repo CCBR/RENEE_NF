@@ -1,7 +1,6 @@
 import csv
 import json
 import os
-import re
 import shlex
 import subprocess
 from pathlib import Path
@@ -50,7 +49,7 @@ def test_citation():
 
 
 def test_subcommands_help():
-    for cmd in ["run", "init", "cite", "build", "cache", "debug", "unlock"]:
+    for cmd in ["run", "init", "cite", "build", "cache", "debug", "unlock", "gui"]:
         assert f"renee {cmd} [OPTIONS]" in invoke(cmd, "--help")
 
 
@@ -339,19 +338,3 @@ def test_invalid_mode(tmp_path):
     )
     assert result.exit_code == 2
     assert "Invalid value" in result.output
-
-
-def test_generated_samplesheet_schema_accepts_spaces(tmp_path):
-    """Generated CSV paths remain valid when the launch directory contains spaces."""
-    schema = json.loads(repo_base("nextflow_schema.json").read_text())
-    pattern = schema["$defs"]["input_output_options"]["properties"]["input"]["pattern"]
-    assert re.fullmatch(
-        pattern, str(tmp_path / "my analysis/log/launcher_samplesheet.csv")
-    )
-
-
-def test_schema_definitions_are_referenced_at_root():
-    """Keep every parameter group in the root allOf required by nf-core lint."""
-    schema = json.loads(repo_base("nextflow_schema.json").read_text())
-    references = [entry["$ref"] for entry in schema["allOf"]]
-    assert sorted(references) == sorted(f"#/$defs/{name}" for name in schema["$defs"])

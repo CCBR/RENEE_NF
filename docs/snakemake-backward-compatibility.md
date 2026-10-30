@@ -50,7 +50,7 @@ quoted arguments or discarding repeated configuration options.
 | `cache`               | Unchanged                           | Uses Nextflow's container inspection and image naming; see cache differences below.                                                                                                                 |
 | `debug`               | Unchanged                           | Prints installation directory and version.                                                                                                                                                          |
 | `unlock --output DIR` | Same invocation, informational only | Nextflow releases locks when its driver exits. This command does not delete locks or session metadata. Stop live drivers before restarting; persistent filesystem locks require administrator help. |
-| `gui`                 | No Nextflow GUI command             | Use the CLI or your institution's supported Nextflow orchestration UI. The old Tk GUI cannot configure a Nextflow run.                                                                              |
+| `gui`                 | Unchanged                           | Original PySimpleGUI form and dialogs, wired to Nextflow preview and SLURM submission; requires a graphical display.                                                                                |
 | Not available         | `init`, `cite`, `--citation`        | Additional Nextflow launcher conveniences.                                                                                                                                                          |
 
 ### Analysis (`run`)
@@ -76,6 +76,39 @@ quoted arguments or discarding repeated configuration options.
 | `--max-jobs N`            | `--max_jobs N`                            | Positive integer executor queue size; no automatic Snakemake student-partition 10-job default.                                                                                                                                        |
 | `--threads N`             | Unchanged                                 | Positive integer local CPU budget and local per-task CPU cap; does not limit SLURM tasks. This replaces Snakemake's local `--cores` budget. Nextflow profile defaults apply when omitted.                                             |
 | Not available             | `--forceall`, `-F`                        | Start without Nextflow `-resume`, forcing new task execution.                                                                                                                                                                         |
+
+### Desktop launcher (`gui`)
+
+Run `renee gui` or `bin/renee_nf gui` from a checkout. The original PySimpleGUI
+implementation is retained, using the same `PySimpleGUI-4-foss < 5` dependency
+as Snakemake RENEE. Python must have Tk support and a graphical display must be
+available (for example, an X-forwarded session on Biowulf). CLI-only commands do
+not import PySimpleGUI.
+
+1. Select an input FASTQ folder using legacy `.R1`/`.R2` naming.
+2. Select an output folder and a genome/annotation preset. The dropdown now reads
+   the bundled Nextflow Biowulf/FRCE configs instead of Snakemake reference JSON
+   files. References require their matching site profile and accessible files;
+   supported HPC profiles are detected by the launcher.
+3. Click **Submit** and review the scrollable preview output.
+4. Confirm **Submit run to slurm?** to submit, or choose **No** to clear the
+   selections and return to the form.
+
+The original form, synchronous event loop, popup dialogs, clipboard actions, and
+cancel exit status (69) are retained. The execution adapter invokes `renee run`
+with `--mode slurm --threads 2`; the preview adds `--dry-run`, which uses
+Nextflow `-preview`, not Snakemake's job-level dry run. Launcher exit statuses
+replace the old error-text check because successful Nextflow previews include
+process names such as `HANDLE_PRESEQ_ERROR`. Failed previews prevent submission;
+submission failures are reported in an error popup.
+After successful submission, inspect `log/slurm-*.out` under the launch directory
+for workflow progress. Closing the GUI does not cancel submitted SLURM jobs.
+**Documentation** now copies the Nextflow documentation URL; **Help** still
+copies the support email address.
+
+As in the original GUI, samplesheet input, custom reference browsing, local
+execution, and additional analysis/resource controls are not exposed in the
+form. Use `renee run` directly for those options.
 
 ### Reference building (`build`)
 
