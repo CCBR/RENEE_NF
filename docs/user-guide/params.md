@@ -37,6 +37,24 @@ View the full list of pipeline parameters below.
 
 Nextflow implementation of bulk RNAseq pipeline RENEE https://ccbr.github.io/RENEE_NF/
 
+## Snakemake compatibility options
+
+| Parameter             | Description                                                                                                                              | Type                              | Default | Required | Hidden |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ------- | -------- | ------ |
+| `ref_fa`              | Legacy-compatible alias for genome_fasta.                                                                                                | `string`                          |         |          |        |
+| `ref_gtf`             | Legacy-compatible alias for genes_gtf.                                                                                                   | `string`                          |         |          |        |
+| `ref_name`            | Reference name; combined with gtf_ver to name the built genome.                                                                          | `string`                          |         |          |        |
+| `gtf_ver`             | Annotation version used with ref_name.                                                                                                   | `['string', 'integer', 'number']` |         |          |        |
+| `small_genome`        | Compatibility flag: STAR already chooses a genome-size-dependent genomeSAindexNbases for all custom references, including small genomes. | `boolean`                         | False   |          |        |
+| `shared_resources`    | Shared database root. Build mode downloads databases here; analysis reuses FastQ Screen, Kraken2 and Arriba resources here.              | `string`                          |         |          |        |
+| `create_nidap_folder` | Copy RNA and MultiQC reports and gene/isoform FPKM tables into a portable NIDAP directory.                                               | `boolean`                         | False   |          |        |
+| `partition`           | SLURM partition (launcher applies this to the driver as well as tasks).                                                                  | `string`                          |         |          |        |
+| `time`                | Task walltime limit, accepting SLURM D-HH:MM:SS or HH:MM:SS and Nextflow durations. The launcher also applies it to the SLURM driver.    | `string`                          |         |          |        |
+| `max_jobs`            | Maximum tasks queued by the executor.                                                                                                    | `integer`                         |         |          |        |
+| `threads`             | Total local executor CPUs and per-task CPU cap.                                                                                          | `integer`                         |         |          |        |
+| `tmp_dir`             | Task scratch directory. Nextflow's persistent work directory is controlled separately with -work-dir.                                    | `string`                          |         |          |        |
+| `sif_cache`           | Nextflow Singularity/Apptainer image cache directory.                                                                                    | `string`                          |         |          |        |
+
 ## Input/output options
 
 Define where the pipeline should find input data and save output data.
