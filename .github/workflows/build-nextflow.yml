@@ -43,7 +43,7 @@ jobs:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -157,7 +157,7 @@ jobs:
         with:
           version: ${{ env.NFT_VER }}
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
           architecture: "x64"
@@ -168,7 +168,7 @@ jobs:
           pip install pdiff
 
       - name: Clean up Disk space
-        uses: jlumbroso/free-disk-space@v1.3.1
+        uses: jlumbroso/free-disk-space@v2.0.0
 
       - name: Run nf-test
         run: |
