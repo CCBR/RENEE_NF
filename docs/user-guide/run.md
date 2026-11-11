@@ -39,6 +39,17 @@ Runs use Nextflow `-resume` automatically. Preserve both the `.nextflow/` sessio
 metadata and the task work directory. Use `--forceall` (or `-F`) to disable
 resume and execute tasks afresh. Do not reuse a Snakemake working directory.
 
+The launcher delegates execution to `ccbr_tools.pipeline.nextflow.run`, retaining
+RENEE's input conversion and private-cache validation. It disables the shared
+runner's automatic extra preview; `--dry-run` still runs an explicit preview
+locally without submitting a driver. SLURM driver logs are written to
+`analysis/log/slurm_%j.log`. Launch and submission failures exit nonzero; use
+`--wait` to also report driver job failure.
+
+The required shared-runner extensions are contributed in
+[CCBR/Tools #246](https://github.com/CCBR/Tools/pull/246). The dependency is pinned
+to that contribution's commit until a release includes the new API.
+
 ## 3.3 Other commands
 
 - `renee gui`: use the original PySimpleGUI form to select a FASTQ folder,

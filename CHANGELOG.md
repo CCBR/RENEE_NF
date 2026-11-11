@@ -6,6 +6,7 @@
 
 ### New features
 
+- Standardize SLURM driver output and error logs as `log/slurm_%j.log`. (#103, @kelly-sovacool)
 - Restore the original PySimpleGUI `renee gui`, wired to the Nextflow launcher for preview and SLURM submission. (#103, @kelly-sovacool)
 - Restore Snakemake-style launcher initialization, FASTQ-list input, reference building, container caching, scheduler controls, and portable NIDAP outputs; document CLI migration differences. (#103, @kelly-sovacool)
 

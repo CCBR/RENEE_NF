@@ -231,7 +231,7 @@ def test_local_quoting_and_failures(tmp_path, monkeypatch):
     )
     executable.chmod(0o755)
     monkeypatch.setenv("PATH", f"{tmp_path}{os.pathsep}{os.environ['PATH']}")
-    monkeypatch.setattr("src.launcher.get_hpc", lambda: None)
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.get_hpc", lambda: None)
     execute(
         "main file.nf",
         tmp_path,
@@ -257,9 +257,9 @@ def test_local_quoting_and_failures(tmp_path, monkeypatch):
 
 def test_slurm_wait_and_preview(tmp_path, monkeypatch):
     """Wait, partition and walltime reach sbatch; previews stay off the queue."""
-    monkeypatch.setattr("src.launcher.get_hpc", lambda: None)
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.get_hpc", lambda: None)
     process = Mock()
-    monkeypatch.setattr("src.launcher.subprocess.run", process)
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.subprocess.run", process)
     execute(
         "main.nf",
         tmp_path,
@@ -273,8 +273,10 @@ def test_slurm_wait_and_preview(tmp_path, monkeypatch):
     command = process.call_args.args[0]
     assert "--wait" in command
     assert "--partition=student" in command
-    assert "--time=12:00:00" in command
     script = (tmp_path / "submit_slurm.sh").read_text()
+    assert "#SBATCH --time=12:00:00" in script
+    assert "#SBATCH --mem=4G" in script
+    assert '#SBATCH -J "RENEE"' in script
     assert "-resume" not in script
     assert "singularity,slurm" in script
     process.reset_mock()
@@ -284,9 +286,9 @@ def test_slurm_wait_and_preview(tmp_path, monkeypatch):
 
 def test_private_cache_and_resume(tmp_path, monkeypatch):
     """Private cache overrides propagate to the process without changing parent env."""
-    monkeypatch.setattr("src.launcher.get_hpc", lambda: None)
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.get_hpc", lambda: None)
     process = Mock()
-    monkeypatch.setattr("src.launcher.subprocess.run", process)
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.subprocess.run", process)
     execute(
         "main.nf",
         tmp_path,
@@ -301,6 +303,67 @@ def test_private_cache_and_resume(tmp_path, monkeypatch):
         in script
     )
     assert "-resume" not in script
+
+
+@pytest.mark.parametrize("command", ["run", "build"])
+def test_shared_runner_delegation(tmp_path, monkeypatch, command):
+    """Run and build use ccbr_tools for execution, not a second launcher."""
+    launch = Mock()
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.run", launch)
+    cache = tmp_path / "private cache"
+    invoke(
+        command,
+        "--output",
+        str(tmp_path),
+        "--mode",
+        "slurm",
+        "--wait",
+        "--partition",
+        "student",
+        "--time",
+        "12:00:00",
+        "--singularity-cache",
+        str(cache),
+        "--dry-run",
+    )
+    args = ["--build"] if command == "build" else []
+    launch.assert_called_once_with(
+        nextfile_path=str(repo_base("main.nf")),
+        cwd=tmp_path,
+        mode="slurm",
+        force_all=False,
+        nextflow_args=[
+            *args,
+            "-preview",
+            "--partition",
+            "student",
+            "--time",
+            "12:00:00",
+        ],
+        pipeline_name="RENEE",
+        hpc_memory="4G",
+        hpc_walltime="12:00:00",
+        hpc_partition="student",
+        wait=True,
+        preview=False,
+        env={"SINGULARITY_CACHEDIR": str(cache), "APPTAINER_CACHEDIR": str(cache)},
+    )
+
+
+def test_shared_runner_failure_and_invalid_cache(tmp_path, monkeypatch):
+    """Surface shared-runner failures and reject another user's private cache."""
+    launch = Mock(side_effect=subprocess.CalledProcessError(9, "sbatch"))
+    monkeypatch.setattr("ccbr_tools.pipeline.nextflow.run", launch)
+    result = CliRunner().invoke(cli, ["run", "--output", str(tmp_path)])
+    assert result.exit_code == 1
+    assert "Workflow launch failed" in result.output
+    launch.reset_mock()
+    monkeypatch.setattr("src.launcher.os.getuid", lambda: -1)
+    with pytest.raises(click.BadParameter, match="must be owned by you"):
+        execute(
+            "main.nf", tmp_path, "local", False, [], singularity_cache=str(tmp_path)
+        )
+    launch.assert_not_called()
 
 
 def test_cache_inspection(tmp_path, monkeypatch):

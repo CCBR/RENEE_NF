@@ -101,7 +101,7 @@ Nextflow `-preview`, not Snakemake's job-level dry run. Launcher exit statuses
 replace the old error-text check because successful Nextflow previews include
 process names such as `HANDLE_PRESEQ_ERROR`. Failed previews prevent submission;
 submission failures are reported in an error popup.
-After successful submission, inspect `log/slurm-*.out` under the launch directory
+After successful submission, inspect `log/slurm_*.log` under the launch directory
 for workflow progress. Closing the GUI does not cancel submitted SLURM jobs.
 **Documentation** now copies the Nextflow documentation URL; **Help** still
 copies the support email address.

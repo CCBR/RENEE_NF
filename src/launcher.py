@@ -5,12 +5,11 @@ import glob
 import json
 import os
 import re
-import shlex
 import subprocess
 from pathlib import Path
 
+import ccbr_tools.pipeline.nextflow
 import click
-from ccbr_tools.pipeline.hpc import get_hpc
 
 
 def prepare_args(args: tuple[str, ...], output: Path, base: Path) -> list[str]:
@@ -184,75 +183,35 @@ def execute(
     walltime: str | None = None,
     singularity_cache: str | None = None,
 ) -> None:
-    """Run Nextflow or submit its driver to SLURM, preserving arguments and failures."""
-    hpc = get_hpc()
-    profiles = set()
-    forwarded = []
-    index = 0
-    while index < len(args):
-        arg = args[index]
-        if arg == "-profile" or arg.startswith("-profile="):
-            if "=" in arg:
-                value = arg.split("=", 1)[1]
-            else:
-                index += 1
-                if index == len(args):
-                    raise click.UsageError("-profile requires a value.")
-                value = args[index]
-            profiles.update(value.split(","))
-        elif arg == "-resume" and force_all:
-            if index + 1 < len(args) and not args[index + 1].startswith("-"):
-                index += 1
-        else:
-            forwarded.append(arg)
-        index += 1
-    if hpc:
-        profiles.add(hpc.name)
-    if mode == "slurm":
-        profiles.add("slurm")
-    if not force_all and not any(
-        arg == "-resume" or arg.startswith("-resume=") for arg in forwarded
-    ):
-        forwarded.append("-resume")
-    if profiles:
-        forwarded.extend(["-profile", ",".join(sorted(profiles))])
-    if force_all:
-        forwarded = [arg for arg in forwarded if not arg.startswith("-resume=")]
-    command = ["nextflow", "run", main_path, *forwarded]
-    script = "set -euo pipefail\n"
-    if hpc:
-        script += "module load nextflow\n"
-        script += hpc.env_vars + "\n"
-    if singularity_cache:
-        cache_dir = Path(singularity_cache).expanduser().resolve()
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        if cache_dir.stat().st_uid != os.getuid():
-            raise click.BadParameter(
-                "The private Singularity cache must be owned by you."
-            )
-        script += f"export SINGULARITY_CACHEDIR={shlex.quote(str(cache_dir))}\n"
-        script += f"export APPTAINER_CACHEDIR={shlex.quote(str(cache_dir))}\n"
-    script += shlex.join(command) + "\n"
-    click.echo(shlex.join(command))
+    """Validate RENEE's private cache and delegate execution to the shared runner."""
     try:
-        if mode == "slurm" and "-preview" not in forwarded:
-            script_path = output / "submit_slurm.sh"
-            script_path.write_text("#!/usr/bin/env bash\n" + script)
-            submission = [
-                "sbatch",
-                "--job-name=RENEE",
-                "--mem=4G",
-                f"--time={walltime or '1-00:00:00'}",
-                "--output=log/slurm-%j.out",
-            ]
-            if partition:
-                submission.append(f"--partition={partition}")
-            if wait:
-                submission.append("--wait")
-            subprocess.run([*submission, str(script_path)], cwd=output, check=True)
-        else:
-            subprocess.run(["bash", "-c", script], cwd=output, check=True)
-    except (OSError, subprocess.CalledProcessError) as error:
+        env = {}
+        if singularity_cache:
+            cache_dir = Path(singularity_cache).expanduser().resolve()
+            cache_dir.mkdir(parents=True, exist_ok=True)
+            if cache_dir.stat().st_uid != os.getuid():
+                raise click.BadParameter(
+                    "The private Singularity cache must be owned by you."
+                )
+            env = {
+                "SINGULARITY_CACHEDIR": str(cache_dir),
+                "APPTAINER_CACHEDIR": str(cache_dir),
+            }
+        ccbr_tools.pipeline.nextflow.run(
+            nextfile_path=main_path,
+            cwd=output,
+            mode=mode,
+            force_all=force_all,
+            nextflow_args=args,
+            pipeline_name="RENEE",
+            hpc_memory="4G",
+            hpc_walltime=walltime or "1-00:00:00",
+            hpc_partition=partition,
+            wait=wait,
+            env=env,
+            preview=False,
+        )
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
         raise click.ClickException(f"Workflow launch failed: {error}") from error
 
 
