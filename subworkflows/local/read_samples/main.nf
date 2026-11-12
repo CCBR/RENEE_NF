@@ -9,7 +9,7 @@ workflow CHECK_INPUT {
             .map { row ->
                 def has_fastq_2 = row.fastq_2 && row.fastq_2.toString().trim()
                 def meta = [
-                    id       : "${row.sample}_${row.replicate}",
+                    id       : row.replicate?.toString()?.trim() ? "${row.sample}_${row.replicate}" : row.sample,
                     sample   : row.sample,
                     replicate: row.replicate,
                     single_end   : !has_fastq_2

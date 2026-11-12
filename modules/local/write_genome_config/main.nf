@@ -29,7 +29,7 @@ process WRITE_GENOME_CONFIG {
         path("${genome_name}/"), emit: files
 
     script:
-    genome_name = params.genome ?: 'custom_genome'
+    genome_name = Utils.genomeName(params)
     // Absolute, so the generated config keeps working regardless of what
     // --outputDir a later run uses -- workflow.outputDir is the fully
     // resolved native output dir (see Utils.sharedResourcesDir, which uses
@@ -123,7 +123,7 @@ process WRITE_GENOME_CONFIG {
     """
 
     stub:
-    genome_name = params.genome ?: 'custom_genome'
+    genome_name = Utils.genomeName(params)
     """
     mkdir ${genome_name}/
     touch ${genome_name}.config ${genome_name}/genome.fa

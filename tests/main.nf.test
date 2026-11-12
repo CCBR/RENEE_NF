@@ -15,6 +15,7 @@ nextflow_pipeline {
             params {
                 input = "${projectDir}/tests/test_data/single_end_samplesheet.csv"
                 outputDir = "${outputDir}"
+                create_nidap_folder = true
             }
         }
 
@@ -22,7 +23,59 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert path("${outputDir}/Reports/multiqc_matrix.tsv").exists() },
-                { assert path("${outputDir}/Reports/RNA_Report.html").exists() }
+                { assert path("${outputDir}/Reports/RNA_Report.html").exists() },
+                { assert path("${outputDir}/NIDAP/RNA_Report.html").exists() },
+                { assert !java.nio.file.Files.isSymbolicLink(path("${outputDir}/NIDAP/RNA_Report.html")) },
+                { assert path("${outputDir}/NIDAP/multiqc_report.html").exists() },
+                { assert path("${outputDir}/NIDAP/RSEM.genes.FPKM.all_samples.txt").exists() },
+                { assert path("${outputDir}/NIDAP/RSEM.isoforms.FPKM.all_samples.txt").exists() }
+            )
+        }
+    }
+
+    test("shared databases publish to a custom legacy-compatible directory") {
+        options "-stub"
+
+        when {
+            params {
+                build_shared_resources_only = true
+                input = "${projectDir}/assets/samplesheet.csv"
+                shared_resources = "${outputDir}/custom_databases"
+                outputDir = "${outputDir}/results"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path("${outputDir}/custom_databases/fastq_screen_db/fastq_screen_p1.conf").exists() },
+                { assert path("${outputDir}/custom_databases/20180907_standard_kraken2").exists() },
+                { assert path("${outputDir}/results/shared_resources.config").text.contains("${outputDir}/custom_databases") }
+            )
+        }
+    }
+
+    test("legacy reference aliases name a custom genome build") {
+        options "-stub"
+
+        when {
+            params {
+                build = true
+                input = "${projectDir}/assets/samplesheet.csv"
+                download_shared_resources = false
+                ref_fa = "${projectDir}/tests/test_data/hg38_stub/genome.fa"
+                ref_gtf = "${projectDir}/tests/test_data/hg38_stub/genes.gtf"
+                ref_name = "hg38_legacy"
+                gtf_ver = 47
+                small_genome = true
+                outputDir = "${outputDir}"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path("${outputDir}/genome/hg38_legacy_47.config").exists() }
             )
         }
     }

@@ -11,6 +11,8 @@
 RENEE is an open-source, reproducible, and scalable pipeline for analyzing RNA-seq data.
 Starting with v3.0.0, RENEE uses Nextflow and is run with the `renee` CLI.
 Versions below v3.0.0 use Snakemake ([see legacy Snakemake pipeline here](https://ccbr.github.io/RENEE/latest)).
+For CLI option mappings and migration examples, see the
+[Snakemake backward-compatibility guide](docs/snakemake-backward-compatibility.md).
 See the website for detailed information, documentation, and examples:
 <https://ccbr.github.io/RENEE_NF/>
 

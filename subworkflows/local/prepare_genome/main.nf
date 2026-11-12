@@ -29,7 +29,7 @@ workflow PREPARE_GENOME {
 
         ch_genome_conf = Channel.empty()
 
-        if (params.genome && params.genomes && params.genomes[ params.genome ]) {
+        if (!params.genome_fasta && params.genome && params.genomes && params.genomes[ params.genome ]) {
 
             def g = params.genomes[ params.genome ]
 
@@ -99,7 +99,7 @@ workflow PREPARE_GENOME {
             ch_fasta_file = ch_fasta.map { meta, fa -> fa }
             ch_gtf_file   = ch_gtf.map   { meta, gtf -> gtf }
 
-            def genome_name = params.genome ?: 'custom_genome'
+            def genome_name = Utils.genomeName(params)
 
             /*
              * Build STAR genome index for custom reference.
