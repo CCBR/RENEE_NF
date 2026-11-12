@@ -1,11 +1,8 @@
 # Migrating from Snakemake RENEE
 
 RENEE 3 and later use Nextflow; RENEE 2 and earlier use Snakemake.
-The installed command is still `renee`. When running directly from a checkout,
-use `bin/renee_nf` instead of the old checkout's `bin/renee`.
-Activate an environment containing the Python dependencies before using either
-the installed command or the checkout launcher. Nextflow >=25.10 and a container
-engine are required for analysis; Snakemake is no longer required.
+The installed command is still `renee`.
+The `ccbrpipeliner` module includes RENEE v3.0.0 as of module release 9.
 
 ## Quick start
 
@@ -16,7 +13,7 @@ renee run --input reads/*.R?.fastq.gz --output analysis \
     --genome hg38_36 --mode slurm --star-2-pass-basic --wait
 ```
 
-becomes:
+now becomes:
 
 ```bash
 renee run --input reads/*.R?.fastq.gz --output analysis \
@@ -24,7 +21,7 @@ renee run --input reads/*.R?.fastq.gz --output analysis \
 ```
 
 New working directories are initialized automatically. Existing configuration
-files are not overwritten by `run`. You can still initialize explicitly with
+files are not overwritten by `run`. However, you're encouraged to initialize the project directory explicitly with
 `renee init --output analysis` or `renee run --output analysis --runmode init`.
 Initialization only copies configuration; it does not save the other invocation
 parameters. Supply analysis parameters when running, or save them in a Nextflow
@@ -32,7 +29,7 @@ params file and pass `-params-file params.yml`.
 
 Pipeline parameters use **double dashes and underscores**.
 Nextflow engine options use **single dashes**, such as `-profile`, `-resume`,
-`-params-file`, `-c`, and `-work-dir`. Launcher options retain their existing
+`-params-file`, `-c`, and `-work-dir`. The RENEE launcher options retain their existing
 spelling, including `--output`, `--mode`, `--dry-run`, and `--wait`.
 The launcher passes additional Nextflow options through without flattening
 quoted arguments or discarding repeated configuration options.
@@ -79,7 +76,7 @@ quoted arguments or discarding repeated configuration options.
 
 ### Desktop launcher (`gui`)
 
-Run `renee gui` or `bin/renee_nf gui` from a checkout. The original PySimpleGUI
+Run `renee gui` to launch the GUI. The original PySimpleGUI
 implementation is retained, using the same `PySimpleGUI-4-foss < 5` dependency
 as Snakemake RENEE. Python must have Tk support and a graphical display must be
 available (for example, an X-forwarded session on Biowulf). CLI-only commands do
@@ -139,7 +136,7 @@ The equivalent native build invocation is `renee run --build` with the same
 parameters. Advanced `--genome_fasta`/`--genes_gtf` spelling remains supported.
 If both a native parameter and its legacy alias are given, the native value
 takes precedence. Built reference descriptions are now Nextflow `.config`
-files, not Snakemake `.json` files.
+files rather than Snakemake `.json` files.
 
 To download databases without building a reference:
 
